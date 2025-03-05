@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 // import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -19,8 +18,8 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { useRouter } from 'src/routes/hooks';
 
 import { bgGradient } from 'src/theme/css';
-import { ProjectName, } from 'src/constance';
-import { LoginApiAction, InfoApiActionService, } from 'src/Services/Auth.Services';
+import { ProjectName } from 'src/constance';
+import { LoginApiAction, InfoApiActionService } from 'src/Services/Auth.Services';
 
 import Logo from 'src/components/logo';
 import { TextFieldForm } from 'src/components/inputs';
@@ -48,7 +47,6 @@ export default function LoginView() {
   //   }
   // };
 
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -57,15 +55,17 @@ export default function LoginView() {
 
   const handleSubmitAction = (values) => {
     const payload = {
-      "UserEmail": values.UserEmail,
-      "UserNumber": values.UserNumber,
-      "UserPassword": values.UserPassword,
+      UserEmail: values.UserEmail,
+      // UserNumber: values.UserNumber,
+      UserPassword: values.UserPassword,
     };
 
-    dispatch(LoginApiAction(payload, (response) => {
-      dispatch(InfoApiActionService((res) => { }))
-      router.push('/accounts');
-    }));
+    dispatch(
+      LoginApiAction(payload, (response) => {
+        dispatch(InfoApiActionService((res) => {}));
+        router.push('/accounts');
+      })
+    );
   };
 
   return (
@@ -86,7 +86,6 @@ export default function LoginView() {
         }}
       />
 
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{
@@ -95,46 +94,40 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4" align='center' sx={{ mt: 2, mb: 5 }}>Sign in to {ProjectName}</Typography>
+          <Typography variant="h4" align="center" sx={{ mt: 2, mb: 5 }}>
+            Sign in to {ProjectName}
+          </Typography>
 
           <Formik
             enableReinitialize
             initialValues={{
-              UserEmail: "",
-              UserNumber: "",
-              UserPassword: ""
+              UserEmail: '',
+              // UserNumber: "",
+              UserPassword: '',
             }}
-            validationSchema={
-              Yup.object().shape({
-                UserEmail: Yup.string()
-                  .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please enter a valid email')
-                  .nullable()
-                  .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
-                    const { UserNumber } = context.parent;
-                    return Boolean(value || UserNumber);
-                  }),
-                UserNumber: Yup.string()
-                  .nullable()
-                  .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
-                    const { UserEmail } = context.parent;
-                    return Boolean(value || UserEmail);
-                  }),
-                UserPassword: Yup.string()
-                  .required('Password is required')
-              })
-            }
+            validationSchema={Yup.object().shape({
+              UserEmail: Yup.string()
+                .matches(
+                  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  'Please enter a valid email'
+                )
+                .required('Email is required'),
+              // UserNumber: Yup.string()
+              //   .nullable()
+              //   .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
+              //     const { UserEmail } = context.parent;
+              //     return Boolean(value || UserEmail);
+              //   }),
+              UserPassword: Yup.string().required('Password is required'),
+            })}
             onSubmit={handleSubmitAction}
           >
             {(props) => (
-              <Form autoComplete="off" noValidate >
-                <Stack spacing={3}  >
-                  <TextFieldForm
-                    formik={props}
-                    label='Email'
-                    field='UserEmail'
-                  />
+              <Form autoComplete="off" noValidate>
+                <Stack spacing={3}>
+                  <TextFieldForm formik={props} label="Email" field="UserEmail" />
 
-                  <Divider sx={{ my: 3 }}>
+                  {/* <Divider sx={{ my: 3 }}>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       OR
                     </Typography>
@@ -145,12 +138,12 @@ export default function LoginView() {
                     formik={props}
                     label='Employment Number'
                     field='UserNumber'
-                  />
+                  /> */}
 
                   <TextFieldForm
                     formik={props}
-                    label='Password'
-                    field='UserPassword'
+                    label="Password"
+                    field="UserPassword"
                     type={!showPassword ? 'text' : 'password'}
                     InputProps={{
                       endAdornment: (
@@ -161,38 +154,43 @@ export default function LoginView() {
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {showPassword ? <VisibilityOutlinedIcon fontSize="small" /> : <VisibilityOffOutlinedIcon fontSize="small" />}
+                            {showPassword ? (
+                              <VisibilityOutlinedIcon fontSize="small" />
+                            ) : (
+                              <VisibilityOffOutlinedIcon fontSize="small" />
+                            )}
                           </IconButton>
                         </InputAdornment>
-                      )
+                      ),
                     }}
                   />
                 </Stack>
 
                 <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-                  <Link variant="subtitle2" underline="hover" onClick={() => router.push('/forgot-password')} >
+                  <Link
+                    variant="subtitle2"
+                    underline="hover"
+                    onClick={() => router.push('/forgot-password')}
+                  >
                     Forgot password?
                   </Link>
                 </Stack>
 
-                <Button
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  color="success">
+                <Button fullWidth size="large" type="submit" variant="contained" color="success">
                   Login
                 </Button>
 
-                <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center', mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'text.secondary', textAlign: 'center', mt: 1 }}
+                >
                   Version : {__APP_VERSION__}
                 </Typography>
-
               </Form>
             )}
-          </Formik >
+          </Formik>
         </Card>
       </Stack>
-    </Box >
+    </Box>
   );
 }

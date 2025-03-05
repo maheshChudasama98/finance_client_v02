@@ -1,4 +1,4 @@
-export const apiURL = "http://localhost:9005"
+export const apiURL = "http://localhost:8080"
 // export const apiURL = "http://147.79.68.222:9002"
 export const ImgUrl = `http://${apiURL}/url`;
 
