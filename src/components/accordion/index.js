@@ -1,1 +1,0 @@
-export { Accordion, AccordionSummary, AccordionDetails } from './accordion';
