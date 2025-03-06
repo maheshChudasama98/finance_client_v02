@@ -1,7 +1,9 @@
 /* eslint-disable perfectionist/sort-imports */
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useEffect } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
 import 'src/global.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
@@ -35,7 +37,7 @@ export default function App() {
   useScrollToTop();
   return (
     <ThemeProvider>
-      <Router Role={Number(ReduxUserRole)} />
+      <Router />
     </ThemeProvider>
   );
 }
