@@ -3,40 +3,34 @@ import jwtAuthAxios, { errorHandler } from "./auth/jwtAuth"
 export function LoginApiAction(data, cb) {
 
     return (dispatch) => {
-        console.log(dispatch);
         dispatch({ type: "FETCH_START" });
 
         jwtAuthAxios.post('/login', data).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
-                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                dispatch({ type: "SHOW_MESSAGE", payload: res?.data?.message });
 
-                localStorage.setItem("token", res.data.data.token);
-                localStorage.setItem("userDetails", JSON.stringify(res.data.data.userData));
-                localStorage.setItem("userRole", res.data.data.userData.UserType_Id);
+                localStorage.setItem("token", res?.data?.data);
 
                 dispatch({
                     type: "USER_LOGIN",
-                    token: res.data.data.token,
-                    userDetails: res.data.data.userData,
-                    userRole: res.data.data.userData.UserType_Id,
+                    token: res?.data?.data
                 });
 
                 if (cb) cb(res.data.data)
             } else {
-                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+                dispatch({ type: "FETCH_ERROR", payload: res?.data?.message });
             }
         }).catch((error) => {
             errorHandler(error, dispatch)
         })
     }
-}
+};
 
 export function FetchNoticeByUserService(branch, cb) {
     return (dispatch) => {
 
         dispatch({ type: "FETCH_START" });
-
         jwtAuthAxios.get(`/user/view/details?branch=${branch}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -48,13 +42,12 @@ export function FetchNoticeByUserService(branch, cb) {
             errorHandler(error, dispatch)
         })
     }
-}
+};
 
 export function ResetPasswordService(data, cb) {
 
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-
         jwtAuthAxios.post('/reset-Password', data).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -68,7 +61,7 @@ export function ResetPasswordService(data, cb) {
             errorHandler(error, dispatch)
         })
     }
-}
+};
 
 export function ForgotPasswordService(data, cb) {
 
@@ -89,8 +82,7 @@ export function ForgotPasswordService(data, cb) {
             errorHandler(error, dispatch)
         })
     }
-}
-
+};
 
 export function OTPPasswordService(data, cb) {
 
@@ -110,4 +102,46 @@ export function OTPPasswordService(data, cb) {
             errorHandler(error, dispatch)
         })
     }
-}
+};
+
+
+export function InfoApiActionService(cb) {
+
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+
+        jwtAuthAxios.get('/user/info').then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+
+                dispatch({
+                    type: "ORGS_LIST",
+                    OrgsList: res?.data?.data?.OrgsList || []
+                });
+
+                dispatch({
+                    type: "BRANCHES_LIST",
+                    BranchesList: res?.data?.data?.BranchesList || []
+                });
+
+                dispatch({
+                    type: "USER_DETAILS",
+                    UserDetails: res?.data?.data?.UserInfo || []
+                });
+
+                dispatch({
+                    type: "USER_PERMISSION",
+                    PermissionList: res?.data?.data?.PermissionList || []
+                });
+
+                if (cb) cb(res.data.data)
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res?.data?.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch)
+        })
+    }
+};
