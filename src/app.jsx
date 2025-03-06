@@ -14,25 +14,25 @@ import ThemeProvider from 'src/theme';
 // ----------------------------------------------------------------------
 
 export default function App() {
-  const { token, userRole } = useSelector(state => state?.auth);
-  const ReduxUserRole = localStorage.getItem("userRole");
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const localToken = localStorage.getItem("token");
-  const localUser = JSON.parse(localStorage.getItem("userDetails"));
-  const localUserRole = localStorage.getItem("userRole");
+  // const { token, userRole } = useSelector(state => state?.auth);
+  // const ReduxUserRole = localStorage.getItem("userRole");
+  // const localToken = localStorage.getItem("token");
+  // const localUser = JSON.parse(localStorage.getItem("userDetails"));
+  // const localUserRole = localStorage.getItem("userRole");
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (token == null && localUser && localToken && localUserRole) {
-      dispatch({
-        type: "USER_LOGIN",
-        token: localToken,
-        userDetails: localUser,
-        userRole: Number(ReduxUserRole),
-      })
-    }
-  }, [userRole])
+  //   // if (token == null && localUser && localToken && localUserRole) {
+  //   //   dispatch({
+  //   //     type: "USER_LOGIN",
+  //   //     token: localToken,
+  //   //     userDetails: localUser,
+  //   //     userRole: Number(ReduxUserRole),
+  //   //   })
+  //   // }
+  // }, [userRole])
 
   useScrollToTop();
   return (
