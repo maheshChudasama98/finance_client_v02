@@ -7,14 +7,11 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import InputAdornment from '@mui/material/InputAdornment';
-// import CircularProgress from '@mui/material/CircularProgress';
 
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
@@ -25,7 +22,7 @@ import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { CustomTable, CustomAvatar } from 'src/components/CustomComponents';
+import { CustomTable, CustomAvatar, CustomSearchInput } from 'src/components/CustomComponents';
 
 import { Dropdown } from 'antd';
 
@@ -39,17 +36,15 @@ export default function Index() {
     const [apiFlag, setApiFlag] = useState(false);
     const [displayFlag, setDisplayFlag] = useState(false);
     const [loadingLoader, setLoadingLoader] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
     const [loadingSwitch, setLoadingSwitch] = useState({});
     const [subLoadingSwitch, setSubLoadingSwitch] = useState({});
     const [accountsList, setAccountsList] = useState([]);
     const [editObject, setEditObject] = useState({});
     const [subEditObject, setSubEditObject] = useState({});
-
     const [formaModal, setFormaModal] = useState({});
+    const [searchValue, setSearchValue] = useState('');
+    const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
 
-    const handleSearchKey = (e) => { setSearchValue(e.target.value); };
-    const handleClear = () => { setSearchValue(''); };
 
     const StatusChange = (action, value, id) => {
         setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -88,11 +83,13 @@ export default function Index() {
 
     useEffect(() => {
         if (!displayFlag) {
+            setLoadingSearchLoader(true);
             const payLoad = {
                 SearchKey: searchValue
             };
             dispatch(CategoriesFetchListService(payLoad, (res) => {
                 if (res?.status) {
+                    setLoadingSearchLoader(false);
                     setAccountsList(res?.data?.list);
                     setLoadingSwitch({});
                     setSubLoadingSwitch({});
@@ -363,25 +360,13 @@ export default function Index() {
                             justifyContent: "space-between"
                         }}>
 
-                            <Box />
-                            <TextField
-                                size="small"
-                                label="Search"
-                                name="Search"
-                                value={searchValue}
-                                onChange={handleSearchKey}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            {searchValue && (
-                                                <IconButton onClick={handleClear} edge="end" size='small'>
-                                                    <AddIcon fontSize="inherit" />
-                                                </IconButton>
-                                            )}
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
+                        <Box />
+
+                            <CustomSearchInput 
+                                loading = {loadingSearchLoader}
+                                searchValue={searchValue}
+                                callBack={setSearchValue}   
+                             />
                         </Box>
 
                         {

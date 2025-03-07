@@ -51,3 +51,21 @@ export function TransactionFetchDataService(cb) {
         });
     };
 };
+
+export function TransactionRemoveController(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.delete(`transaction/remove?TransactionId=${payload}`).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
