@@ -6,16 +6,16 @@ import DashboardLayout from 'src/layouts/dashboard';
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
-export const UserViewPage = lazy(() => import('src/pages/user.view'));
 
-export const UserPage = lazy(() => import('src/pages/user'));
-export const BranchesPage = lazy(() => import('src/pages/branches'));
-export const ConsumerPage = lazy(() => import('src/pages/consumer'));
-export const FeederPage = lazy(() => import('src/pages/feeder'));
-export const VillagesPage = lazy(() => import('src/pages/villages'));
-export const NoticePage = lazy(() => import('src/pages/notices'));
-export const NewConnection = lazy(() => import('src/pages/new.connection'));
-export const MiscellaneousPage = lazy(() => import('src/pages/miscellaneous'));
+// export const UserViewPage = lazy(() => import('src/pages/user.view'));
+// export const UserPage = lazy(() => import('src/pages/user'));
+// export const BranchesPage = lazy(() => import('src/pages/branches'));
+// export const ConsumerPage = lazy(() => import('src/pages/consumer'));
+// export const FeederPage = lazy(() => import('src/pages/feeder'));
+// export const VillagesPage = lazy(() => import('src/pages/villages'));
+// export const NoticePage = lazy(() => import('src/pages/notices'));
+// export const NewConnection = lazy(() => import('src/pages/new.connection'));
+// export const MiscellaneousPage = lazy(() => import('src/pages/miscellaneous'));
 
 // ----------------------------------------------------------------------
 
@@ -28,11 +28,10 @@ export const RecordsPage = lazy(() => import('src/pages/records'));
 export default function Router() {
 
   const CommRoutes = [
-    { path: 'user/view', element: <UserViewPage />, },
     { path: 'login', element: <LoginPage />, index: true, },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true, },
     { path: '404', element: <Page404 />, },
-    { path: '*', element: <Navigate to="/404" replace />, },
+    { path: '*', element: <Navigate to="login" replace />, },
   ];
 
   const routes = useRoutes([
