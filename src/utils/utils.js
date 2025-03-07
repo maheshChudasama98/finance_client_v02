@@ -20,3 +20,11 @@ export function lightenColor(hexColor, factor) {
 
   return '#000000';
 }
+
+
+export function calculatePercentageChange(c, p) {
+  const current = Number(c);
+  const previous = Number(p);
+  if (!previous || previous === 0) return current ? 100 : 0;
+  return ((current - previous) / previous) * 100;
+};

@@ -9,7 +9,7 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 const navConfig = [
   {
     title: 'Dashboard',
-    path: '/branches',
+    path: '/dashboard',
     icon: icon('ic_user'),
     mobile: false,
     role: [SuperAdminID]

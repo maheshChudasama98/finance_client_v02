@@ -53,3 +53,24 @@ export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?=\S+$).{8,}$/;
 // export const URL_REGEX = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g;
 export const NAME_REGEX = /^[A-Za-z0-9]+([ \-'][A-Za-z0-9]+)*$/
+
+
+export const TimeDurationList = [
+    { Key: "DATE", Value: "Daily" },
+    { Key: "WEEK", Value: "Weekly" },
+    { Key: "MONTH", Value: "Monthly" },
+    { Key: "YEAR", Value: "Yearly" },
+];
+
+export const DurationList = [
+    { Key: "Last Seven Days", Value: "Last_Seven_Days" },
+    { Key: "Last Thirty Days", Value: "Last_Thirty_Days" },
+    { Key: "This Week", Value: "This_Week" },
+    { Key: "Last Week", Value: "Last_Week" },
+    { Key: "This Month", Value: "This_Month" },
+    { Key: "Last Month", Value: "Last_Month" },
+    { Key: "Last Six Month", Value: "Six_Month" },
+    { Key: "This Year", Value: "This_Year" },
+    { Key: "Last Year", Value: "Last_Year" },
+    { Key: "Last Five Year", Value: "Last_Five_Year" },
+];

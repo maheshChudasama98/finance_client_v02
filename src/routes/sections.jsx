@@ -19,6 +19,7 @@ export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
 
 // ----------------------------------------------------------------------
 
+export const DashboardPage = lazy(() => import('src/pages/dashboard'));
 export const AccountsPage = lazy(() => import('src/pages/accounts'));
 export const LabelsPage = lazy(() => import('src/pages/labels'));
 export const PartiesPage = lazy(() => import('src/pages/parties'));
@@ -28,6 +29,7 @@ export const RecordsPage = lazy(() => import('src/pages/records'));
 export default function Router() {
 
   const CommRoutes = [
+
     { path: 'login', element: <LoginPage />, index: true, },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true, },
     { path: '404', element: <Page404 />, },
@@ -44,6 +46,7 @@ export default function Router() {
         </DashboardLayout>
       ),
       children: [
+        { path: '/dashboard', element: <DashboardPage />, },
         { path: '/accounts', element: <AccountsPage />, },
         { path: '/labels', element: <LabelsPage />, },
         { path: '/parties', element: <PartiesPage />, },

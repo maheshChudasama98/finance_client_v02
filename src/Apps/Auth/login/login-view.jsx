@@ -63,7 +63,7 @@ export default function LoginView() {
     dispatch(
       LoginApiAction(payload, (response) => {
         dispatch(InfoApiActionService((res) => {}));
-        router.push('/accounts');
+        router.push('/dashboard');
       })
     );
   };

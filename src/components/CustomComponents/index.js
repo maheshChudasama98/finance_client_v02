@@ -6,3 +6,4 @@ export { CustomIconPicker } from './CustomIconPicker';
 export { CustomColorPicker } from './CustomColorPicker';
 export { CustomSearchInput } from './CustomSearchInput';
 export { CustomLabelComponent } from './CustomLabelComponent';
+export { CustomSelect } from './CustomSelect';
