@@ -1,30 +1,29 @@
 export function lightenColor(hexColor, factor) {
   // Remove '#' if present
-  // hexColor = hexColor.replace('#', '');
+  hexColor = hexColor.replace('#', '');
 
   // Parse the color into RGB components
-  // const red = parseInt(hexColor.slice(0, 2), 16);
-  // const green = parseInt(hexColor.slice(2, 4), 16);
-  // const blue = parseInt(hexColor.slice(4, 6), 16);
+  const red = parseInt(hexColor.slice(0, 2), 16);
+  const green = parseInt(hexColor.slice(2, 4), 16);
+  const blue = parseInt(hexColor.slice(4, 6), 16);
 
   // Calculate the new RGB values by blending towards white
-  // const newRed = Math.round(red + (255 - red) * factor);
-  // const newGreen = Math.round(green + (255 - green) * factor);
-  // const newBlue = Math.round(blue + (255 - blue) * factor);
+  const newRed = Math.round(red + (255 - red) * factor);
+  const newGreen = Math.round(green + (255 - green) * factor);
+  const newBlue = Math.round(blue + (255 - blue) * factor);
 
-  // Convert the RGB values back to a hex color
-  // const newHexColor = `#${((1 << 24) | (newRed << 16) | (newGreen << 8) | newBlue)
-  //   .toString(16)
-  //   .slice(1)
-  //   .toUpperCase()}`;
+  // Convert RGB values back to HEX
+  const newHexColor = `#${[newRed, newGreen, newBlue]
+    .map((val) => val.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase()}`;
 
-  return '#000000';
+  return newHexColor;
 }
-
 
 export function calculatePercentageChange(c, p) {
   const current = Number(c);
   const previous = Number(p);
   if (!previous || previous === 0) return current ? 100 : 0;
   return ((current - previous) / previous) * 100;
-};
+}

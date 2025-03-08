@@ -29,7 +29,6 @@ const StyledChart = styled(Chart)(({ theme }) => ({
 // ----- ||  || ----- //
 
 export default function AppCurrentVisits({ title, type, subheader, chart, ...other }) {
-
   const theme = useTheme();
 
   const { colors, series, options } = chart;
@@ -80,16 +79,14 @@ export default function AppCurrentVisits({ title, type, subheader, chart, ...oth
             show: true,
             fontSize: '16px',
             label: 'Total',
-            formatter: function (w) {
-              return w?.toLocaleString('en-IN') || w || "0";
-            }
+            formatter: (w) => w?.toLocaleString('en-IN') || w || '0', // Arrow function
           },
           total: {
             show: true,
             label: 'Total',
-          }
-        }
-      }
+          },
+        },
+      },
     },
     ...options,
   });
@@ -106,10 +103,9 @@ export default function AppCurrentVisits({ title, type, subheader, chart, ...oth
         width="100%"
         height={280}
       />
-
     </Card>
   );
-};
+}
 
 AppCurrentVisits.propTypes = {
   chart: PropTypes.object,

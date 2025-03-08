@@ -7,7 +7,7 @@ export function TransactionModifyService(payload, cb) {
         jwtAuthAxios.post('transaction/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
-                if (cb) cb(res.data.data)
+                if (cb) cb(res.data)
             } else {
                 dispatch({ type: "FETCH_ERROR", payload: res.data.message });
             };
@@ -60,7 +60,7 @@ export function TransactionRemoveController(payload, cb) {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
-                if (cb) cb(res.data.data);
+                if (cb) cb(res.data);
             } else {
                 dispatch({ type: "FETCH_ERROR", payload: res.data.message });
             }

@@ -1,175 +1,468 @@
-import { useState, } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
+import Typography from '@mui/material/Typography';
 
-import { AccountTypes } from 'src/constance';
-import { AccountModifyService } from 'src/Services/Meter.Services';
-
+import { TransactionActions } from 'src/constance';
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { TextFieldForm, AutoCompleteSelectMenu, } from 'src/components/inputs';
-import { CustomIconPicker, CustomColorPicker, } from 'src/components/CustomComponents';
+import { TransactionModifyService, TransactionFetchDataService, } from 'src/Services/Transaction.Services';
 
-import { Form, Formik, } from 'formik';
+import { CustomAvatar } from 'src/components/CustomComponents';
+import { TextFieldForm, DatePickerCustom , AutoCompleteSelectMenu, } from 'src/components/inputs';
+
+import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
+import dayjs from 'dayjs';
+
+
 export default function Index({ backAction, editObject }) {
+  const dispatch = useDispatch();
+  const [show, setShow] = useState(false);
+  const [formSubmitLoader, setFormSubmitLoader] = useState(false);
 
-    const dispatch = useDispatch();
+  const [accountList, setAccountList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [labelsList, setLabelsList] = useState([]);
+  const [partyList, setPartyList] = useState([]);
 
-    const [formSubmitLoader, setFormSubmitLoader] = useState(false);
-
-    const ActionSubmit = (values) => {
-        setFormSubmitLoader(true);
-        if (editObject?.AccountId) {
-            values.AccountId = editObject?.AccountId;
-        };
-        dispatch(AccountModifyService(values, (res) => {
-            setFormSubmitLoader(false);
-            if (res?.status) {
-                backAction();
-            };
-
-        }));
-
-    };
-
-    return (
-        <Formik
-            enableReinitialize
-            initialValues={{
-                AccountName: editObject?.AccountName || "",
-                StartAmount: editObject?.StartAmount || "",
-                MinAmount: editObject?.MinAmount || "",
-                TypeId: editObject?.TypeId || "",
-                Icon: editObject?.Icon || "",
-                Color: editObject?.Color || "",
-                Description: editObject?.Description || "",
-            }}
-            validationSchema={
-                Yup.object().shape({
-                    AccountName: Yup.string().trim().required("Account name is required."),
-                    StartAmount: Yup.number().nullable(),
-                    MinAmount: Yup.number().nullable(),
-                    TypeId: Yup.number().required("Account type  is required."),
-                    // Icon: Yup.string().required("Icon is required."),
-                    Description: Yup.string().trim().nullable(),
-                })
-            }
-            onSubmit={ActionSubmit}
-        >
-            {(props) => {
-                const { handleSubmit, dirty, resetForm, values } = props
-                return (
-                    <Form >
-                        <Grid
-                            container
-                            spacing={2}
-                            sx={{
-                                paddingY: 2,
-                                paddingX: 2,
-                            }}
-                        >
-                            <Grid item xs={12} md={6}>
-                                <TextFieldForm
-                                    formik={props}
-                                    label='Account Name'
-                                    field='AccountName'
-                                />
-                            </Grid>
-                            <Grid xs={12} md={6} >
-                                <AutoCompleteSelectMenu
-                                    formik={props}
-                                    label="Account type"
-                                    field="TypeId"
-                                    menuList={AccountTypes}
-                                    valueKey='key'
-                                    labelKey='value'
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <TextFieldForm
-                                    required={false}
-                                    type="number"
-                                    formik={props}
-                                    label='Start Amount'
-                                    field='StartAmount'
-                                    disabled={editObject?.AccountId}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <TextFieldForm
-                                    required={false}
-                                    type="number"
-                                    formik={props}
-                                    label='Amount limit'
-                                    field='MinAmount'
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={6}>
-                                <TextFieldForm
-                                    required={false}
-                                    formik={props}
-                                    label='Description'
-                                    field='Description'
-                                    multiline
-                                    rows={3}
-                                    maxRows={3}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={3}>
-                                <CustomColorPicker
-                                    formik={props}
-                                    label='Color'
-                                    field='Color'
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={3}>
-                                <CustomIconPicker
-                                    formik={props}
-                                    label='Icon'
-                                    field='Icon'
-                                    color={values?.Color}
-                                />
-                            </Grid>
-
-
-
-
-                            <Grid xs={12} >
-                                <Box sx={{ float: "right", display: "flex" }}>
-                                    {
-                                        dirty &&
-                                        <Button
-                                            variant="outlined"
-                                            sx={{ marginX: 1 }}
-                                            // disabled={!dirty}
-                                            onClick={() => { resetForm(); }}
-                                            color="CancelButton"> Cancel </Button>
-                                    }
-
-                                    {
-                                        !formSubmitLoader ?
-                                            <Button variant="contained" type='submit' disabled={!dirty} onClick={handleSubmit} color="success">Save</Button>
-                                            :
-                                            <ButtonLoader />
-                                    }
-                                </Box>
-                            </Grid>
-
-                        </Grid>
-                    </Form>
-                )
-            }}
-
-        </Formik>
+  useEffect(() => {
+    dispatch(
+      TransactionFetchDataService((res) => {
+        setAccountList(res?.accountList || []);
+        setCategoriesList(res?.categoriesList || []);
+        setLabelsList(res?.labelsList || []);
+        setPartyList(res?.partyList || []);
+      })
     );
-};
+  }, [show]);
+
+  return (
+    <Formik
+      enableReinitialize
+      initialValues={{
+        Action: editObject?.Action || 'Out',
+        Date: editObject?.Date ? dayjs(editObject?.Date) : null,
+        Amount: editObject?.Amount || null,
+        AccountId: editObject?.AccountId || null,
+        CategoryId: editObject?.CategoryId || null,
+        SubCategoryId: editObject?.SubCategoryId || null,
+        TransferToAccountId: editObject?.TransferToAccountId || null,
+        PartyId: editObject?.ParentTransactionId || null,
+        Description: editObject?.Description || null,
+        Tags: editObject?.Tags || null,
+      }}
+      validationSchema={Yup.object().shape({
+        Action: Yup.string().required('Action is required.'),
+        Date: Yup.string().required('Date is required.'),
+        Amount: Yup.string().required('Amount is required.'),
+        AccountId: Yup.string().required('Account is required.'),
+        CategoryId: Yup.number().when('Action', {
+          is: (value) => value === 'In' || value === 'Out',
+          then: (schema) => schema.required('Category is required.'),
+          otherwise: (schema) => schema.nullable(),
+        }),
+        SubCategoryId: Yup.number().when('Action', {
+          is: (value) => value === 'In' || value === 'Out',
+          then: (schema) => schema.required('Sub Category is required.'),
+          otherwise: (schema) => schema.nullable(),
+        }),
+        TransferToAccountId: Yup.number().when('Action', {
+          is: (value) => value === 'Investment' || value === 'Transfer',
+          then: (schema) => schema.required('Transfer is required'),
+          otherwise: (schema) => schema.nullable(),
+        }),
+        PartyId: Yup.number().when('Action', {
+          is: (value) => value === 'Credit' || value === 'Debit',
+          then: (schema) => schema.required('Party is required'),
+          otherwise: (schema) => schema.nullable(),
+        }),
+      })}
+      onSubmit={(values) => {
+        setFormSubmitLoader(true);
+        if (values?.Action === 'In' || values?.Action === 'Out') {
+          delete values.TransferToAccountId;
+          delete values.PartyId;
+        } else if (
+          values?.Action === 'Transfer' ||
+          values?.Action === 'Investment' ||
+          values?.Action === 'Credit' ||
+          values?.Action === 'Debit'
+        ) {
+          delete values.SubCategoryId;
+          delete values.CategoryId;
+          delete values.Tags;
+        }
+
+        if (editObject?.TransactionId) {
+          values.TransactionId = editObject?.TransactionId;
+        }
+
+        dispatch(
+          TransactionModifyService(values, (res) => {
+            setFormSubmitLoader(false);
+
+            setShow(false);
+            if (res?.status) {
+              setShow(false);
+              backAction();
+            }
+          })
+        );
+      }}
+    >
+      {(props) => {
+        const { setFieldValue, handleSubmit, values, dirty, resetForm } = props;
+        return (
+          <Form noValidate>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                paddingY: 2,
+                paddingX: 2,
+              }}
+            >
+              <Grid item xs={12}>
+                <AutoCompleteSelectMenu
+                  formik={props}
+                  label="Action"
+                  field="Action"
+                  menuList={TransactionActions}
+                  valueKey="key"
+                  labelKey="value"
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <DatePickerCustom
+                  required={false}
+                  formik={props}
+                  label="Date"
+                  field="Date"
+                  defaultValue={values.Date}
+                  callBackAction={(event) => {
+                    setFieldValue('Date', dayjs(event));
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <TextFieldForm type="number" formik={props} field="Amount" label="Amount" />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <AutoCompleteSelectMenu
+                  formik={props}
+                  label={
+                    values?.Action === 'Transfer' || values?.Action === 'Investment'
+                      ? 'From'
+                      : 'Account'
+                  }
+                  field="AccountId"
+                  menuList={accountList}
+                  valueKey="AccountId"
+                  labelKey="AccountName"
+                  renderOption={(vars, option) => {
+                    const { key, ...optionProps } = vars;
+                    return (
+                      <Box
+                        key={key}
+                        {...optionProps}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between !important',
+                          alignItems: 'center !important',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center !important',
+                          }}
+                        >
+                          <CustomAvatar
+                            width={32}
+                            height={32}
+                            displayName="AC"
+                            icon={option?.Icon || ''}
+                            bgColor={option?.Color || ''}
+                          />
+                          <Typography variant="normal" sx={{ mx: 2 }}>
+                            {option?.AccountName || ''}
+                          </Typography>
+                        </Box>
+                        <span>{option?.CurrentAmount}</span>
+                      </Box>
+                    );
+                  }}
+                  startUnitType={
+                    values?.AccountId ? (
+                      <CustomAvatar
+                        width={32}
+                        height={32}
+                        icon={
+                          accountList?.find((item) => item?.AccountId === props.values.AccountId)
+                            ?.Icon || ''
+                        }
+                        bgColor={
+                          accountList?.find((item) => item?.AccountId === props.values.AccountId)
+                            ?.Color || ''
+                        }
+                      />
+                    ) : (
+                      ''
+                    )
+                  }
+                  unitType={`₹ ${
+                    accountList?.find((item) => item?.AccountId === props.values.AccountId)
+                      ?.CurrentAmount || '0.00'
+                  }`}
+                />
+              </Grid>
+
+              {(values?.Action === 'In' || values?.Action === 'Out') && (
+                <>
+                  <Grid item xs={12} md={6}>
+                    <AutoCompleteSelectMenu
+                      required={false}
+                      formik={props}
+                      label="Labels"
+                      field="Tags"
+                      menuList={labelsList}
+                      valueKey="LabelId"
+                      labelKey="LabelName"
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <AutoCompleteSelectMenu
+                      formik={props}
+                      label="Category"
+                      field="CategoryId"
+                      menuList={categoriesList}
+                      valueKey="CategoryId"
+                      labelKey="CategoryName"
+                      renderOption={(vars, option) => {
+                        const { key, ...optionProps } = vars;
+                        return (
+                          <Box
+                            key={key}
+                            {...optionProps}
+                            sx={{
+                              p: 2,
+                              display: 'flex',
+                              alignItems: 'center !important',
+                            }}
+                          >
+                            <CustomAvatar
+                              width={32}
+                              height={32}
+                              icon={option?.Icon || ''}
+                              bgColor={option?.Color || ''}
+                            />
+                            <Typography variant="normal" sx={{ mx: 2 }}>
+                              {option?.CategoryName || ''}
+                            </Typography>
+                          </Box>
+                        );
+                      }}
+                      startUnitType={
+                        values?.CategoryId ? (
+                          <CustomAvatar
+                            width={32}
+                            height={32}
+                            icon={
+                              categoriesList?.find((item) => item.CategoryId === values.CategoryId)
+                                ?.Icon || ''
+                            }
+                            bgColor={
+                              categoriesList?.find((item) => item.CategoryId === values.CategoryId)
+                                ?.Color || ''
+                            }
+                          />
+                        ) : (
+                          ''
+                        )
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <AutoCompleteSelectMenu
+                      formik={props}
+                      label="Sub Category"
+                      field="SubCategoryId"
+                      menuList={
+                        categoriesList?.find((item) => item.CategoryId === values.CategoryId)
+                          ?.SubCategories || []
+                      }
+                      valueKey="SubCategoryId"
+                      labelKey="SubCategoriesName"
+                      renderOption={(vars, option) => {
+                        const { key, ...optionProps } = vars;
+                        return (
+                          <Box
+                            key={key}
+                            {...optionProps}
+                            sx={{
+                              display: 'flex',
+                              // justifyContent: 'space-between !important',
+                              alignItems: 'center !important',
+                            }}
+                          >
+                            <CustomAvatar
+                              width={32}
+                              height={32}
+                              icon={option?.Icon || ''}
+                              bgColor={
+                                categoriesList?.find(
+                                  (item) => item.CategoryId === values.CategoryId
+                                )?.Color || ''
+                              }
+                            />
+                            <Typography variant="normal" sx={{ mx: 2 }}>
+                              {option?.SubCategoriesName || ''}
+                            </Typography>
+                          </Box>
+                        );
+                      }}
+                      startUnitType={
+                        values?.SubCategoryId ? (
+                          <CustomAvatar
+                            width={32}
+                            height={32}
+                            bgColor={
+                              categoriesList?.find((item) => item.CategoryId === values.CategoryId)
+                                ?.Color || ''
+                            }
+                          />
+                        ) : (
+                          ''
+                        )
+                      }
+                    />
+                  </Grid>
+                </>
+              )}
+              {(values?.Action === 'Transfer' || values?.Action === 'Investment') && (
+                <Grid item xs={12} md={6}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="To"
+                    field="TransferToAccountId"
+                    menuList={accountList}
+                    valueKey="AccountId"
+                    labelKey="AccountName"
+                    renderOption={(vars, option) => {
+                      const { key, ...optionProps } = vars;
+                      return (
+                        <Box
+                          key={key}
+                          {...optionProps}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between !important',
+                            alignItems: 'center !important',
+                          }}
+                        >
+                          <span>{option?.AccountName}</span>
+                          <span>{option?.CurrentAmount}</span>
+                        </Box>
+                      );
+                    }}
+                    unitType={`₹ ${
+                      accountList?.find((item) => item?.AccountId === props.values.AccountId)
+                        ?.CurrentAmount || '0.00'
+                    }`}
+                  />
+                </Grid>
+              )}
+
+              {(values?.Action === 'Credit' || values?.Action === 'Debit') && (
+                <Grid item xs={12} md={6}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="Party"
+                    field="PartyId"
+                    menuList={partyList}
+                    valueKey="PartyId"
+                    labelKey="FullName"
+                    renderOption={(vars, option) => {
+                      const { key, ...optionProps } = vars;
+                      return (
+                        <Box
+                          key={key}
+                          {...optionProps}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between !important',
+                            alignItems: 'center !important',
+                          }}
+                        >
+                          <span>{option?.FullName}</span>
+                          <span>{option?.CurrentAmount}</span>
+                        </Box>
+                      );
+                    }}
+                    unitType={`₹ ${
+                      partyList?.find((item) => item?.PartyId === props.values.PartyId)
+                        ?.CurrentAmount || '0.00'
+                    }`}
+                  />
+                </Grid>
+              )}
+
+              <Grid item xs={12} md={12}>
+                <TextFieldForm
+                  required={false}
+                  formik={props}
+                  label="Description"
+                  field="Description"
+                  multiline
+                  rows={4}
+                  maxRows={3}
+                />
+              </Grid>
+
+              <Grid xs={12}>
+                <Box sx={{ float: 'right', display: 'flex' }}>
+                  {dirty && (
+                    <Button
+                      variant="outlined"
+                      sx={{ marginX: 1 }}
+                      onClick={() => {
+                        resetForm();
+                      }}
+                      color="CancelButton"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+
+                  {!formSubmitLoader ? (
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={!dirty}
+                      onClick={handleSubmit}
+                      color="success"
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <ButtonLoader />
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
+}

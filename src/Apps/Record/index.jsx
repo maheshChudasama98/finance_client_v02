@@ -25,6 +25,7 @@ export default function Index() {
   const dispatch = useDispatch();
 
   const apiFlag = false;
+  
   const [displayFlag, setDisplayFlag] = useState(false);
   const [loadingLoader, setLoadingLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -112,11 +113,26 @@ export default function Index() {
     dispatch(
       TransactionRemoveController(record?.TransactionId, (res) => {
         if (res?.status) {
-          setTransactionList(res?.data?.list);
-          // setLoadingSwitch({});
+          const payLoad = {
+            SearchKey: searchValue,
+          };
+          setLoadingLoader(true);
+          dispatch(
+            TransactionFetchListService(payLoad, (resp) => {
+              if (resp?.status) {
+                setLoadingLoader(false);
+                setTransactionList(resp?.data?.list);
+              }
+            })
+          );
         }
       })
     );
+  };
+
+  const editAction = (record) => {
+    setEditObject(record);
+    setDisplayFlag(true);
   };
 
   return (
@@ -168,7 +184,7 @@ export default function Index() {
                   marginTop: 1.5,
                 }}
               >
-                <Box sx={{ my: 2, paddingX: { xs: 0, sm: 2 } }}></Box>
+                {/* <Box sx={{ my: 2, paddingX: { xs: 0, sm: 2 } }}></Box> */}
 
                 {arrayObject && arrayObject?.length > 0 ? (
                   <Box sx={{ paddingX: { xs: 0, sm: 1 } }}>
@@ -178,6 +194,7 @@ export default function Index() {
                         item={item}
                         index={index}
                         deleteAction={deleteAction}
+                        editAction={editAction}
                       />
                     ))}
                   </Box>

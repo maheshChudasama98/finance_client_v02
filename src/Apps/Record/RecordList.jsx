@@ -10,10 +10,9 @@ import Typography from '@mui/material/Typography';
 import { fDate } from 'src/utils/format-time';
 import { fText } from 'src/utils/format-text';
 import { lightenColor } from 'src/utils/utils';
-
-import { CustomAvatar } from 'src/components/CustomComponents';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
+import { CustomAvatar } from 'src/components/CustomComponents';
 
 const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
   const styes = {
@@ -114,12 +113,22 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
       >
         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
           <Grid xs={6}>
-            <Typography variant="normal">{fDate(item?.date)}</Typography>
+            <Typography variant="normal" color="text.secondary">
+              {fDate(item?.date)}
+            </Typography>
           </Grid>
 
           <Grid xs={6}>
-            <Typography variant="tableHead" color="text.secondary" sx={{ textAlign: 'end' }}>
-              {item?.dayTotal || 0}
+            <Typography
+              color="text.secondary"
+              variant="normal"
+              sx={{
+                textAlign: 'end',
+                fontWeight: 600,
+                color: item?.dayTotal > 0 ? '#00A76F' : '#FF5630',
+              }}
+            >
+              {item?.dayTotal || 0}.00 /-
             </Typography>
           </Grid>
         </Grid>
@@ -149,6 +158,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                       height={{ xs: 40, md: 35, lg: 40 }}
                       displayName="AS"
                       icon={record?.SubCategoryDetails?.Icon}
+                      iconSize={15}
                       bgColor={record?.CategoryDetails?.Color}
                     />
                     <Typography variant="normal">
@@ -203,8 +213,8 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                   {record?.PartyDetails?.FullName && (
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <CustomAvatar
-                        width={{ xs: 35, md: 35, lg: 35 }}
-                        height={{ xs: 35, md: 35, lg: 35 }}
+                        width={{ xs: 35, md: 35, lg: 40 }}
+                        height={{ xs: 35, md: 35, lg: 40 }}
                         displayName="AS"
                       />
                       <Typography variant="light">
@@ -246,7 +256,6 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                           .then((result) => {
                             if (result === 'Yes') {
                               deleteAction(record);
-                              StatusChange('isDeleted', true, item?.AccountId);
                             }
                           })
                           .catch((error) => {
@@ -278,6 +287,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                       width={{ xs: 35, md: 35, lg: 37 }} // default width
                       height={{ xs: 35, md: 35, lg: 37 }}
                       icon={record?.SubCategoryDetails?.Icon}
+                      iconSize={15}
                       bgColor={record?.CategoryDetails?.Color}
                     />
 
