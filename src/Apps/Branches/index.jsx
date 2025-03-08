@@ -93,7 +93,7 @@ export default function Index() {
     const tableSetData = userList.map((item, index) => ({
         index: <Typography variant="normal"> {index + 1}</Typography>,
         User_Avatar: <Stack direction="row" alignItems="center" spacing={2} >
-            <CustomAvatar displayName={item?.User_Avatar} />
+            <CustomAvatar displayName={item?.User_Avatar} width={45} height={45} iconSize={15}/>
             <Typography variant="normal">
                 {fText(`${item?.User_FirstName} ${item?.User_LastName}`)}
                 <Typography variant="light" color="text.secondary">
@@ -109,7 +109,7 @@ export default function Index() {
         createdAt: <Typography variant="normal" > {fDate(item?.createdAt)}</Typography>,
         action: <Typography variant="normal" >-</Typography>,
         child: <Stack direction="row" alignItems="center" spacing={2} >
-            <CustomAvatar displayName={item?.User_Avatar} />
+            <CustomAvatar displayName={item?.User_Avatar} width={45} height={45} iconSize={15}/>
             <Typography variant="normal">
                 {fText(`${item?.User_FirstName} ${item?.User_LastName}`)}
                 <Typography variant="light" color="text.secondary">

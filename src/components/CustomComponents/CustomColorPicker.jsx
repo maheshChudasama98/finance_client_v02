@@ -120,6 +120,7 @@ export const CustomColorPicker = ({
                     sx={{ margin: 0, padding: 0 }}
                 >
                     <CustomAvatar
+                  
                         bgColor={formik?.errors[field] ? "#FF5630" : formik?.values[field] || "#777"}
                     />
                 </IconButton>

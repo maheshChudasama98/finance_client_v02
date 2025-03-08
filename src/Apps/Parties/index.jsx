@@ -107,7 +107,7 @@ export default function Index() {
 
     FullName: (
       <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar displayName={item?.PartyAvatar} />
+        <CustomAvatar displayName={item?.PartyAvatar}  width={45} height={45} iconSize={15}/>
         <Typography variant="normal">
           {item?.FullName}
           <Typography
