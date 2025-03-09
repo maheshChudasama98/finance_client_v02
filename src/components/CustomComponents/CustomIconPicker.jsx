@@ -149,6 +149,7 @@ export const CustomIconPicker = ({
                     aria-expanded={open ? 'true' : undefined}
                 >
                     <CustomAvatar
+           
                         icon={formik?.errors[field] ? "fa-solid fa-exclamation" : formik?.values[field] || "fa-solid fa-exclamation"}
                         bgColor={formik?.errors[field] ? "#FF5630" : color || "#777"}
                     />

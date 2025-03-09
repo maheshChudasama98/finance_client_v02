@@ -35,3 +35,15 @@ function result(format, key = '.00') {
 
   return isInteger ? format.replace(key, '') : format;
 }
+export function formatToINR(value) {
+  const number = Number(value);
+  if (Number.isNaN(number)) return 'Invalid input';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+  });
+
+  return formatter.format(number).replace('₹', '₹ ');
+}

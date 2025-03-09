@@ -81,7 +81,7 @@ const ProjectItem = ({ item, isHeader, index }) => {
                             </Grid>
                             <Grid xs={4}>
                                 <Stack direction="row" alignItems="center" spacing={2} >
-                                    <CustomAvatar displayName={item?.User_Avatar} />
+                                    <CustomAvatar displayName={item?.User_Avatar} width={45} height={45} iconSize={15} />
                                     <Typography variant="normal">
                                         {fText(`${item?.User_FirstName} ${item?.User_LastName}`)}
                                         <Typography variant="light" color="text.secondary">

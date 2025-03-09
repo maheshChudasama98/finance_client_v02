@@ -154,11 +154,9 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 <Grid xs={2.5}>
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <CustomAvatar
-                      width={{ xs: 40, md: 35, lg: 40 }} // default width
-                      height={{ xs: 40, md: 35, lg: 40 }}
+                      width={45} height={45} iconSize={15}
                       displayName="AS"
                       icon={record?.SubCategoryDetails?.Icon}
-                      iconSize={15}
                       bgColor={record?.CategoryDetails?.Color}
                     />
                     <Typography variant="normal">
@@ -213,8 +211,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                   {record?.PartyDetails?.FullName && (
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <CustomAvatar
-                        width={{ xs: 35, md: 35, lg: 40 }}
-                        height={{ xs: 35, md: 35, lg: 40 }}
+                       width={45} height={45} iconSize={15}
                         displayName="AS"
                       />
                       <Typography variant="light">
@@ -284,8 +281,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 <Grid xs={6}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <CustomAvatar
-                      width={{ xs: 35, md: 35, lg: 37 }} // default width
-                      height={{ xs: 35, md: 35, lg: 37 }}
+                     width={45} height={45} 
                       icon={record?.SubCategoryDetails?.Icon}
                       iconSize={15}
                       bgColor={record?.CategoryDetails?.Color}
@@ -370,8 +366,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
 
                                             <Stack direction="row" alignItems="center" spacing={2} >
                                                 <CustomAvatar
-                                                    width={{ xs: 35, md: 35, lg: 35 }}
-                                                    height={{ xs: 35, md: 35, lg: 35 }}
+                                                 width={45} height={45} iconSize={15}
                                                     displayName={"AS"}
                                                 />
                                                 <Typography variant="light" >

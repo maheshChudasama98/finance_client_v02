@@ -107,7 +107,7 @@ export default function Index() {
 
     AccountName: (
       <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar displayName="AC" icon={item?.Icon || ''} bgColor={item?.Color || ''} />
+        <CustomAvatar width={45} height={45} iconSize={15} displayName="AC" icon={item?.Icon || ''} bgColor={item?.Color || ''} />
         <Typography variant="normal">
           {item?.AccountName}
           <Typography

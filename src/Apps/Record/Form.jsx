@@ -1,24 +1,28 @@
-import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import { TransactionActions } from 'src/constance';
-import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { TransactionModifyService, TransactionFetchDataService, } from 'src/Services/Transaction.Services';
+import { formatToINR } from 'src/utils/format-number';
 
+import { TransactionActions } from 'src/constance';
+import {
+  TransactionModifyService,
+  TransactionFetchDataService,
+} from 'src/Services/Transaction.Services';
+
+import ButtonLoader from 'src/components/Loaders/ButtonLoader';
 import { CustomAvatar } from 'src/components/CustomComponents';
-import { TextFieldForm, DatePickerCustom , AutoCompleteSelectMenu, } from 'src/components/inputs';
+import { TextFieldForm, DatePickerCustom, AutoCompleteSelectMenu } from 'src/components/inputs';
 
 import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
 import dayjs from 'dayjs';
-
 
 export default function Index({ backAction, editObject }) {
   const dispatch = useDispatch();
@@ -183,28 +187,32 @@ export default function Index({ backAction, editObject }) {
                           sx={{
                             display: 'flex',
                             alignItems: 'center !important',
+                            // py: 0.5,
                           }}
                         >
                           <CustomAvatar
-                            width={32}
-                            height={32}
-                            displayName="AC"
+                            width={45}
+                            height={45}
                             icon={option?.Icon || ''}
+                            iconSize={15}
                             bgColor={option?.Color || ''}
                           />
                           <Typography variant="normal" sx={{ mx: 2 }}>
                             {option?.AccountName || ''}
                           </Typography>
                         </Box>
-                        <span>{option?.CurrentAmount}</span>
+                        <Typography variant="light" sx={{}}>
+                          {formatToINR(option?.CurrentAmount)}{' '}
+                        </Typography>
                       </Box>
                     );
                   }}
                   startUnitType={
                     values?.AccountId ? (
                       <CustomAvatar
-                        width={32}
-                        height={32}
+                        width={45}
+                        height={45}
+                        iconSize={15}
                         icon={
                           accountList?.find((item) => item?.AccountId === props.values.AccountId)
                             ?.Icon || ''
@@ -218,10 +226,10 @@ export default function Index({ backAction, editObject }) {
                       ''
                     )
                   }
-                  unitType={`₹ ${
+                  unitType={formatToINR(
                     accountList?.find((item) => item?.AccountId === props.values.AccountId)
-                      ?.CurrentAmount || '0.00'
-                  }`}
+                      ?.CurrentAmount || '0'
+                  )}
                 />
               </Grid>
 
@@ -254,28 +262,38 @@ export default function Index({ backAction, editObject }) {
                             key={key}
                             {...optionProps}
                             sx={{
-                              p: 2,
                               display: 'flex',
+                              justifyContent: 'space-between !important',
                               alignItems: 'center !important',
                             }}
                           >
-                            <CustomAvatar
-                              width={32}
-                              height={32}
-                              icon={option?.Icon || ''}
-                              bgColor={option?.Color || ''}
-                            />
-                            <Typography variant="normal" sx={{ mx: 2 }}>
-                              {option?.CategoryName || ''}
-                            </Typography>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center !important',
+                                // py: 0.5,
+                              }}
+                            >
+                              <CustomAvatar
+                                width={45}
+                                height={45}
+                                icon={option?.Icon || ''}
+                                iconSize={15}
+                                bgColor={option?.Color || ''}
+                              />
+                              <Typography variant="normal" sx={{ mx: 2 }}>
+                                {option?.CategoryName || ''}
+                              </Typography>
+                            </Box>
                           </Box>
                         );
                       }}
                       startUnitType={
                         values?.CategoryId ? (
                           <CustomAvatar
-                            width={32}
-                            height={32}
+                            width={45}
+                            height={45}
+                            iconSize={15}
                             icon={
                               categoriesList?.find((item) => item.CategoryId === values.CategoryId)
                                 ?.Icon || ''
@@ -289,6 +307,9 @@ export default function Index({ backAction, editObject }) {
                           ''
                         )
                       }
+                      callBackAction={(event) => {
+                        setFieldValue('SubCategoryId', null);
+                      }}
                     />
                   </Grid>
 
@@ -311,39 +332,59 @@ export default function Index({ backAction, editObject }) {
                             {...optionProps}
                             sx={{
                               display: 'flex',
-                              // justifyContent: 'space-between !important',
+                              justifyContent: 'space-between !important',
                               alignItems: 'center !important',
                             }}
                           >
-                            <CustomAvatar
-                              width={32}
-                              height={32}
-                              icon={option?.Icon || ''}
-                              bgColor={
-                                categoriesList?.find(
-                                  (item) => item.CategoryId === values.CategoryId
-                                )?.Color || ''
-                              }
-                            />
-                            <Typography variant="normal" sx={{ mx: 2 }}>
-                              {option?.SubCategoriesName || ''}
-                            </Typography>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center !important',
+                                // py: 0.5,
+                              }}
+                            >
+                              <CustomAvatar
+                                width={45}
+                                height={45}
+                                icon={option?.Icon || ''}
+                                iconSize={15}
+                                bgColor={
+                                  categoriesList?.find(
+                                    (item) => item.CategoryId === values.CategoryId
+                                  )?.Color || ''
+                                }
+                              />
+                              <Typography variant="normal" sx={{ mx: 2 }}>
+                                {option?.SubCategoriesName || ''}
+                              </Typography>
+                            </Box>
                           </Box>
                         );
                       }}
                       startUnitType={
-                        values?.SubCategoryId ? (
-                          <CustomAvatar
-                            width={32}
-                            height={32}
-                            bgColor={
-                              categoriesList?.find((item) => item.CategoryId === values.CategoryId)
-                                ?.Color || ''
-                            }
-                          />
-                        ) : (
-                          ''
-                        )
+                        values?.SubCategoryId
+                          ? (() => {
+                              const selectedSubCategory = categoriesList
+                                ?.find((item) => item.CategoryId === values.CategoryId)
+                                ?.SubCategories?.find(
+                                  (sub) => sub.SubCategoryId === values.SubCategoryId
+                                );
+
+                              return (
+                                <CustomAvatar
+                                  width={45}
+                                  height={45}
+                                  iconSize={15}
+                                  bgColor={
+                                    categoriesList?.find(
+                                      (item) => item.CategoryId === values.CategoryId
+                                    )?.Color || ''
+                                  }
+                                  icon={selectedSubCategory?.Icon || ''}
+                                />
+                              );
+                            })()
+                          : ''
                       }
                     />
                   </Grid>
@@ -355,7 +396,7 @@ export default function Index({ backAction, editObject }) {
                     formik={props}
                     label="To"
                     field="TransferToAccountId"
-                    menuList={accountList}
+                    menuList={accountList?.filter((item) => item?.AccountId !== values?.AccountId)}
                     valueKey="AccountId"
                     labelKey="AccountName"
                     renderOption={(vars, option) => {
@@ -370,19 +411,61 @@ export default function Index({ backAction, editObject }) {
                             alignItems: 'center !important',
                           }}
                         >
-                          <span>{option?.AccountName}</span>
-                          <span>{option?.CurrentAmount}</span>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center !important',
+                              // py: 0.5,
+                            }}
+                          >
+                            <CustomAvatar
+                              width={45}
+                              height={45}
+                              icon={option?.Icon || ''}
+                              iconSize={15}
+                              bgColor={option?.Color || ''}
+                            />
+                            <Typography variant="normal" sx={{ mx: 2 }}>
+                              {option?.AccountName || ''}
+                            </Typography>
+                          </Box>
+                          <Typography variant="light" sx={{}}>
+                            {formatToINR(option?.CurrentAmount)}{' '}
+                          </Typography>
                         </Box>
                       );
                     }}
-                    unitType={`₹ ${
-                      accountList?.find((item) => item?.AccountId === props.values.AccountId)
-                        ?.CurrentAmount || '0.00'
-                    }`}
+                    startUnitType={
+                      values?.TransferToAccountId ? (
+                        <CustomAvatar
+                          width={45}
+                          height={45}
+                          iconSize={15}
+                          icon={
+                            accountList?.find(
+                              (item) => item?.AccountId === props.values.TransferToAccountId
+                            )?.Icon || ''
+                          }
+                          bgColor={
+                            accountList?.find(
+                              (item) => item?.AccountId === props.values.TransferToAccountId
+                            )?.Color || ''
+                          }
+                        />
+                      ) : (
+                        ''
+                      )
+                    }
+                    unitType={formatToINR(
+                      accountList?.find(
+                        (item) => item?.AccountId === props.values.TransferToAccountId
+                      )?.CurrentAmount || '0'
+                    )}
                   />
                 </Grid>
               )}
 
+              {console.log(partyList)}
               {(values?.Action === 'Credit' || values?.Action === 'Debit') && (
                 <Grid item xs={12} md={6}>
                   <AutoCompleteSelectMenu
@@ -404,15 +487,54 @@ export default function Index({ backAction, editObject }) {
                             alignItems: 'center !important',
                           }}
                         >
-                          <span>{option?.FullName}</span>
-                          <span>{option?.CurrentAmount}</span>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center !important',
+                              // py: 0.5,
+                            }}
+                          >
+                            <CustomAvatar
+                              photoURL={option?.ImgPath || ''}
+                              displayName={option?.PartyAvatar || ''}
+                              width={45}
+                              height={45}
+                              icon={option?.Icon || ''}
+                              bgColor={option?.Color || ''}
+                            />
+                            <Typography variant="normal" sx={{ mx: 2 }}>
+                              {option?.FullName || ''}
+                            </Typography>
+                          </Box>
+                          <Typography variant="light" sx={{}}>
+                            {formatToINR(option?.CurrentAmount)}{' '}
+                          </Typography>
                         </Box>
                       );
                     }}
-                    unitType={`₹ ${
+                    startUnitType={
+                      values?.PartyId ? (
+                        <CustomAvatar
+                          width={45}
+                          height={45}
+                          iconSize={15}
+                          photoURL={
+                            partyList?.find((item) => item?.PartyId === props.values.PartyId)
+                              ?.ImgPath || ''
+                          }
+                          displayName={
+                            partyList?.find((item) => item?.PartyId === props.values.PartyId)
+                              ?.PartyAvatar || ''
+                          }
+                        />
+                      ) : (
+                        ''
+                      )
+                    }
+                    unitType={formatToINR(
                       partyList?.find((item) => item?.PartyId === props.values.PartyId)
-                        ?.CurrentAmount || '0.00'
-                    }`}
+                        ?.CurrentAmount || '0'
+                    )}
                   />
                 </Grid>
               )}

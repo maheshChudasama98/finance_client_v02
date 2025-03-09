@@ -69,8 +69,8 @@ const ProjectItem = ({ item, editAction, deleteAction, }) => {
                             <CustomAvatar
 
                                 displayName={item?.User_Avatar}
-                                width={{ xs: 60, md: 55, lg: 66 }} // Optional width
-                                height={{ xs: 60, md: 55, lg: 66 }} />
+                                width={45} height={45} iconSize={15}
+                              />
 
                             <Typography variant="big">
                                 {fText(`${item?.User_FirstName} ${item?.User_LastName}`)}

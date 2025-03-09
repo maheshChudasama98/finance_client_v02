@@ -207,9 +207,7 @@ export default function TransactionsPopover() {
                               alignItems: 'center !important',
                             }}>
                               <CustomAvatar
-                                width={32}
-                                height={32}
-                                displayName="AC"
+                                width={45} height={45} iconSize={15}
                                 icon={option?.Icon || ""}
                                 bgColor={option?.Color || ""}
 
@@ -225,8 +223,7 @@ export default function TransactionsPopover() {
                       startUnitType={
                         values?.AccountId ?
                           <CustomAvatar
-                            width={32}
-                            height={32}
+                          width={45} height={45} iconSize={15}
                             icon={accountList?.find(item => item?.AccountId === props.values.AccountId)?.Icon || ""}
                             bgColor={accountList?.find(item => item?.AccountId === props.values.AccountId)?.Color || ""}
                           /> :
@@ -272,8 +269,7 @@ export default function TransactionsPopover() {
                                 }}
                               >
                                 <CustomAvatar
-                                  width={32}
-                                  height={32}
+                                 width={45} height={45} iconSize={15}
                                   icon={option?.Icon || ""}
                                   bgColor={option?.Color || ""}
                                 />
@@ -287,8 +283,7 @@ export default function TransactionsPopover() {
                           startUnitType={
                             values?.CategoryId ?
                               <CustomAvatar
-                                width={32}
-                                height={32}
+                                width={45} height={45} iconSize={15}
                                 icon={categoriesList?.find(item => item.CategoryId === values.CategoryId)?.Icon || ""}
                                 bgColor={categoriesList?.find(item => item.CategoryId === values.CategoryId)?.Color || ""}
                               /> :
@@ -319,8 +314,7 @@ export default function TransactionsPopover() {
                               >
 
                                 <CustomAvatar
-                                  width={32}
-                                  height={32}
+                                  width={45} height={45} iconSize={15}
                                   icon={option?.Icon || ""}
                                   bgColor={categoriesList?.find(item => item.CategoryId === values.CategoryId)?.Color || ""}
                                 />
@@ -334,8 +328,7 @@ export default function TransactionsPopover() {
                           startUnitType={
                             values?.SubCategoryId ?
                               <CustomAvatar
-                                width={32}
-                                height={32}
+                                width={45} height={45} iconSize={15}
                                 bgColor={categoriesList?.find(item => item.CategoryId === values.CategoryId)?.Color || ""}
                               /> :
                               ""
