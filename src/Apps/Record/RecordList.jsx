@@ -102,6 +102,19 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
     }
   };
 
+  const iconSet = (action, icon) => {
+    if (action === 'From') {
+      return 'fa-solid fa-right-left';
+    }
+    if (action === 'Investment') {
+      return 'fa-solid fa-arrow-up-right-dots';
+    }
+    if (action === 'Debit' || action === 'Credit') {
+      return 'fa-solid fa-people-arrows';
+    }
+    return icon;
+  };
+
   return (
     <>
       <Box
@@ -154,9 +167,10 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 <Grid xs={2.5}>
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <CustomAvatar
-                      width={45} height={45} iconSize={15}
-                      displayName="AS"
-                      icon={record?.SubCategoryDetails?.Icon}
+                      width={45}
+                      height={45}
+                      iconSize={15}
+                      icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                       bgColor={record?.CategoryDetails?.Color}
                     />
                     <Typography variant="normal">
@@ -200,7 +214,10 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                       sx={{
                         ...styes,
                         color: record?.TransferDetails?.Color || '#1b925e',
-                        backgroundColor: lightenColor('#00A76F', 0.92),
+                        backgroundColor: lightenColor(
+                          record?.TransferDetails?.Color || '#00A76F',
+                          0.92
+                        ),
                       }}
                       label={record?.TransferDetails?.AccountName}
                     />
@@ -210,10 +227,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 <Grid xs={1.5}>
                   {record?.PartyDetails?.FullName && (
                     <Stack direction="row" alignItems="center" spacing={2}>
-                      <CustomAvatar
-                       width={45} height={45} iconSize={15}
-                        displayName="AS"
-                      />
+                      <CustomAvatar width={45} height={45} iconSize={15} displayName="AS" />
                       <Typography variant="light">
                         {fText(`${record?.PartyDetails?.FullName}`)}
                       </Typography>
@@ -276,21 +290,23 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 borderBottom: isHeader ? '' : (theme) => `solid 1px ${theme?.palette?.grey?.[200]}`,
                 backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
               }}
+              onClick={() => editAction(record)}
             >
               <Grid container spacing={2} sx={{ alignItems: 'center' }}>
                 <Grid xs={6}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <CustomAvatar
-                     width={45} height={45} 
-                      icon={record?.SubCategoryDetails?.Icon}
+                      width={45}
+                      height={45}
                       iconSize={15}
+                      icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                       bgColor={record?.CategoryDetails?.Color}
                     />
 
                     <Typography variant="normal">
                       {fText(`${record?.SubCategoryDetails?.SubCategoriesName}`)}
                       <Typography variant="light" color="text.secondary">
-                        {fText(`${record?.AccountDetails?.AccountName}`)}
+                        {record?.AccountDetails?.AccountName}
                       </Typography>
                     </Typography>
                   </Stack>

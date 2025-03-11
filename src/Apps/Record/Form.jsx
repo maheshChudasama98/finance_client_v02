@@ -7,6 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 import { formatToINR } from 'src/utils/format-number';
+import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { TransactionActions } from 'src/constance';
 import {
@@ -16,7 +17,12 @@ import {
 
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
 import { CustomAvatar } from 'src/components/CustomComponents';
-import { TextFieldForm, DatePickerCustom, AutoCompleteSelectMenu } from 'src/components/inputs';
+import {
+  TextFieldForm,
+  DatePickerCustom,
+  AutoCompleteSelectMenu,
+  AutoCompleteSelectMultiple,
+} from 'src/components/inputs';
 
 import { Form, Formik } from 'formik';
 
@@ -24,7 +30,7 @@ import * as Yup from 'yup';
 
 import dayjs from 'dayjs';
 
-export default function Index({ backAction, editObject }) {
+export default function Index({ backAction, editObject, deleteAction }) {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
@@ -45,20 +51,21 @@ export default function Index({ backAction, editObject }) {
     );
   }, [show]);
 
+
   return (
     <Formik
       enableReinitialize
       initialValues={{
-        Action: editObject?.Action || 'Out',
+        Action: editObject?.Action === 'From' ? 'Transfer' : editObject?.Action || 'Out',
         Date: editObject?.Date ? dayjs(editObject?.Date) : null,
         Amount: editObject?.Amount || null,
         AccountId: editObject?.AccountId || null,
         CategoryId: editObject?.CategoryId || null,
         SubCategoryId: editObject?.SubCategoryId || null,
         TransferToAccountId: editObject?.TransferToAccountId || null,
-        PartyId: editObject?.ParentTransactionId || null,
+        PartyId: editObject?.PartyId || null,
         Description: editObject?.Description || null,
-        Tags: editObject?.Tags || null,
+        Tags: editObject?.Tags ? editObject.Tags.split(',').map(Number) : [] || null,
       }}
       validationSchema={Yup.object().shape({
         Action: Yup.string().required('Action is required.'),
@@ -144,7 +151,6 @@ export default function Index({ backAction, editObject }) {
 
               <Grid item xs={12} md={6}>
                 <DatePickerCustom
-                  required={false}
                   formik={props}
                   label="Date"
                   field="Date"
@@ -236,7 +242,7 @@ export default function Index({ backAction, editObject }) {
               {(values?.Action === 'In' || values?.Action === 'Out') && (
                 <>
                   <Grid item xs={12} md={6}>
-                    <AutoCompleteSelectMenu
+                    <AutoCompleteSelectMultiple
                       required={false}
                       formik={props}
                       label="Labels"
@@ -465,7 +471,6 @@ export default function Index({ backAction, editObject }) {
                 </Grid>
               )}
 
-              {console.log(partyList)}
               {(values?.Action === 'Credit' || values?.Action === 'Debit') && (
                 <Grid item xs={12} md={6}>
                   <AutoCompleteSelectMenu
@@ -553,10 +558,31 @@ export default function Index({ backAction, editObject }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
+                  {editObject?.TransactionId && (
+                    <Button
+                      color="error"
+                      variant="contained"
+                      sx={{ marginX: 1 }}
+                      onClick={() => {
+                        sweetAlertQuestion()
+                          .then((result) => {
+                            if (result === 'Yes') {
+                              deleteAction(editObject);
+                            }
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                          });
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
+
                   {dirty && (
                     <Button
                       variant="outlined"
-                      sx={{ marginX: 1 }}
+                      sx={{ marginRight: 1 }}
                       onClick={() => {
                         resetForm();
                       }}

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import AddIcon from '@mui/icons-material/Add';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -19,8 +18,7 @@ import { LabelActionService, LabelsFetchListService } from 'src/Services/Meter.S
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { CustomTable, CustomSearchInput } from 'src/components/CustomComponents';
+import { CustomTable, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
 import { Dropdown } from 'antd';
 
@@ -102,24 +100,27 @@ export default function Index() {
     Index: <Typography variant="normal">{index + 1 || ''}</Typography>,
     Label: <Typography variant="normal">{item?.LabelName || ''}</Typography>,
     Color: <Typography variant="normal">{item?.StartAmount || '-'}</Typography>,
-    Used:
-      loadingSwitch[item?.LabelId] && loadingSwitch?.action === 'isUsing' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          checked={item?.isUsing}
-          onClick={() => StatusChange('isUsing', !item?.isUsing, item?.LabelId)}
-        />
-      ),
-    Active:
-      loadingSwitch[item?.LabelId] && loadingSwitch?.action === 'isActive' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          checked={item?.isActive}
-          onClick={() => StatusChange('isActive', !item?.isActive, item?.LabelId)}
-        />
-      ),
+    Used: (
+      <CustomCheckbox
+        checked={item?.isUsing}
+        loading={loadingSwitch[item?.LabelId] && loadingSwitch?.action === 'isUsing'}
+        onClick={(e) => {
+          StatusChange('isUsing', !item?.isUsing, item?.LabelId);
+          e.stopPropagation();
+        }}
+      />
+    ),
+    Active: (
+      <CustomCheckbox
+        checked={item?.isActive}
+        loading={loadingSwitch[item?.LabelId] && loadingSwitch?.action === 'isActive'}
+        onClick={(e) => {
+          StatusChange('isActive', !item?.isActive, item?.LabelId);
+          e.stopPropagation();
+        }}
+      />
+    ),
+
     Action: (
       <Dropdown
         trigger={['click']}
