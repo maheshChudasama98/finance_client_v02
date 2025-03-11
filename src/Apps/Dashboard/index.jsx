@@ -26,7 +26,7 @@ export default function Index() {
     const [lastYearBaseData, setLastYearBaseData] = useState({});
     const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
 
-    const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState("WEEK");
+    const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState("Daily");
     const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
 
     const [cashFlowData, setCashFlowData] = useState([]);

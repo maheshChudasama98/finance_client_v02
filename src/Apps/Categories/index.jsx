@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import AddIcon from '@mui/icons-material/Add';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -25,8 +24,12 @@ import {
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { CustomTable, CustomAvatar, CustomSearchInput } from 'src/components/CustomComponents';
+import {
+  CustomTable,
+  CustomAvatar,
+  CustomCheckbox,
+  CustomSearchInput,
+} from 'src/components/CustomComponents';
 
 import { Dropdown } from 'antd';
 
@@ -153,26 +156,31 @@ export default function Index() {
     StartAmount: <Typography variant="normal">{item?.StartAmount || '-'}</Typography>,
     CurrentAmount: <Typography variant="normal">{item?.CurrentAmount || '-'}</Typography>,
     MinAmount: <Typography variant="normal">{item?.MinAmount || '-'}</Typography>,
-    Used:
-      loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isUsing' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          sx={{ pointerEvents: 'auto' }}
-          checked={item?.isUsing}
-          onClick={() => StatusChange('isUsing', !item?.isUsing, item?.CategoryId)}
-        />
-      ),
-    Active:
-      loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isActive' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          sx={{ pointerEvents: 'auto' }}
-          checked={item?.isActive}
-          onClick={() => StatusChange('isActive', !item?.isActive, item?.CategoryId)}
-        />
-      ),
+    Used: (
+      <CustomCheckbox
+        checked={item?.isUsing}
+        loading={
+          loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isUsing' 
+        }
+        onClick={(e) => {
+          StatusChange('isUsing', !item?.isUsing, item?.CategoryId);
+          e.stopPropagation();
+        }}
+      />
+    ),
+    Active: (
+      <CustomCheckbox
+        checked={item?.isActive}
+        loading={
+          loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isActive'
+        }
+        onClick={(e) => {
+          StatusChange('isActive', !item?.isActive, item?.CategoryId);
+          e.stopPropagation();
+        }}
+      />
+    ),
+
     Action: (
       <Dropdown
         trigger={['click']}
@@ -279,32 +287,32 @@ export default function Index() {
                       {fDate(subItem?.createdAt)}
                     </Typography>
                   ),
-                  Used:
-                    subLoadingSwitch[subItem?.SubCategoryId] &&
-                    subLoadingSwitch?.action === 'isUsing' ? (
-                      <ButtonLoader />
-                    ) : (
-                      <Switch
-                        sx={{ pointerEvents: 'auto' }}
-                        checked={subItem?.isUsing}
-                        onClick={() =>
-                          SubStatusChange('isUsing', !subItem?.isUsing, subItem?.SubCategoryId)
-                        }
-                      />
-                    ),
-                  Active:
-                    subLoadingSwitch[subItem?.SubCategoryId] &&
-                    subLoadingSwitch?.action === 'isActive' ? (
-                      <ButtonLoader />
-                    ) : (
-                      <Switch
-                        sx={{ pointerEvents: 'auto' }}
-                        checked={subItem?.isActive}
-                        onClick={() =>
-                          SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId)
-                        }
-                      />
-                    ),
+                  Used: (
+                    <CustomCheckbox
+                      checked={subItem?.isUsing}
+                      loading={
+                        subLoadingSwitch[subItem?.SubCategoryId] &&
+                        subLoadingSwitch?.action === 'isUsing'
+                      }
+                      onClick={(e) => {
+                        SubStatusChange('isUsing', !subItem?.isUsing, subItem?.SubCategoryId);
+                        e.stopPropagation();
+                      }}
+                    />
+                  ),
+                  Active: (
+                    <CustomCheckbox
+                      checked={subItem?.isActive}
+                      loading={
+                        subLoadingSwitch[subItem?.SubCategoryId] &&
+                        subLoadingSwitch?.action === 'isActive'
+                      }
+                      onClick={(e) => {
+                        SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
+                        e.stopPropagation();
+                      }}
+                    />
+                  ),
                   Action: (
                     <Dropdown
                       trigger={['click']}

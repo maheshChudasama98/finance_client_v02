@@ -29,8 +29,11 @@ export const TOKEN_NOT_PROVIDED_CODE = 402;
 
 export const AccountTypes = [
     { key: 1, value: "Cash" },
-    { key: 2, value: "Saving" },
-    { key: 3, value: "Fund" }
+    { key: 2, value: "Saving Account" },
+    { key: 3, value: "Investments" },
+    { key: 4, value: "Fixed Fund" },
+    { key: 5, value: "Credit Cards" },
+    { key: 6, value: "Emergency Fund" },
 ];
 
 export const TransactionActions = [

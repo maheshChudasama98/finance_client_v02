@@ -44,6 +44,7 @@ export default function Index({ backAction, editObject }) {
                 PartyLastName: editObject?.PartyLastName || "",
                 StartAmount: editObject?.StartAmount || "",
                 MinAmount: editObject?.MinAmount || "",
+                MaxAmount: editObject?.MaxAmount || "",
                 Phone: editObject?.Phone || "",
                 Email: editObject?.Email || "",
                 City: editObject?.City || "",
@@ -57,6 +58,7 @@ export default function Index({ backAction, editObject }) {
                     PartyLastName: Yup.string().trim().required("Last name is required."),
                     StartAmount: Yup.number().nullable(),
                     MinAmount: Yup.number().nullable(),
+                    MaxAmount: Yup.number().nullable(),
                     Phone: Yup.string().length(10, "Must be exactly 10 digits.").matches(/^[0-9]+$/, "Must be a valid number.").nullable(),
                     Email: Yup.string().matches(EMAIL_REGEX, "Email validation.").nullable(),
                     City: Yup.string().trim().nullable(),
@@ -117,13 +119,23 @@ export default function Index({ backAction, editObject }) {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={3}>
                                 <TextFieldForm
                                     required={false}
                                     type="number"
                                     formik={props}
-                                    label='Amount limit'
+                                    label='Min Amount'
                                     field='MinAmount'
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={3}>
+                                <TextFieldForm
+                                    required={false}
+                                    type="number"
+                                    formik={props}
+                                    label='Max Amount'
+                                    field='MaxAmount'
                                 />
                             </Grid>
 

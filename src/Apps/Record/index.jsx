@@ -1,13 +1,17 @@
 import { useDispatch } from 'react-redux';
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Badge from '@mui/material/Badge';
+import Popper from '@mui/material/Popper';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import CardHeader from '@mui/material/CardHeader';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
+import { shadows } from 'src/theme/shadows';
 import {
   TransactionFetchListService,
   TransactionRemoveController,
@@ -19,23 +23,18 @@ import { CustomSearchInput } from 'src/components/CustomComponents';
 
 import Form from './Form';
 import RecordList from './RecordList';
+import FilterComponent from './FilterComponent';
 
 export default function Index() {
-  const filterValue = 'All';
   const dispatch = useDispatch();
 
-  const apiFlag = false;
-  
   const [displayFlag, setDisplayFlag] = useState(false);
   const [loadingLoader, setLoadingLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [transactionList, setTransactionList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [arrayObject, setArrayObject] = useState([]);
-
-  const handleSearchKey = (e) => {
-    setSearchValue(e.target.value);
-  };
+  const [FilterBy, setFilterBy] = useState({});
 
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
@@ -46,6 +45,7 @@ export default function Index() {
     if (!displayFlag) {
       const payLoad = {
         SearchKey: searchValue,
+        FilterBy,
       };
       setLoadingLoader(true);
       dispatch(
@@ -57,23 +57,22 @@ export default function Index() {
         })
       );
     }
-  }, [displayFlag, filterValue]);
+  }, [displayFlag, FilterBy]);
 
   useEffect(() => {
-    if (!displayFlag) {
-      const payLoad = {
-        SearchKey: searchValue,
-      };
-      dispatch(
-        TransactionFetchListService(payLoad, (res) => {
-          if (res?.status) {
-            setTransactionList(res?.data?.list);
-            // setLoadingSwitch({});
-          }
-        })
-      );
-    }
-  }, [searchValue, apiFlag]);
+    const payLoad = {
+      SearchKey: searchValue,
+      FilterBy,
+    };
+    dispatch(
+      TransactionFetchListService(payLoad, (res) => {
+        if (res?.status) {
+          setTransactionList(res?.data?.list);
+          // setLoadingSwitch({});
+        }
+      })
+    );
+  }, [searchValue]);
 
   const titleAction = (display) => {
     if (display) {
@@ -116,6 +115,7 @@ export default function Index() {
           const payLoad = {
             SearchKey: searchValue,
           };
+          setDisplayFlag(false);
           setLoadingLoader(true);
           dispatch(
             TransactionFetchListService(payLoad, (resp) => {
@@ -134,6 +134,27 @@ export default function Index() {
     setEditObject(record);
     setDisplayFlag(true);
   };
+
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+
+  const handleToggle = () => {
+    setOpen((prev) => !prev);
+  };
+
+  const handleClickAway = () => {
+    setOpen(false);
+  };
+
+  const hasValue = (value) => {
+    if (value === null || value === undefined) return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'string') return value.trim() !== '';
+    if (typeof value === 'object') return Object.keys(value).length > 0;
+    return true; // For numbers, booleans, etc.
+  };
+
+  const count = Object.values(FilterBy).filter(hasValue).length;
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
@@ -155,7 +176,11 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form
+            backAction={showDisplayAction}
+            editObject={editObject}
+            deleteAction={deleteAction}
+          />
         ) : (
           <Box
             sx={{
@@ -170,8 +195,40 @@ export default function Index() {
                 justifyContent: 'space-between',
               }}
             >
+              <CustomSearchInput callBack={setSearchValue} />
               <Box />
-              <CustomSearchInput callBack={handleSearchKey} />
+              <Badge badgeContent={count > 0 ? count : null} color="error">
+                <Button
+                  ref={anchorRef}
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                  onClick={handleToggle}
+                  startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+                >
+                  Filter
+                </Button>
+              </Badge>
+              <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
+                <ClickAwayListener onClickAway={handleClickAway}>
+                  <Box
+                    sx={{
+                      width: 800,
+                      borderRadius: 2,
+                      boxShadow: shadows()[10],
+                      backgroundColor: (theme) => theme?.palette?.success?.contrastText,
+                    }}
+                  >
+                    <FilterComponent
+                      defaultValue={FilterBy}
+                      backAction={(e) => {
+                        setFilterBy(e);
+                        handleClickAway();
+                      }}
+                    />
+                  </Box>
+                </ClickAwayListener>
+              </Popper>{' '}
             </Box>
 
             {loadingLoader ? (

@@ -5,16 +5,18 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
 import AddIcon from '@mui/icons-material/Add';
+import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { fDate } from 'src/utils/format-time';
+import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { PartyActionService, PartiesFetchListService } from 'src/Services/Meter.Services';
@@ -22,8 +24,12 @@ import { PartyActionService, PartiesFetchListService } from 'src/Services/Meter.
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { CustomTable, CustomAvatar, CustomSearchInput } from 'src/components/CustomComponents';
+import {
+  CustomTable,
+  CustomAvatar,
+  CustomSearchInput,
+  CustomCheckbox,
+} from 'src/components/CustomComponents';
 
 import { Dropdown } from 'antd';
 
@@ -94,11 +100,22 @@ export default function Index() {
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
     { Header: 'Party name', keyLabel: 'FullName', xs: 3 },
-    { Header: 'Start Amount', keyLabel: 'StartAmount', xs: 2 },
-    { Header: 'Current Amount', keyLabel: 'CurrentAmount', xs: 2 },
-    { Header: 'Min Amount', keyLabel: 'MinAmount', xs: 2 },
-    { Header: 'Used', keyLabel: 'Used', xs: 1 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
+    {
+      Header: 'Start Amount',
+      keyLabel: 'StartAmount',
+      xs: 2,
+      className: 'custom-text-align-end',
+    },
+    {
+      Header: 'Current Amount',
+      keyLabel: 'CurrentAmount',
+      xs: 2,
+      className: 'custom-text-align-end',
+    },
+    { Header: 'Min Amount', keyLabel: 'MinAmount', xs: 1.5, className: 'custom-text-align-end' },
+    { Header: 'Max Amount', keyLabel: 'MaxAmount', xs: 1.5, className: 'custom-text-align-end' },
+    { Header: 'Used', keyLabel: 'Used', xs: 0.5 },
+    { Header: 'Active', keyLabel: 'Active', xs: 0.5 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
   ];
 
@@ -107,7 +124,7 @@ export default function Index() {
 
     FullName: (
       <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar displayName={item?.PartyAvatar}  width={45} height={45} iconSize={15}/>
+        <CustomAvatar displayName={item?.PartyAvatar} width={45} height={45} iconSize={15} />
         <Typography variant="normal">
           {item?.FullName}
           <Typography
@@ -124,38 +141,70 @@ export default function Index() {
         </Typography>
       </Stack>
     ),
-    AccountType: <Typography variant="normal">Cash</Typography>,
-    StartAmount: <Typography variant="normal">{item?.StartAmount || '-'}</Typography>,
 
-    CurrentAmount: <Typography variant="normal">{item?.CurrentAmount || '-'}</Typography>,
+    StartAmount: (
+      <Typography variant="normal" className="custom-text-align-end">
+        {formatToINR(item?.StartAmount) || '-'}
+      </Typography>
+    ),
+    CurrentAmount: (
+      <Typography variant="normal" className="custom-text-align-end">
+        {formatToINR(item?.CurrentAmount) || '-'}
+      </Typography>
+    ),
 
-    MinAmount: <Typography variant="normal">{item?.MinAmount || '-'}</Typography>,
-    Used:
-      loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isUsing' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          sx={{ pointerEvents: 'auto' }}
+    MinAmount: (
+      <Typography variant="normal" className="custom-text-align-end">
+        {formatToINR(item?.MinAmount) || '-'}
+      </Typography>
+    ),
+    MaxAmount: (
+      <Typography variant="normal" className="custom-text-align-end">
+        {formatToINR(item?.MaxAmount) || '-'}
+      </Typography>
+    ),
+    Used: (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%', // optional, if you need to control the vertical space
+        }}
+      >
+        <CustomCheckbox
+          loading={
+            loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isUsing' 
+          }
           checked={item?.isUsing}
           onClick={(e) => {
             StatusChange('isUsing', !item?.isUsing, item?.PartyId);
             e.stopPropagation();
           }}
         />
-      ),
-    Active:
-      loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive' ? (
-        <ButtonLoader />
-      ) : (
-        <Switch
-          sx={{ pointerEvents: 'auto' }}
+      </Box>
+    ),
+    Active: (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        <CustomCheckbox
+          loading={
+            loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive'
+          }
           checked={item?.isActive}
           onClick={(e) => {
             StatusChange('isActive', !item?.isActive, item?.PartyId);
             e.stopPropagation();
           }}
         />
-      ),
+      </Box>
+    ),
     Action: (
       <Dropdown
         trigger={['click']}
@@ -300,7 +349,7 @@ export default function Index() {
               <CustomSearchInput
                 loading={loadingSearchLoader}
                 searchValue={searchValue}
-                callBack={setSearchValue}                
+                callBack={setSearchValue}
               />
             </Box>
 
