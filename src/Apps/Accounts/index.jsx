@@ -97,7 +97,7 @@ export default function Index() {
 
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Account Name', keyLabel: 'AccountName', xs: 2.5 },
+    { Header: 'Account Name', keyLabel: 'AccountName', xs: 2 },
     { Header: 'Account Type', keyLabel: 'AccountType', xs: 1.5 },
     {
       Header: 'Start Amount',
@@ -113,13 +113,13 @@ export default function Index() {
     },
     { Header: 'Min Amount', keyLabel: 'MinAmount', xs: 1.5, className: 'custom-text-align-end' },
     { Header: 'Max Amount', keyLabel: 'MaxAmount', xs: 1.5, className: 'custom-text-align-end' },
-    { Header: 'Used', keyLabel: 'Used', xs: 0.5 },
-    { Header: 'Active', keyLabel: 'Active', xs: 0.5 },
+    { Header: 'Used', keyLabel: 'Used', xs: 0.8 },
+    { Header: 'Active', keyLabel: 'Active', xs: 0.7 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
-    Index: <Typography variant="normal">{index + 1 || ''}</Typography>,
+    Index: <Typography variant="light">{index + 1 || ''}</Typography>,
 
     AccountName: (
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -131,7 +131,7 @@ export default function Index() {
           icon={item?.Icon || ''}
           bgColor={item?.Color || ''}
         />
-        <Typography variant="normal">
+        <Typography variant="light">
           {item?.AccountName}
           <Typography
             variant="light"
@@ -148,41 +148,41 @@ export default function Index() {
       </Stack>
     ),
     AccountType: (
-      <Typography variant="normal" className="custom-truncateRight">
+      <Typography variant="light" className="custom-truncateRight">
         {item?.TypeId ? AccountTypes?.find((e) => e?.key === item?.TypeId)?.value : ''}
       </Typography>
     ),
     StartAmount: (
-      <Typography variant="normal" className="custom-text-align-end custom-truncateRight">
+      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
         {formatToINR(item?.StartAmount) || '-'}
       </Typography>
     ),
 
     CurrentAmount: (
-      <Typography variant="normal" className="custom-text-align-end custom-truncateRight">
+      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
         {formatToINR(item?.CurrentAmount) || '-'}
       </Typography>
     ),
 
     MinAmount: (
-      <Typography variant="normal" className="custom-text-align-end custom-truncateRight">
+      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
         {formatToINR(item?.MinAmount) || '-'}
       </Typography>
     ),
     MaxAmount: (
-      <Typography variant="normal" className="custom-text-align-end custom-truncateRight ">
+      <Typography variant="light" className="custom-text-align-end custom-truncateRight ">
         {formatToINR(item?.MaxAmount) || '-'}
       </Typography>
     ),
 
     Used: (
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-        }}
+        // sx={{
+        //   display: 'flex',
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
+        //   height: '100%',
+        // }}
       >
         <CustomCheckbox
           loading={loadingSwitch[item?.AccountId] && loadingSwitch?.action === 'isUsing'}
@@ -196,12 +196,12 @@ export default function Index() {
     ),
     Active: (
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-        }}
+        // sx={{
+        //   display: 'flex',
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
+        //   height: '100%',
+        // }}
       >
         <CustomCheckbox
           loading={loadingSwitch[item?.AccountId] && loadingSwitch?.action === 'isActive'}
@@ -221,7 +221,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant="light"
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -240,7 +240,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant="light"
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()

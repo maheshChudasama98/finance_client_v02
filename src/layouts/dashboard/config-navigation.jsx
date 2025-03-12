@@ -49,6 +49,37 @@ const navConfig = [
     mobile: false,
     role: [JuniorEngineerID, SuperAdminID]
   },
+  {
+    title: 'Org',
+    path: '/orgs',
+    icon: icon('inbox-line-svgrepo-com'),
+    mobile: false,
+    role: [JuniorEngineerID, SuperAdminID]
+  },
+  {
+    title: 'Branches',
+    path: '/branches',
+    icon: icon('inbox-line-svgrepo-com'),
+    mobile: false,
+    role: [JuniorEngineerID, SuperAdminID]
+  },
+  {
+    title: 'Modules',
+    path: '/modules',
+    icon: icon('inbox-line-svgrepo-com'),
+    mobile: false,
+    role: [JuniorEngineerID, SuperAdminID]
+  },
+  {
+    title: 'Roles',
+    path: '/roles',
+    icon: icon('inbox-line-svgrepo-com'),
+    mobile: false,
+    role: [JuniorEngineerID, SuperAdminID]
+  },
+
+
+
   // {
   //   title: 'Templates',
   //   path: '/templates',

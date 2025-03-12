@@ -7,15 +7,12 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
 
-// export const UserViewPage = lazy(() => import('src/pages/user.view'));
-// export const UserPage = lazy(() => import('src/pages/user'));
-// export const BranchesPage = lazy(() => import('src/pages/branches'));
-// export const ConsumerPage = lazy(() => import('src/pages/consumer'));
-// export const FeederPage = lazy(() => import('src/pages/feeder'));
-// export const VillagesPage = lazy(() => import('src/pages/villages'));
-// export const NoticePage = lazy(() => import('src/pages/notices'));
-// export const NewConnection = lazy(() => import('src/pages/new.connection'));
-// export const MiscellaneousPage = lazy(() => import('src/pages/miscellaneous'));
+// ----------------------------------------------------------------------
+
+export const OrgPage = lazy(() => import('src/pages/org/org.page'));
+export const BranchPage = lazy(() => import('src/pages/org/branch.page'));
+export const ModulePage = lazy(() => import('src/pages/org/module.page'));
+export const RolePage = lazy(() => import('src/pages/org/role.page'));
 
 // ----------------------------------------------------------------------
 
@@ -27,13 +24,18 @@ export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const RecordsPage = lazy(() => import('src/pages/records'));
 
 export default function Router() {
-
   const CommRoutes = [
+    { path: 'login', element: <LoginPage />, index: true },
+    { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
+    { path: '404', element: <Page404 /> },
+    { path: '*', element: <Navigate to="login" replace /> },
+  ];
 
-    { path: 'login', element: <LoginPage />, index: true, },
-    { path: 'forgot-password', element: <ResetPasswordPage />, index: true, },
-    { path: '404', element: <Page404 />, },
-    { path: '*', element: <Navigate to="login" replace />, },
+  const OrgRouters = [
+    { path: '/orgs', element: <OrgPage /> },
+    { path: '/branches', element: <BranchPage /> },
+    { path: '/modules', element: <ModulePage /> },
+    { path: '/roles', element: <RolePage /> },
   ];
 
   const routes = useRoutes([
@@ -46,15 +48,16 @@ export default function Router() {
         </DashboardLayout>
       ),
       children: [
-        { path: '/dashboard', element: <DashboardPage />, },
-        { path: '/accounts', element: <AccountsPage />, },
-        { path: '/labels', element: <LabelsPage />, },
-        { path: '/parties', element: <PartiesPage />, },
-        { path: '/categories', element: <CategoriesPage />, },
-        { path: '/records', element: <RecordsPage />, },
+        { path: '/dashboard', element: <DashboardPage /> },
+        { path: '/accounts', element: <AccountsPage /> },
+        { path: '/labels', element: <LabelsPage /> },
+        { path: '/parties', element: <PartiesPage /> },
+        { path: '/categories', element: <CategoriesPage /> },
+        { path: '/records', element: <RecordsPage /> },
+        ...OrgRouters,
       ],
     },
-    ...CommRoutes
+    ...CommRoutes,
   ]);
   return routes;
 }

@@ -15,8 +15,8 @@ import { CustomSelect } from 'src/components/CustomComponents';
 
 import InfoBox from "./InfoBox";
 import OverView from './OverView';
-import { topTen } from '../Consumer/data';
-import AppCurrentVisits from './app-current-visits';
+// import { topTen } from '../Consumer/data';
+// import AppCurrentVisits from './app-current-visits';
 
 
 export default function Index() {
@@ -158,13 +158,13 @@ export default function Index() {
                     </Grid>
 
                     <Grid item xs={12} md={3}>
-                        <AppCurrentVisits
+                        {/* <AppCurrentVisits
                             title="Top 5 Categories "
                             type='radialBar'
                             chart={{
                                 series: topTen?.map((item, key) => ({ label: item?.CategoryName, value: item?.totalIn, }))
                             }}
-                        />
+                        /> */}
                     </Grid>
 
                     <Grid item xs={12} md={9}>
