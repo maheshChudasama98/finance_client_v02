@@ -28,6 +28,7 @@ import { CustomTable, CustomCheckbox, CustomSearchInput } from 'src/components/C
 import { Dropdown } from 'antd';
 
 import Form from './RoleForm';
+import Permission from './Permission';
 
 export default function Index() {
   const filterValue = 'All';
@@ -101,7 +102,7 @@ export default function Index() {
 
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'RoleName', keyLabel: 'RoleName', xs: 3.3 },
+    { Header: 'Role Name', keyLabel: 'RoleName', xs: 3.3 },
     { Header: 'Description', keyLabel: 'Description', xs: 3.3 },
     { Header: 'Registration', keyLabel: 'CreateAt', xs: 3.3 },
     { Header: 'Active', keyLabel: 'Active', xs: 1 },
@@ -197,6 +198,9 @@ export default function Index() {
         </IconButton>
       </Dropdown>
     ),
+    child: (
+        <Permission dataValues={item} />
+    ),
   }));
 
   const titleAction = (display) => {
@@ -270,7 +274,7 @@ export default function Index() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable columns={columns} data={tableSetData} />
+                    <CustomTable columns={columns} data={tableSetData} expanded />
                   </Box>
                 ) : (
                   <DataNotFound />

@@ -27,7 +27,8 @@ import navConfig from './config-navigation';
 
 export default function Nav({ openNav, onCloseNav, isActive }) {
   const pathname = usePathname();
-  const ReduxUserRole = useSelector(state => state.auth.userRole);
+  const PermissionList = useSelector((state) => state?.auth?.permissionList);
+
   const [filterNavItems, setFilterNavItems] = useState([]);
 
   const upLg = useResponsive('up', 'lg');
@@ -35,33 +36,37 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
   useEffect(() => {
     if (openNav) {
       onCloseNav();
-    };
+    }
   }, [pathname]);
-
+  
 
   useEffect(() => {
-    // setFilterNavItems(navConfig.filter(item => item?.role?.includes(ReduxUserRole)));
-    setFilterNavItems(navConfig);
-  }, [ReduxUserRole]);
+     const filterData = navConfig.filter((item) => {
+      const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
+      if (result?.CanRead === 1) {
+        return (item);
+      }
+      return '';
+    });
+    setFilterNavItems(filterData);
+  }, [PermissionList]);
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: isActive ? 1 : 2 }}>
       <>
-        {(isActive && upLg) ?
+        {isActive && upLg ? (
           <>
             {filterNavItems.map((item) => (
               <NavMobileItem key={item.title} item={item} />
-            ))}</>
-          :
-          <>
-            {
-              filterNavItems.map((item) => (
-                <NavItem key={item.title} item={item} />
-              ))
-            }
+            ))}
           </>
-
-        }
+        ) : (
+          <>
+            {filterNavItems.map((item) => (
+              <NavItem key={item.title} item={item} />
+            ))}
+          </>
+        )}
       </>
     </Stack>
   );
@@ -77,11 +82,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         },
       }}
     >
-      {
-        isActive ?
-          <Logo sx={{ m: "auto", my: 1.5, }} /> :
-          <Logo sx={{ ml: 3.3, my: 1.5, }} />
-      }
+      {isActive ? <Logo sx={{ m: 'auto', my: 1.5 }} /> : <Logo sx={{ ml: 3.3, my: 1.5 }} />}
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
@@ -177,7 +178,6 @@ function NavMobileItem({ item }) {
   const active = item.path === pathname;
 
   return (
-
     <CustomTooltip label={item?.title} Placement="rightTop">
       <ListItemButton
         component={RouterLink}
@@ -190,8 +190,8 @@ function NavMobileItem({ item }) {
           textTransform: 'capitalize',
           fontWeight: 'fontWeightMedium',
           fontSize: 10,
-          display: "grid",
-          placeContent: "center",
+          display: 'grid',
+          placeContent: 'center',
           ...(active && {
             color: 'primary.main',
             fontWeight: 'fontWeightSemiBold',
@@ -203,14 +203,14 @@ function NavMobileItem({ item }) {
           }),
         }}
       >
-        <Box component="span" sx={{ width: 20, height: 20, margin: "auto", mb: 0.5 }}>
+        <Box component="span" sx={{ width: 20, height: 20, margin: 'auto', mb: 0.5 }}>
           {item.icon}
         </Box>
 
-        <Box component="span" sx={{ textAlign: "center" }}>
-          {`${item?.title ? item?.title?.slice(0, 9) : ""}${item?.title?.length > 9 ? '...' : ''}`}
+        <Box component="span" sx={{ textAlign: 'center' }}>
+          {`${item?.title ? item?.title?.slice(0, 9) : ''}${item?.title?.length > 9 ? '...' : ''}`}
         </Box>
-      </ListItemButton >
+      </ListItemButton>
     </CustomTooltip>
   );
 }

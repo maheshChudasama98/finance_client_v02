@@ -48,7 +48,7 @@ export default function Index({ backAction, editObject, modulesList }) {
       onSubmit={ActionSubmit}
     >
       {(props) => {
-        const { handleSubmit, dirty, resetForm,  } = props;
+        const { handleSubmit, dirty, resetForm } = props;
         return (
           <Form>
             <Grid

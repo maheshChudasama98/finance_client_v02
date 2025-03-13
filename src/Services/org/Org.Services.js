@@ -291,3 +291,58 @@ export function RoleActiveService(payload, cb) {
         })
     }
 };  
+
+
+export function PermissionController(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.get(`/permission/list?RoleId=${payload}`).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                // dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};  
+
+export function PermissionModifyController(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post(`/permission/modify`,payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};  
+
+export function UserInfoAccessService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.get(`/role/active?RoleId=${payload}`).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};  

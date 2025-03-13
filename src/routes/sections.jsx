@@ -23,7 +23,7 @@ export const PartiesPage = lazy(() => import('src/pages/parties'));
 export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const RecordsPage = lazy(() => import('src/pages/records'));
 
-export default function Router() {
+export default function Router({ permissionList }) {
   const CommRoutes = [
     { path: 'login', element: <LoginPage />, index: true },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
@@ -32,11 +32,26 @@ export default function Router() {
   ];
 
   const OrgRouters = [
-    { path: '/orgs', element: <OrgPage /> },
-    { path: '/branches', element: <BranchPage /> },
-    { path: '/modules', element: <ModulePage /> },
-    { path: '/roles', element: <RolePage /> },
+    { path: '/orgs', element: <OrgPage />, title: 'Org' },
+    { path: '/branches', element: <BranchPage />, title: 'Branches' },
+    { path: '/modules', element: <ModulePage />, title: 'Modules' },
+    { path: '/roles', element: <RolePage />, title: 'Roles' },
+
+    { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
+    { path: '/accounts', element: <AccountsPage />, title: 'Accounts' },
+    { path: '/labels', element: <LabelsPage />, title: 'Labels' },
+    { path: '/parties', element: <PartiesPage />, title: 'Party' },
+    { path: '/categories', element: <CategoriesPage />, title: 'Categories' },
+    { path: '/records', element: <RecordsPage />, title: 'Record' },
   ];
+
+  const filterData = OrgRouters.filter((item) => {
+    const result = permissionList?.find((key) => key?.ModulesName === item?.title);
+    if (result?.CanRead === 1) {
+      return item;
+    }
+    return '';
+  });
 
   const routes = useRoutes([
     {
@@ -47,15 +62,7 @@ export default function Router() {
           </Suspense>
         </DashboardLayout>
       ),
-      children: [
-        { path: '/dashboard', element: <DashboardPage /> },
-        { path: '/accounts', element: <AccountsPage /> },
-        { path: '/labels', element: <LabelsPage /> },
-        { path: '/parties', element: <PartiesPage /> },
-        { path: '/categories', element: <CategoriesPage /> },
-        { path: '/records', element: <RecordsPage /> },
-        ...OrgRouters,
-      ],
+      children: [...filterData],
     },
     ...CommRoutes,
   ]);
