@@ -1,165 +1,183 @@
-import { useState, } from 'react';
 import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
-import FormLabel from '@mui/material/FormLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { UserRegistrationService, } from 'src/Services/User.Services';
-import { StaffID, VisitorID, ContractorID, JuniorEngineerID, } from 'src/constance';
+import { ImgUrl } from 'src/constance';
+import { UserModifyService } from 'src/Services/User.Services';
+import { RoleListService } from 'src/Services/org/Org.Services';
 
-import { TextFieldForm, } from 'src/components/inputs';
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
+import {ImagePicker,TextFieldForm, AutoCompleteSelectMenu,   } from 'src/components/inputs';
 
-import { Form, Formik, } from 'formik'
+import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
-export default function Index({ backAction, editDetails }) {
-    const dispatch = useDispatch();
-    const [formSubmitLoader, setFormSubmitLoader] = useState(false);
+export default function Index({ backAction, editObject }) {
+  const dispatch = useDispatch();
+  const [imgUrl, setImgUrl] = useState(null);
+  const [formSubmitLoader, setFormSubmitLoader] = useState(false);
+  const [rolesList, setRolesList] = useState([]);
 
-    const filterHead = (values) => {
-        setFormSubmitLoader(true);
-        dispatch(UserRegistrationService(values, (Response) => {
+  const ActionSubmit = (values) => {
+    // setFormSubmitLoader(true);
+    // dispatch(
+    //   UserRegistrationService(values, (Response) => {
+    //     setFormSubmitLoader(false);
+    //     backAction();
+    //   })
+    // );
+    // setFormSubmitLoader(false);
+
+    setFormSubmitLoader(true);
+        const formData = new FormData();
+        if (imgUrl) {
+          formData.append('ImgPath', imgUrl);
+        }
+        formData.append('FirstName', values.FirstName);
+        formData.append('LastName', values.LastName);
+        formData.append('UserEmail', values.UserEmail);
+        formData.append('UserNumber', values.UserNumber);
+        formData.append('Language', values.Language);
+        formData.append('RoleId', values.RoleId);
+    
+        if (editObject?.UserId) {
+          formData.append('EditUserId', editObject?.UserId);
+        }
+
+        dispatch(
+          UserModifyService(formData, (res) => {
             setFormSubmitLoader(false);
-            backAction();
-        }));
-        setFormSubmitLoader(false);
-    }
-
-    return (
-        <Formik
-            enableReinitialize
-            initialValues={{
-                UserFirstName: editDetails?.UserFirstName || "",
-                UserLastName: editDetails?.UserLastName || "",
-                UserEmail: editDetails?.UserEmail || "",
-                UserEmploymentNumber: editDetails?.UserEmploymentNumber || "",
-                UserPassword: editDetails?.UserPassword || "",
-                UserTypeId: editDetails?.UserTypeId || StaffID,
-            }}
-            validationSchema={
-                Yup.object().shape({
-                    UserFirstName: Yup.string().required("First Name is required."),
-                    UserLastName: Yup.string().required("Last Name is required."),
-                    UserEmail: Yup.string().required("Email is required."),
-                    UserTypeId: Yup.string().required("Email is required."),
-                    UserEmploymentNumber: Yup.string()
-                        .matches(/^[0-9]+$/, "Must be a valid number.")
-                        .required("Consumber Mobile Number is required."),
-                    UserPassword: Yup.string()
-                        .required('Password is required')
-                        .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?=\S+$).{8,}$/, "Passwords should have at least 8 characters, 1 uppercase, 1 lowercase, 1 digit, and 1 valid special character. Avoid spaces."),
-                })
+            if (res?.status) {
+              backAction();
             }
-            onSubmit={filterHead}
-        >
-            {(props) => {
-                const { setFieldValue, handleSubmit, values, dirty, resetForm } = props
-                return (
-                    <Form >
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} md={6}>
-                                <TextFieldForm
-                                    formik={props}
-                                    label='First Name'
-                                    field='UserFirstName' />
-                            </Grid>
+          })
+        );
+  };
 
-                            <Grid xs={12} md={6}>
-                                <TextFieldForm
-                                    formik={props}
-                                    label='Last Name'
-                                    field='UserLastName' />
-                            </Grid>
-                            <Grid xs={12} md={6}>
-                                <TextFieldForm
-                                    formik={props}
-                                    label='Email'
-                                    field='UserEmail' />
-                            </Grid>
+  useEffect(() => {
+    dispatch(
+      RoleListService({}, (res) => {
+        if (res?.status) {
+          setRolesList(res?.data?.list);
+        }
+      })
+    );
+  }, []);
 
-                            <Grid xs={12} md={6}   >
-                                <TextFieldForm
-                                    formik={props}
-                                    type='number'
-                                    label='Employment Number'
-                                    field='UserEmploymentNumber' />
-                            </Grid>
+  return (
+    <Formik
+      enableReinitialize
+      initialValues={{
+        ImgPath: editObject?.ImgPath ? `${ImgUrl || ''}${editObject.ImgPath}` : '' || '',
+        FirstName: editObject?.FirstName || '',
+        LastName: editObject?.LastName || '',
+        UserEmail: editObject?.Email || '',
+        UserNumber: editObject?.Mobile || '',
+        Language: editObject?.Language || 'EN',
+        RoleId: editObject?.RoleId || '',
+      }}
+      validationSchema={Yup.object().shape({
+        FirstName: Yup.string().required('First Name is required.'),
+        LastName: Yup.string().required('Last Name is required.'),
+        UserEmail: Yup.string().required('Email is required.'),
+        UserNumber: Yup.string()
+          .matches(/^[0-9]+$/, 'Must be a valid number.')
+          .nullable(),
+        RoleId: Yup.number().required('Role is required.'),
+      })}
+      onSubmit={ActionSubmit}
+    >
+      {(props) => {
+        const { handleSubmit, setFieldValue, dirty, resetForm } = props;
+        return (
+          <Form>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={12}>
+                <ImagePicker
+                  //   defaultIcon="fa-solid fa-sitemap"
+                  formik={props}
+                  label="Profile Image"
+                  field="ImgPath"
+                  heightWidth={250}
+                  imageReturn={(e) => {
+                    setFieldValue('ImgPath', e);
+                    setImgUrl(e);
+                  }}
+                />
+              </Grid>
 
-                            <Grid xs={12} md={6} >
-                                <TextFieldForm
-                                    formik={props}
-                                    label='Password'
-                                    field='UserPassword' />
-                            </Grid>
+              <Grid item xs={12} md={6}>
+                <TextFieldForm formik={props} label="First Name" field="FirstName" />
+              </Grid>
 
-                            <Grid xs={12} md={12}  >
-                                <FormControl sx={{ marginBottom: 1 }}>
-                                    <FormLabel>Role *</FormLabel>
-                                    <RadioGroup
-                                        value={values?.UserTypeId}
-                                        onChange={(e) => {
-                                            setFieldValue("UserTypeId", e.target.value)
-                                        }}
-                                    >
-                                        <FormControlLabel
-                                            value={StaffID}
-                                            control={<Radio size="small" />}
-                                            label="Staff"
-                                            size="small" />
-                                        <FormControlLabel
-                                            value={ContractorID}
-                                            control={<Radio size="small" />}
-                                            label="Contractor" />
-                                        <FormControlLabel
-                                            value={JuniorEngineerID}
-                                            control={<Radio size="small" />}
-                                            label="Junior Engineer" />
-                                        <FormControlLabel
-                                            value={VisitorID}
-                                            control={<Radio size="small" />}
-                                            label="Visitor" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
+              <Grid xs={12} md={6}>
+                <TextFieldForm formik={props} label="Last Name" field="LastName" />
+              </Grid>
+              <Grid xs={12} md={6}>
+                <TextFieldForm formik={props} label="Email" field="UserEmail" />
+              </Grid>
 
-                            <Grid xs={12} >
-                                <Box sx={{ float: "right", display: "flex" }}>
-                                    <Button
-                                        variant="outlined"
-                                        sx={{ marginX: 1 }}
-                                        onClick={() => { resetForm(); }}
-                                        color="CancelButton"
-                                    >
-                                        Cancel
-                                    </Button>
+              <Grid xs={12} md={6}>
+                <TextFieldForm
+                  required={false}
+                  formik={props}
+                  type="number"
+                  label="Mobile Number"
+                  field="UserNumber"
+                />
+              </Grid>
 
-                                    {
-                                        !formSubmitLoader ?
-                                            <Button
-                                                variant="contained"
-                                                type='submit'
-                                                disabled={!dirty}
-                                                onClick={handleSubmit}
-                                                color="success">
-                                                Save
-                                            </Button>
-                                            :
-                                            <ButtonLoader />
-                                    }
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Form>
-                )
-            }}
-        </Formik >
-    )
+              <Grid xs={12} md={6}>
+                <AutoCompleteSelectMenu
+                  formik={props}
+                  label="Role"
+                  field="RoleId"
+                  menuList={rolesList}
+                  valueKey="RoleId"
+                  labelKey="RoleName"
+                />
+              </Grid>
+
+              <Grid xs={12}>
+                <Box sx={{ float: 'right', display: 'flex' }}>
+                  {dirty && (
+                    <Button
+                      variant="outlined"
+                      sx={{ marginX: 1 }}
+                      // disabled={!dirty}
+                      onClick={() => {
+                        resetForm();
+                      }}
+                      color="CancelButton"
+                    >
+                      {' '}
+                      Cancel{' '}
+                    </Button>
+                  )}
+
+                  {!formSubmitLoader ? (
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={!dirty}
+                      onClick={handleSubmit}
+                      color="success"
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <ButtonLoader />
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Form>
+        );
+      }}
+    </Formik>
+  );
 }

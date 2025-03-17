@@ -65,6 +65,12 @@ const navConfig = [
     icon: icon('inbox-line-svgrepo-com'),
     mobile: false,
   },
+  {
+    title: 'Users',
+    path: '/users',
+    icon: icon('inbox-line-svgrepo-com'),
+    mobile: false,
+  },
 ];
 
 export default navConfig;

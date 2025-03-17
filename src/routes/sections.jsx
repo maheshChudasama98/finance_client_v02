@@ -23,6 +23,8 @@ export const PartiesPage = lazy(() => import('src/pages/parties'));
 export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const RecordsPage = lazy(() => import('src/pages/records'));
 
+export const UsersPage = lazy(() => import('src/pages/user'));
+
 export default function Router({ permissionList }) {
   const CommRoutes = [
     { path: 'login', element: <LoginPage />, index: true },
@@ -43,6 +45,7 @@ export default function Router({ permissionList }) {
     { path: '/parties', element: <PartiesPage />, title: 'Party' },
     { path: '/categories', element: <CategoriesPage />, title: 'Categories' },
     { path: '/records', element: <RecordsPage />, title: 'Record' },
+    { path: '/users', element: <UsersPage />, title: 'Users' },
   ];
 
   const filterData = OrgRouters.filter((item) => {
