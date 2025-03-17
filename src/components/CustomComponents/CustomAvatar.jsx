@@ -6,14 +6,18 @@ import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { ImgUrl } from 'src/constance';
+
 export const CustomAvatar = ({
-  displayName,
+  open,
+  error,
   icon,
+  imgDefault = true,
+  displayName,
   iconSize = 20,
   bgColor,
   photoURL,
   handleOpen,
-  open,
   width = { xs: 40, md: 45, lg: 56 }, // default width
   height = { xs: 40, md: 45, lg: 56 }, // default height
   ...props
@@ -34,6 +38,10 @@ export const CustomAvatar = ({
     }, // 90% of button size
   };
 
+  if (imgDefault) {
+    photoURL = ImgUrl + photoURL || '';
+  }
+
   return (
     <IconButton
       onClick={handleOpen}
@@ -42,7 +50,11 @@ export const CustomAvatar = ({
         background: (theme) => alpha(theme.palette.grey[900], 0.08),
         ...(open && {
           background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+            `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
+        }),
+        ...(error && {
+          background: (theme) =>
+            `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
         }),
       }}
     >

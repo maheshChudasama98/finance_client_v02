@@ -7,7 +7,14 @@ import { ErrorMessage } from 'formik';
 
 import { CustomAvatar } from '../CustomComponents';
 
-export function ImagePicker({ formik, field, label, heightWidth = 180, imageReturn, ...props }) {
+export function ImagePicker({
+  formik,
+  field,
+  label,
+  heightWidth = 180,
+  imageReturn,
+  defaultIcon = 'fa-solid fa-user',
+}) {
   const fileInputRef = useRef(null);
   const IconHeightWidth = heightWidth / 1.5;
 
@@ -32,13 +39,16 @@ export function ImagePicker({ formik, field, label, heightWidth = 180, imageRetu
       />
 
       <CustomAvatar
+        imgDefault={false}
+        icon={defaultIcon}
         width={{ xs: IconHeightWidth, md: IconHeightWidth, lg: IconHeightWidth }}
         height={{ xs: IconHeightWidth, md: IconHeightWidth, lg: IconHeightWidth }}
         onClick={handleButtonClick}
         src={formik?.values[field]}
-        icon='fa-solid fa-user'
         iconSize={heightWidth / 3}
         displayName="Select image"
+        bgColor="#05a972"
+        error={formik?.errors[field]}
       />
 
       <ErrorMessage name={field}>

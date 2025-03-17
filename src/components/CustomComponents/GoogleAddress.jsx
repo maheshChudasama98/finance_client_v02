@@ -13,6 +13,8 @@ import { shadows } from 'src/theme/shadows';
 // import { useTranslation } from 'react-i18next';
 // import { useEffect } from 'react';
 
+import { Empty } from 'antd';
+
 const GOOGLE_MAPS_API_KEY = 'AIzaSyAzJrI7iGhyHIbhLXcG_n8T_19x-JdhCWk';
 
 function loadScript(src, position, id) {
@@ -218,7 +220,6 @@ export function GoogleAddress({ callBackAction }) {
             includeInputInList
             filterSelectedOptions
             value={value}
-            noOptionsText="No locations"
             onChange={handleOnChange}
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
@@ -272,6 +273,7 @@ export function GoogleAddress({ callBackAction }) {
                     </li>
                 );
             }}
+            noOptionsText={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No any locations!" />}
         />
 
     );
