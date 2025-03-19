@@ -14,23 +14,34 @@ import navConfig from './config-navigation';
 // ----------------------------------------------------------------------
 
 export default function Nav({ isActive, setIsActive }) {
-  const ReduxUserRole = useSelector(state => state.auth.userRole);
+  const PermissionList = useSelector((state) => state?.auth?.permissionList);
   const [filterNavItems, setFilterNavItems] = React.useState([]);
 
-  React.useEffect(() => {
-    setFilterNavItems(navConfig.filter(item => item.role.includes(ReduxUserRole) && item.mobile === true))
-  }, [ReduxUserRole])
+  React.useEffect(() => {    
+    const filterData = navConfig.filter((item) => {
+      const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
+      if (result?.CanRead === 1 && item.mobile) {
+        return item;
+      }
+      return '';
+    });
+    setFilterNavItems(filterData);
+  }, [PermissionList]);
+  
   const pathname = usePathname();
 
-
   return (
-    <Paper sx={{
-      position: 'fixed',
-      bottom: 0, left: 0, right: 0, p: 0.5
-    }}
-      elevation={24} >
+    <Paper
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        p: 0.5,
+      }}
+      elevation={24}
+    >
       <BottomNavigation
-
         value={isActive}
         onChange={(event, newValue) => {
           setIsActive(newValue);
@@ -50,8 +61,8 @@ export default function Nav({ isActive, setIsActive }) {
                 textTransform: 'capitalize',
                 fontWeight: 'fontWeightMedium',
                 fontSize: 10,
-                display: "grid",
-                placeContent: "center",
+                display: 'grid',
+                placeContent: 'center',
                 ...(active && {
                   color: 'primary.main',
                   fontWeight: 'fontWeightSemiBold',
@@ -63,18 +74,19 @@ export default function Nav({ isActive, setIsActive }) {
                 }),
               }}
             >
-              <Box component="span" sx={{ width: 25, height: 25, margin: "auto", mb: 0.5, }}>
+              <Box component="span" sx={{ width: 25, height: 25, margin: 'auto', mb: 0.5 }}>
                 {item.icon}
               </Box>
 
-              <Box component="span" sx={{ textAlign: "center", }}>
-                {`${item?.title ? item?.title?.slice(0, 6) : ""}${item?.title?.length > 6 ? '...' : ''}`}
+              <Box component="span" sx={{ textAlign: 'center' }}>
+                {`${item?.title ? item?.title?.slice(0, 6) : ''}${
+                  item?.title?.length > 6 ? '...' : ''
+                }`}
               </Box>
             </ListItemButton>
-          )
+          );
         })}
       </BottomNavigation>
-    </Paper >
+    </Paper>
   );
 }
-

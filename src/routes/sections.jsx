@@ -7,15 +7,12 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
 
-// export const UserViewPage = lazy(() => import('src/pages/user.view'));
-// export const UserPage = lazy(() => import('src/pages/user'));
-// export const BranchesPage = lazy(() => import('src/pages/branches'));
-// export const ConsumerPage = lazy(() => import('src/pages/consumer'));
-// export const FeederPage = lazy(() => import('src/pages/feeder'));
-// export const VillagesPage = lazy(() => import('src/pages/villages'));
-// export const NoticePage = lazy(() => import('src/pages/notices'));
-// export const NewConnection = lazy(() => import('src/pages/new.connection'));
-// export const MiscellaneousPage = lazy(() => import('src/pages/miscellaneous'));
+// ----------------------------------------------------------------------
+
+export const OrgPage = lazy(() => import('src/pages/org/org.page'));
+export const BranchPage = lazy(() => import('src/pages/org/branch.page'));
+export const ModulePage = lazy(() => import('src/pages/org/module.page'));
+export const RolePage = lazy(() => import('src/pages/org/role.page'));
 
 // ----------------------------------------------------------------------
 
@@ -26,15 +23,38 @@ export const PartiesPage = lazy(() => import('src/pages/parties'));
 export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const RecordsPage = lazy(() => import('src/pages/records'));
 
-export default function Router() {
+export const UsersPage = lazy(() => import('src/pages/user'));
 
+export default function Router({ permissionList }) {
   const CommRoutes = [
-
-    { path: 'login', element: <LoginPage />, index: true, },
-    { path: 'forgot-password', element: <ResetPasswordPage />, index: true, },
-    { path: '404', element: <Page404 />, },
-    { path: '*', element: <Navigate to="login" replace />, },
+    { path: 'login', element: <LoginPage />, index: true },
+    { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
+    { path: '404', element: <Page404 /> },
+    { path: '*', element: <Navigate to="login" replace /> },
   ];
+
+  const OrgRouters = [
+    { path: '/orgs', element: <OrgPage />, title: 'Org' },
+    { path: '/branches', element: <BranchPage />, title: 'Branches' },
+    { path: '/modules', element: <ModulePage />, title: 'Modules' },
+    { path: '/roles', element: <RolePage />, title: 'Roles' },
+
+    { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
+    { path: '/accounts', element: <AccountsPage />, title: 'Accounts' },
+    { path: '/labels', element: <LabelsPage />, title: 'Labels' },
+    { path: '/parties', element: <PartiesPage />, title: 'Party' },
+    { path: '/categories', element: <CategoriesPage />, title: 'Categories' },
+    { path: '/records', element: <RecordsPage />, title: 'Record' },
+    { path: '/users', element: <UsersPage />, title: 'Users' },
+  ];
+
+  const filterData = OrgRouters.filter((item) => {
+    const result = permissionList?.find((key) => key?.ModulesName === item?.title);
+    if (result?.CanRead === 1) {
+      return item;
+    }
+    return '';
+  });
 
   const routes = useRoutes([
     {
@@ -45,16 +65,9 @@ export default function Router() {
           </Suspense>
         </DashboardLayout>
       ),
-      children: [
-        { path: '/dashboard', element: <DashboardPage />, },
-        { path: '/accounts', element: <AccountsPage />, },
-        { path: '/labels', element: <LabelsPage />, },
-        { path: '/parties', element: <PartiesPage />, },
-        { path: '/categories', element: <CategoriesPage />, },
-        { path: '/records', element: <RecordsPage />, },
-      ],
+      children: [...filterData],
     },
-    ...CommRoutes
+    ...CommRoutes,
   ]);
   return routes;
 }

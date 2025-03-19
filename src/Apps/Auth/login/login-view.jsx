@@ -62,8 +62,9 @@ export default function LoginView() {
 
     dispatch(
       LoginApiAction(payload, (response) => {
-        dispatch(InfoApiActionService((res) => {}));
-        router.push('/dashboard');
+        dispatch(InfoApiActionService((res) => {
+          router.push('/dashboard');
+        }));
       })
     );
   };

@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -14,24 +12,23 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { fDate } from 'src/utils/format-time';
-import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
-import { PartyActionService, PartiesFetchListService } from 'src/Services/Meter.Services';
+import {
+  RoleListService,
+  RoleActiveService,
+  RoleRemoveService,
+} from 'src/Services/org/Org.Services';
 
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import {
-  CustomTable,
-  CustomAvatar,
-  CustomCheckbox,
-  CustomSearchInput,
-} from 'src/components/CustomComponents';
+import { CustomTable, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
 import { Dropdown } from 'antd';
 
-import Form from './Form';
+import Form from './RoleForm';
+import Permission from './Permission';
 
 export default function Index() {
   const filterValue = 'All';
@@ -42,14 +39,22 @@ export default function Index() {
   const [loadingLoader, setLoadingLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [loadingSwitch, setLoadingSwitch] = useState({});
-  const [accountsList, setAccountsList] = useState([]);
+  const [list, setList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
 
-  const StatusChange = (action, value, id) => {
-    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+  const StatusChange = (id) => {
+    setLoadingSwitch((prev) => ({ ...prev, [id]: true }));
     dispatch(
-      PartyActionService({ [action]: value, PartyId: id }, () => {
+      RoleActiveService(id, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const DeleteAction = (id) => {
+    dispatch(
+      RoleRemoveService(id, () => {
         setApiFlag(!apiFlag);
       })
     );
@@ -62,17 +67,15 @@ export default function Index() {
 
   useEffect(() => {
     if (!displayFlag) {
-      setLoadingSearchLoader(true);
       const payLoad = {
         SearchKey: searchValue,
       };
       setLoadingLoader(true);
       dispatch(
-        PartiesFetchListService(payLoad, (res) => {
-          setLoadingSearchLoader(false);
+        RoleListService(payLoad, (res) => {
           if (res?.status) {
             setLoadingLoader(false);
-            setAccountsList(res?.data?.list);
+            setList(res?.data?.list);
           }
         })
       );
@@ -81,13 +84,15 @@ export default function Index() {
 
   useEffect(() => {
     if (!displayFlag) {
+      setLoadingSearchLoader(true);
       const payLoad = {
         SearchKey: searchValue,
       };
       dispatch(
-        PartiesFetchListService(payLoad, (res) => {
+        RoleListService(payLoad, (res) => {
+          setLoadingSearchLoader(false);
           if (res?.status) {
-            setAccountsList(res?.data?.list);
+            setList(res?.data?.list);
             setLoadingSwitch({});
           }
         })
@@ -97,112 +102,40 @@ export default function Index() {
 
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Party name', keyLabel: 'FullName', xs: 2 },
-    {
-      Header: 'Start Amount',
-      keyLabel: 'StartAmount',
-      xs: 1.5,
-      className: 'custom-text-align-end',
-    },
-    {
-      Header: 'Current Amount',
-      keyLabel: 'CurrentAmount',
-      xs: 1.5,
-      className: 'custom-text-align-end',
-    },
-    { Header: 'Min Amount', keyLabel: 'MinAmount', xs: 1.5, className: 'custom-text-align-end' },
-    { Header: 'Max Amount', keyLabel: 'MaxAmount', xs: 1.5, className: 'custom-text-align-end' },
-    { Header: '', keyLabel: '', xs: 1 },
-    { Header: 'Used', keyLabel: 'Used', xs: 1 },
+    { Header: 'Role Name', keyLabel: 'RoleName', xs: 3.3 },
+    { Header: 'Description', keyLabel: 'Description', xs: 3.3 },
+    { Header: 'Registration', keyLabel: 'CreateAt', xs: 3.3 },
     { Header: 'Active', keyLabel: 'Active', xs: 1 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
   ];
 
-  const tableSetData = accountsList.map((item, index) => ({
+  const tableSetData = list.map((item, index) => ({
     Index: <Typography variant="light">{index + 1 || ''}</Typography>,
 
-    FullName: (
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar displayName={item?.PartyAvatar} width={45} height={45} iconSize={15} />
-        <Typography variant="normal">
-          {item?.FullName}
-          <Typography
-            variant="light"
-            color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center' }}
-          >
-            <SvgColor
-              src="/assets/icons/general/calendar.svg"
-              sx={{ width: 18, height: 18, mr: 0.5 }}
-            />
-            {fDate(item?.createdAt)}
-          </Typography>
-        </Typography>
-      </Stack>
-    ),
-
-    StartAmount: (
-      <Typography variant="light" className="custom-text-align-end">
-        {formatToINR(item?.StartAmount) || '-'}
+    RoleName: (
+      <Typography variant="light" className="">
+        {item?.RoleName || ''}
       </Typography>
     ),
-    CurrentAmount: (
-      <Typography variant="light" className="custom-text-align-end">
-        {formatToINR(item?.CurrentAmount) || '-'}
+    Description: (
+      <Typography variant="light" className="">
+        {item?.Description || ''}
       </Typography>
     ),
-
-    MinAmount: (
-      <Typography variant="light" className="custom-text-align-end">
-        {formatToINR(item?.MinAmount) || '-'}
+    CreateAt: (
+      <Typography variant="light" className="">
+        {fDate(item?.createdAt)}
       </Typography>
-    ),
-    MaxAmount: (
-      <Typography variant="light" className="custom-text-align-end">
-        {formatToINR(item?.MaxAmount) || '-'}
-      </Typography>
-    ),
-    Used: (
-      <Box
-        // sx={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        //   height: '100%', // optional, if you need to control the vertical space
-        // }}
-      >
-        <CustomCheckbox
-          loading={
-            loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isUsing' 
-          }
-          checked={item?.isUsing}
-          onClick={(e) => {
-            StatusChange('isUsing', !item?.isUsing, item?.PartyId);
-            e.stopPropagation();
-          }}
-        />
-      </Box>
     ),
     Active: (
-      <Box
-        // sx={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        //   height: '100%',
-        // }}
-      >
-        <CustomCheckbox
-          loading={
-            loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive'
-          }
-          checked={item?.isActive}
-          onClick={(e) => {
-            StatusChange('isActive', !item?.isActive, item?.PartyId);
-            e.stopPropagation();
-          }}
-        />
-      </Box>
+      <CustomCheckbox
+        loading={loadingSwitch[item?.RoleId]}
+        checked={item?.isActive}
+        onClick={(e) => {
+          StatusChange(item?.RoleId);
+          e.stopPropagation();
+        }}
+      />
     ),
     Action: (
       <Dropdown
@@ -212,7 +145,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="light"
+                  variant="normal"
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -231,13 +164,13 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="light"
+                  variant="normal"
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
                       .then((result) => {
                         if (result === 'Yes') {
-                          StatusChange('isDeleted', true, item?.PartyId);
+                          DeleteAction(item?.RoleId);
                         }
                       })
                       .catch((error) => {
@@ -266,49 +199,19 @@ export default function Index() {
       </Dropdown>
     ),
     child: (
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          alignItems: 'center',
-          mx: 1.5,
-        }}
-      >
-        <Grid xs={12} sm={6}>
-          <Typography variant="h5">Email</Typography>
-          <Typography variant="tableHead" color="">
-            {item?.Email}
-          </Typography>
-        </Grid>
-        <Grid xs={12} sm={6}>
-          <Typography variant="h5">Phone</Typography>
-          <Typography variant="tableHead" color="">
-            {item?.Phone}
-          </Typography>
-        </Grid>
-        <Grid xs={12}>
-          <Typography variant="h5">Address</Typography>
-          <Typography variant="tableHead" color="">
-            {item?.Address}
-          </Typography>
-          <Typography variant="tableHead" color="">
-            {item?.City} {item?.State}
-          </Typography>
-        </Grid>
-      </Grid>
+        <Permission dataValues={item} />
     ),
   }));
 
   const titleAction = (display) => {
     if (display) {
-      return 'Parties';
+      return 'Roles';
     }
-    if (editObject?.AccountId) {
-      return 'Edit Party';
+    if (editObject?.RoleId) {
+      return 'Edit Role';
     }
-    return 'New Party';
+    return 'New Role';
   };
-
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -329,7 +232,7 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form backAction={showDisplayAction} editObject={editObject} modulesList={list} />
         ) : (
           <Box
             sx={{
@@ -345,6 +248,7 @@ export default function Index() {
               }}
             >
               <Box />
+
               <CustomSearchInput
                 loading={loadingSearchLoader}
                 searchValue={searchValue}
@@ -362,7 +266,7 @@ export default function Index() {
                   overflow: 'auto',
                 }}
               >
-                {accountsList && accountsList?.length > 0 ? (
+                {list && list?.length > 0 ? (
                   <Box
                     sx={{
                       marginX: 2,
@@ -370,7 +274,7 @@ export default function Index() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable expanded columns={columns} data={tableSetData} />
+                    <CustomTable columns={columns} data={tableSetData} expanded />
                   </Box>
                 ) : (
                   <DataNotFound />
