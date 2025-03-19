@@ -5,9 +5,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 
+import { green } from 'src/theme/palette';
 import { ModuleModifyService } from 'src/Services/org/Org.Services';
 
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
+import { CustomIconPicker } from 'src/components/CustomComponents';
 import { TextFieldForm, AutoCompleteSelectMenu } from 'src/components/inputs';
 
 import { Form, Formik } from 'formik';
@@ -41,15 +43,19 @@ export default function Index({ backAction, editObject, modulesList }) {
         ModulesName: editObject?.ModulesName || '',
         ParentNoteId: editObject?.ParentNoteId || '',
         Description: editObject?.Description || '',
+        Icon: editObject?.Icon || '',
+        Router: editObject?.Router || '',
       }}
       validationSchema={Yup.object().shape({
         ModulesName: Yup.string().trim().required('Module name is required.'),
         Description: Yup.string().trim().nullable(),
+        Icon: Yup.string().required('Icon is required.'),
+        Router: Yup.string().required('Router is required.'),
       })}
       onSubmit={ActionSubmit}
     >
       {(props) => {
-        const { handleSubmit, dirty, resetForm } = props;
+        const { handleSubmit, dirty, resetForm  ,} = props;
         return (
           <Form>
             <Grid
@@ -71,9 +77,17 @@ export default function Index({ backAction, editObject, modulesList }) {
                   label="Parent Note"
                   field="ParentNoteId"
                   menuList={modulesList}
-                  valueKey="ParentNoteId"
+                  valueKey="ModulesId"
                   labelKey="ModulesName"
                 />
+              </Grid>
+
+              <Grid xs={12} md={6}>
+                  <TextFieldForm formik={props} label="Router" field="Router" />
+              </Grid>
+
+              <Grid xs={12} md={6}>
+                 <CustomIconPicker formik={props} required label="Icon" field="Icon" color={green[100]} />
               </Grid>
 
               <Grid item xs={12} md={12}>

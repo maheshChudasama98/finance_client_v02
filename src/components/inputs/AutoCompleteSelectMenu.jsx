@@ -79,9 +79,8 @@ export const AutoCompleteSelectMenu = ({ formik, label, field, menuList, valueKe
                     },
                 },
             }}
-            // noOptionsText={t('Not Data Found!')}
             noOptionsText={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Not Data Found!" />}
-            disableClearable
+            disableClearable={required}
             {...props}
         />
     )
