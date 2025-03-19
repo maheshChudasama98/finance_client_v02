@@ -41,13 +41,14 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
   
 
   useEffect(() => {
-     const filterData = navConfig.filter((item) => {
-      const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
-      if (result?.CanRead === 1) {
-        return (item);
-      }
-      return '';
-    });
+    //  const filterData = navConfig.filter((item) => {
+    //   const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
+    //   if (result?.CanRead === 1) {
+    //     return (item);
+    //   }
+    //   return '';
+    // });
+    const filterData = PermissionList?.filter((item)=> item?.CanRead === 1)
     setFilterNavItems(filterData);
   }, [PermissionList]);
 
@@ -57,13 +58,13 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         {isActive && upLg ? (
           <>
             {filterNavItems.map((item) => (
-              <NavMobileItem key={item.title} item={item} />
+              <NavMobileItem key={item.ModulesName} item={item} />
             ))}
           </>
         ) : (
           <>
             {filterNavItems.map((item) => (
-              <NavItem key={item.title} item={item} />
+              <NavItem key={item.ModulesName} item={item} />
             ))}
           </>
         )}
@@ -134,12 +135,12 @@ Nav.propTypes = {
 function NavItem({ item }) {
   const pathname = usePathname();
 
-  const active = item.path === pathname;
+  const active = item.Router === pathname;
 
   return (
     <ListItemButton
       component={RouterLink}
-      href={item.path}
+      href={item.Router}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -158,10 +159,11 @@ function NavItem({ item }) {
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-        {item.icon}
+        {/* {item.icon} */}
+        <i className={item?.Icon}  />
       </Box>
 
-      <Box component="span">{item.title} </Box>
+      <Box component="span">{item.ModulesName} </Box>
     </ListItemButton>
   );
 }
@@ -175,13 +177,13 @@ NavItem.propTypes = {
 function NavMobileItem({ item }) {
   const pathname = usePathname();
 
-  const active = item.path === pathname;
+  const active = item.Router === pathname;
 
   return (
-    <CustomTooltip label={item?.title} Placement="rightTop">
+    <CustomTooltip label={item?.ModulesName} Placement="rightTop">
       <ListItemButton
         component={RouterLink}
-        href={item.path}
+        href={item.Router}
         sx={{
           minHeight: 44,
           borderRadius: 0.75,
@@ -204,11 +206,12 @@ function NavMobileItem({ item }) {
         }}
       >
         <Box component="span" sx={{ width: 20, height: 20, margin: 'auto', mb: 0.5 }}>
-          {item.icon}
+          <i className={item?.Icon}  style={{ fontSize :20 }} />
+          {/* {item.icon} */}
         </Box>
 
         <Box component="span" sx={{ textAlign: 'center' }}>
-          {`${item?.title ? item?.title?.slice(0, 9) : ''}${item?.title?.length > 9 ? '...' : ''}`}
+          {`${item?.ModulesName ? item?.ModulesName?.slice(0, 9) : ''}${item?.ModulesName?.length > 9 ? '...' : ''}`}
         </Box>
       </ListItemButton>
     </CustomTooltip>

@@ -18,13 +18,14 @@ export default function Nav({ isActive, setIsActive }) {
   const [filterNavItems, setFilterNavItems] = React.useState([]);
 
   React.useEffect(() => {    
-    const filterData = navConfig.filter((item) => {
-      const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
-      if (result?.CanRead === 1 && item.mobile) {
-        return item;
-      }
-      return '';
-    });
+    // const filterData = navConfig.filter((item) => {
+    //   const result = PermissionList?.find((key) => key?.ModulesName === item?.title);
+    //   if (result?.CanRead === 1 && item.mobile) {
+    //     return item;
+    //   }
+    //   return '';
+    // });
+    const filterData = PermissionList?.filter((item)=> item?.CanRead === 1)
     setFilterNavItems(filterData);
   }, [PermissionList]);
   
@@ -48,11 +49,11 @@ export default function Nav({ isActive, setIsActive }) {
         }}
       >
         {filterNavItems.map((item) => {
-          const active = item.path === pathname;
+          const active = item.Router === pathname;
           return (
             <ListItemButton
               component={RouterLink}
-              href={item.path}
+              href={item.Router}
               sx={{
                 minHeight: 44,
                 borderRadius: 0.75,
@@ -75,12 +76,13 @@ export default function Nav({ isActive, setIsActive }) {
               }}
             >
               <Box component="span" sx={{ width: 25, height: 25, margin: 'auto', mb: 0.5 }}>
-                {item.icon}
+                {/* {item.icon} */}
+              <i className={item?.Icon}  />
               </Box>
 
               <Box component="span" sx={{ textAlign: 'center' }}>
-                {`${item?.title ? item?.title?.slice(0, 6) : ''}${
-                  item?.title?.length > 6 ? '...' : ''
+                {`${item?.ModulesName ? item?.ModulesName?.slice(0, 6) : ''}${
+                  item?.ModulesName?.length > 6 ? '...' : ''
                 }`}
               </Box>
             </ListItemButton>
