@@ -138,7 +138,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
               sx={{
                 textAlign: 'end',
                 fontWeight: 600,
-                color: item?.dayTotal > 0 ? '#00A76F' : '#FF5630',
+                color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
               }}
             >
               {item?.dayTotal || 0}.00 /-
@@ -147,7 +147,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
         </Grid>
       </Box>
       {item?.records?.map((record, key) => {
-        console.log(record, 'record record');
+        console.log('');
 
         return (
           <Box>
@@ -312,7 +312,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                   </Stack>
                 </Grid>
 
-                <Grid xs={6} sx={{}}>
+                <Grid xs={6} >
                   <Typography
                     variant="light"
                     sx={{
@@ -328,91 +328,6 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                     </Typography>
                   </Typography>
                 </Grid>
-
-                {/* <Grid xs={3}>
-                                        <Typography
-                                            variant="light"
-                                            sx={{
-                                                textAlign: "end",
-                                                fontWeight: 600,
-                                                color: record?.AccountAmount > 0 ? "#00A76F" : "#FF5630"
-                                            }}
-                                        >
-                                            {fText(`${record?.AccountAmount} /-`)}
-                                        </Typography>
-                                    </Grid> */}
-
-                {/*
-
-                                    <Grid xs={6}>
-                                        <Chip
-                                            size='small'
-                                            sx={{
-                                                ...styes,
-                                                color: record?.AccountDetails?.Color || "#1b925e",
-                                                backgroundColor: lightenColor("#00A76F", 0.92),
-                                            }}
-                                            label={record?.AccountDetails?.AccountName}
-                                        />
-                                    </Grid>
-
-
-                                    <Grid xs={1.5}>
-                                        {
-                                            record?.TransferDetails?.AccountName &&
-
-                                            <Chip
-                                                size='small'
-                                                avatar={"M"}
-                                                sx={{
-                                                    ...styes,
-                                                    color: record?.TransferDetails?.Color || "#1b925e",
-                                                    backgroundColor: lightenColor("#00A76F", 0.92),
-                                                }}
-                                                label={record?.TransferDetails?.AccountName}
-                                            />
-                                        }
-
-                                    </Grid>
-
-
-                                    <Grid xs={1.5}>
-                                        {
-                                            record?.PartyDetails?.FullName &&
-
-                                            <Stack direction="row" alignItems="center" spacing={2} >
-                                                <CustomAvatar
-                                                 width={45} height={45} iconSize={15}
-                                                    displayName={"AS"}
-                                                />
-                                                <Typography variant="light" >
-                                                    {fText(`${record?.PartyDetails?.FullName}`)}
-                                                </Typography>
-                                            </Stack>
-                                        }
-
-                                    </Grid>
-
-
-
-
-
-                                    <Grid xs={3} sx={{ alignItems: 'end', textAlign: "end", justifyContent: "end" }}>
-
-                                        <Stack direction="row" alignItems="end" spacing={0.5} sx={{ alignItems: 'end', textAlign: "end", justifyContent: "end" }}>
-
-                                            <Button size='small' sx={{}} color='success' >
-                                                Edit
-                                            </Button>
-
-                                            <Button size='small' color='error'>
-                                                Delete
-                                            </Button>
-
-                                        </Stack>
-
-                                    </Grid>
-                                    */}
               </Grid>
             </Box>
           </Box>
