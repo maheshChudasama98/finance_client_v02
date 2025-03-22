@@ -1,6 +1,6 @@
 const initialState = {
-    BranchesList: [],
-    OrgsList: [],
+    BranchesList: {},
+    OrgsList: {},
 };
 
 const masterReducers = (state = initialState, action) => {

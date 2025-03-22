@@ -36,17 +36,6 @@ export default function LoginView() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(true);
 
-  // const handleClick = (Role_id) => {
-  //   switch (Role_id) {
-  //     case StaffID: router.push('/applications'); break;
-  //     case ContractorID: router.push('/applications'); break;
-  //     case JuniorEngineerID: router.push('/applications'); break;
-  //     case SuperAdminID: router.push('/applications'); break;
-  //     case VisitorID: router.push('/applications'); break;
-  //     default: break;
-  //   }
-  // };
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {

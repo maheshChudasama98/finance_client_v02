@@ -29,7 +29,8 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#1b925e' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              // color: bg ? '#1b925e' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#1b925e',
               backgroundColor: bg ? '#dbf6e5' : '#FFF',
             }}
             label="Income"
@@ -41,7 +42,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#bc2a25' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#ff5630',
               backgroundColor: bg ? '#ffe4de' : '#FFF',
             }}
             label="Expense"
@@ -54,7 +55,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#ba7308' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#ba7308',
               backgroundColor: bg ? '#fff1d6' : '#FFF',
             }}
             label="Transfer"
@@ -66,7 +67,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#1877F2' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#1877F2',
               backgroundColor: bg ? '#D0ECFE' : '#FFF',
             }}
             label="Investment"
@@ -78,7 +79,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#00B8D9' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#00B8D9',
               backgroundColor: bg ? '#CAFDF5' : '#FFF',
             }}
             label="Debit"
@@ -91,7 +92,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
             size="small"
             sx={{
               ...styes,
-              color: bg ? '#5119b7' : (theme) => `${theme?.palette?.grey?.[600]}`,
+              color: '#5119b7',
               backgroundColor: bg ? '#eddeff' : '#FFF',
             }}
             label="Credit"
@@ -119,9 +120,9 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
     <>
       <Box
         sx={{
-          py: { xs: 1.5, md: 2.5 },
-          px: { xs: 1, md: 0.5 },
-          backgroundColor: (theme) => `${theme?.palette?.grey?.[200]}`,
+          py: { xs: 1.5, md: 2 },
+          px: { xs: 1.5, md: 2.5 },
+          backgroundColor: (theme) => `${theme?.palette?.grey?.[100]}`,
         }}
       >
         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
@@ -150,7 +151,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
         console.log('');
 
         return (
-          <Box>
+          <Box sx={{ px: { xs: 1.5, md: 2 } }}>
             <Box
               key={key}
               sx={{
@@ -286,7 +287,6 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
               sx={{
                 display: { xs: 'block', lg: 'none' },
                 py: isHeader ? 1.5 : 0.8,
-                px: { xs: 1, md: 2 },
                 borderBottom: isHeader ? '' : (theme) => `solid 1px ${theme?.palette?.grey?.[200]}`,
                 backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
               }}
@@ -304,7 +304,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                     />
 
                     <Typography variant="normal">
-                      {fText(`${record?.SubCategoryDetails?.SubCategoriesName}`)}
+                      {record?.SubCategoryDetails?.SubCategoriesName || ''}
                       <Typography variant="light" color="text.secondary">
                         {record?.AccountDetails?.AccountName}
                       </Typography>
@@ -312,7 +312,7 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                   </Stack>
                 </Grid>
 
-                <Grid xs={6} >
+                <Grid xs={6}>
                   <Typography
                     variant="light"
                     sx={{

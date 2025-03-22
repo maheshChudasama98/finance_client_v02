@@ -53,6 +53,8 @@ export default function AccountPopover() {
   const [show, setShow] = useState(false);
 
 
+  console.log();
+  
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
@@ -68,8 +70,6 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-  console.log(UserDetails ,"UserDetails UserDetails");
-  
 
   return (
     <>

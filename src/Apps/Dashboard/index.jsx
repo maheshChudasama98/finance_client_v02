@@ -270,7 +270,7 @@ export default function Index() {
                     display: 'flex',
                   }}
                 >
-                  <Typography variant="big">Data Flow</Typography>
+                  <Typography variant="big">Cash Flow</Typography>
                   <Box>
                     <CustomSelect
                       valueKey="Value"

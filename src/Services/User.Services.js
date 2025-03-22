@@ -40,3 +40,22 @@ export function UserModifyService(payload,cb) {
         })
     }
 }
+
+export function DefaultBrachService(payload,cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.get(`user/default?BranchId=${payload}`).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data)
+                } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+}

@@ -22,16 +22,12 @@ import { AccountActionService, AccountsFetchListService } from 'src/Services/Met
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import {
-  CustomTable,
-  CustomAvatar,
-  CustomCheckbox,
-  CustomSearchInput,
-} from 'src/components/CustomComponents';
+import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
+import CustomDataFlow from './CustomDataFlow';
 
 export default function Index() {
   const filterValue = 'All';
@@ -45,6 +41,7 @@ export default function Index() {
   const [accountsList, setAccountsList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
+  const [selectedAccountId, setSelectedAccountId] = useState(null);
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -96,38 +93,81 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Account Name', keyLabel: 'AccountName', xs: 2 },
-    { Header: 'Account Type', keyLabel: 'AccountType', xs: 1.5 },
     {
-      Header: 'Start Amount',
-      keyLabel: 'StartAmount',
-      xs: 1.5,
-      className: 'custom-text-align-end',
+      title: '#',
+      dataIndex: 'Index',
+      key: 'Index',
+      width: '5%',
     },
     {
-      Header: 'Current Amount',
-      keyLabel: 'CurrentAmount',
-      xs: 1.5,
-      className: 'custom-text-align-end',
+      title: 'Account Name',
+      dataIndex: 'AccountName',
+      key: 'AccountName',
+      width: '20%',
     },
-    { Header: 'Min Amount', keyLabel: 'MinAmount', xs: 1.5, className: 'custom-text-align-end' },
-    { Header: 'Max Amount', keyLabel: 'MaxAmount', xs: 1.5, className: 'custom-text-align-end' },
-    { Header: 'Used', keyLabel: 'Used', xs: 0.8 },
-    { Header: 'Active', keyLabel: 'Active', xs: 0.7 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    {
+      title: 'Account Type',
+      dataIndex: 'AccountType',
+      key: 'AccountType',
+      width: '15%',
+    },
+    {
+      title: 'Current Amount',
+      dataIndex: 'CurrentAmount',
+      key: 'CurrentAmount',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Start Amount',
+      dataIndex: 'StartAmount',
+      key: 'StartAmount',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Min Amount',
+      dataIndex: 'MinAmount',
+      key: 'MinAmount',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Max Amount',
+      dataIndex: 'MaxAmount',
+      key: 'MaxAmount',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Used',
+      dataIndex: 'Used',
+      key: 'Used',
+      width: '10%',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      width: '10%',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      width: '10%',
+    },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
+    key: item?.AccountId,
     Index: <Typography variant="light">{index + 1 || ''}</Typography>,
-
     AccountName: (
       <Stack direction="row" alignItems="center" spacing={2}>
         <CustomAvatar
           width={45}
           height={45}
           iconSize={15}
-          displayName="AC"
           icon={item?.Icon || ''}
           bgColor={item?.Color || ''}
         />
@@ -157,33 +197,29 @@ export default function Index() {
         {formatToINR(item?.StartAmount) || '-'}
       </Typography>
     ),
-
     CurrentAmount: (
-      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
+      <Typography
+        variant="light"
+        className="custom-text-align-end custom-truncateRight"
+        sx={{
+          color: item?.CurrentAmount < item?.MinAmount ? 'red' : '',
+        }}
+      >
         {formatToINR(item?.CurrentAmount) || '-'}
       </Typography>
     ),
-
     MinAmount: (
       <Typography variant="light" className="custom-text-align-end custom-truncateRight">
         {formatToINR(item?.MinAmount) || '-'}
       </Typography>
     ),
     MaxAmount: (
-      <Typography variant="light" className="custom-text-align-end custom-truncateRight ">
+      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
         {formatToINR(item?.MaxAmount) || '-'}
       </Typography>
     ),
-
     Used: (
-      <Box
-        // sx={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        //   height: '100%',
-        // }}
-      >
+      <Box>
         <CustomCheckbox
           loading={loadingSwitch[item?.AccountId] && loadingSwitch?.action === 'isUsing'}
           checked={item?.isUsing}
@@ -195,14 +231,7 @@ export default function Index() {
       </Box>
     ),
     Active: (
-      <Box
-        // sx={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        //   height: '100%',
-        // }}
-      >
+      <Box>
         <CustomCheckbox
           loading={loadingSwitch[item?.AccountId] && loadingSwitch?.action === 'isActive'}
           checked={item?.isActive}
@@ -225,6 +254,7 @@ export default function Index() {
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
+                    setSelectedAccountId(item?.AccountId); // Set AccountId dynamically
                   }}
                 >
                   <Box display="flex" alignItems="center">
@@ -328,6 +358,7 @@ export default function Index() {
                 callBack={setSearchValue}
               />
             </Box>
+           
 
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
@@ -340,20 +371,26 @@ export default function Index() {
                 }}
               >
                 {accountsList && accountsList?.length > 0 ? (
-                  <Box
-                    sx={{
-                      marginX: 2,
-                      minWidth: '1000px',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <CustomTable columns={columns} data={tableSetData} />
-                  </Box>
+                  <Table
+                    columns={columns}
+                    dataSource={tableSetData}
+                    pagination={{ pageSize: 10 }}
+                    onRow={(record) => ({
+                      onClick: () => {
+                        console.log(record , "recordrecord record record record");
+                        
+                        setSelectedAccountId(record.key); // Update selectedAccountId on row click
+                      },
+                    })}
+                    
+                  />
                 ) : (
                   <DataNotFound />
                 )}
               </Box>
             )}
+             <CustomDataFlow selectedAccountId={selectedAccountId} />
+
           </Box>
         )}
       </Card>

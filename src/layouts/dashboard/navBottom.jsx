@@ -19,7 +19,7 @@ export default function Nav({ isActive, setIsActive }) {
   // const [canScrollRight, setCanScrollRight] = React.useState(false);
 
   React.useEffect(() => {
-    const filterData = PermissionList?.filter((item) => item?.CanRead === 1 && item?.isMovie === 1);    
+    const filterData = PermissionList?.filter((item) => item?.CanRead === 1 && item?.isMobile === 1);    
     setFilterNavItems(filterData);
   }, [PermissionList]);
 
