@@ -138,7 +138,7 @@ export const typography = {
   tableHead: {
     fontWeight: 600,
     display: "block",
-    ...responsiveFontSizes({ xs: 14, sm: 14, md: 16, lg: 16 }),
+    ...responsiveFontSizes({ xs: 12, sm: 12, md: 14, lg: 14 }),
   },
   light: {
     display: "block",

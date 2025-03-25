@@ -39,7 +39,6 @@ export default function Router({ permissionList }) {
     { path: '/modules', element: <ModulePage />, title: 'Modules' },
     { path: '/roles', element: <RolePage />, title: 'Roles' },
 
-    { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
     { path: '/accounts', element: <AccountsPage />, title: 'Accounts' },
     { path: '/labels', element: <LabelsPage />, title: 'Labels' },
     { path: '/parties', element: <PartiesPage />, title: 'Party' },
@@ -65,7 +64,10 @@ export default function Router({ permissionList }) {
           </Suspense>
         </DashboardLayout>
       ),
-      children: [...filterData],
+      children: [
+        ...filterData,
+        { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
+      ],
     },
     ...CommRoutes,
   ]);

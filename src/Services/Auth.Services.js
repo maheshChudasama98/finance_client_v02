@@ -118,17 +118,17 @@ export function InfoApiActionService(cb) {
 
                 dispatch({
                     type: "ORGS_LIST",
-                    OrgsList: res?.data?.data?.OrgsList || []
+                    OrgsList: res?.data?.data?.Org || {}
                 });
 
                 dispatch({
                     type: "BRANCHES_LIST",
-                    BranchesList: res?.data?.data?.BranchesList || []
+                    BranchesList: res?.data?.data?.Branch || {}
                 });
 
                 dispatch({
                     type: "USER_DETAILS",
-                    UserDetails: res?.data?.data?.UserInfo || []
+                    UserDetails: res?.data?.data?.UserInfo || {}
                 });
 
                 dispatch({
@@ -136,8 +136,9 @@ export function InfoApiActionService(cb) {
                     PermissionList: res?.data?.data?.PermissionList || []
                 });
 
-                if (cb) cb(res.data.data)
-            } else {
+                if (cb) cb(res.data)
+                } else {
+                if (cb) cb(res.data)    
                 dispatch({ type: "FETCH_ERROR", payload: res?.data?.message });
             }
         }).catch((error) => {

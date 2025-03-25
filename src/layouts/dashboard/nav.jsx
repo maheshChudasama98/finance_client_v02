@@ -21,7 +21,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { CustomTooltip } from 'src/components/CustomComponents';
 
 import { NAV } from './config-layout';
-import navConfig from './config-navigation';
+// import navConfig from './config-navigation';
 
 // ----------------------------------------------------------------------
 

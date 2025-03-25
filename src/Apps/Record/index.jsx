@@ -213,7 +213,7 @@ export default function Index() {
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <Box
                     sx={{
-                      width: 800,
+                      width: { xs: "80%", md: 800 },
                       borderRadius: 2,
                       boxShadow: shadows()[10],
                       backgroundColor: (theme) => theme?.palette?.success?.contrastText,
@@ -244,7 +244,7 @@ export default function Index() {
                 {/* <Box sx={{ my: 2, paddingX: { xs: 0, sm: 2 } }}></Box> */}
 
                 {arrayObject && arrayObject?.length > 0 ? (
-                  <Box sx={{ paddingX: { xs: 0, sm: 1 } }}>
+                  <Box sx={{ paddingX: { xs: 0, sm: 0 } }}>
                     {arrayObject?.map((item, index) => (
                       <RecordList
                         key={index}

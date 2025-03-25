@@ -27,7 +27,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
   }, [allOpen, data.length]);
 
   const getBorderStyle = (rowIndex, values, State, theme) => {
-    if (values.length - 1 > rowIndex) return `dashed 1px ${theme.palette.grey[400]}`;
+    if (values.length - 1 > rowIndex) return `dashed 1px red`;
     return 0;
   };
   return (
@@ -38,7 +38,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
             sx={{
               py: 1.5,
               pl: 4,
-              backgroundColor: (theme) => `${theme?.palette?.grey?.[200]}`,
+              backgroundColor: (theme) => `${theme?.palette?.grey?.[10]}`,
             }}
           >
             <Grid
@@ -53,7 +53,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                 <Grid xs={item?.xs} key={key}>
                   <Typography
                     variant="tableHead"
-                    color="text.secondary"
+                    // color="text.secondary"
                     className={item?.className}
                     sx={item?.sx}
                   >
@@ -71,17 +71,21 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                 sx={{
                   py: expandedState[rowIndex] ? 1.5 : 0.5,
                   borderBottom: (theme) => getBorderStyle(rowIndex, data, expandedState, theme),
-                  borderColor: (theme) => theme.palette.grey[400],
+                  borderColor: (theme) => theme.palette.grey[300],
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: (theme) => theme.palette.grey[100],
+                  },
                 }}
               >
                 <Box
                   sx={{
-                    borderTop: expandedState[rowIndex] ? 1 : 0,
-                    borderLeft: expandedState[rowIndex] ? 1 : 0,
-                    borderRight: expandedState[rowIndex] ? 1 : 0,
-                    borderBottom: expandedState[rowIndex] ? 1 : 0,
+                    // borderTop: expandedState[rowIndex] ? 1 : 0,
+                    // borderLeft: expandedState[rowIndex] ? 1 : 0,
+                    // borderRight: expandedState[rowIndex] ? 1 : 0,
+                    // borderBottom: expandedState[rowIndex] ? 1 : 0,
                     borderColor: (theme) => theme.palette.grey[400],
-                    borderRadius: expandedState[rowIndex] ? 1 : 0,
+                    // borderRadius: expandedState[rowIndex] ? 1 : 0,
                   }}
                 >
                   <Accordion
@@ -89,6 +93,10 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                     sx={{
                       m: 0,
                       p: 0,
+                      transition: 'background-color 0.2s ease',
+                      '&:hover': {
+                        backgroundColor: (theme) => theme.palette.grey[100],
+                      },
 
                       borderColor: (theme) => `${theme.palette.grey[400]}`,
                     }}
@@ -219,6 +227,10 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                       (data?.length || 0) - 1 > rowIndex
                         ? (theme) => `dashed 1px ${theme?.palette?.grey?.[400]}`
                         : '',
+                    transition: 'background-color 0.2s ease', 
+                    '&:hover': {
+                      backgroundColor: (theme) => theme.palette.grey[100], // Add hover background color
+                    },
                   }}
                 >
                   <Grid
@@ -229,6 +241,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                       mx: 1.5,
                       pl: 1,
                       alignItems: 'center',
+                      
                     }}
                   >
                     {columns.map((col, colIndex) => (

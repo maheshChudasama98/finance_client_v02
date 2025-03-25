@@ -1,24 +1,17 @@
 
-export const apiURL = "http://localhost:8000"
-// export const apiURL = "http://www.smartsdn.in:8181"
+// export const apiURL = "http://localhost:8100"
+export const apiURL = "http://www.smartsdn.in:8181"
 export const ImgUrl = `${apiURL}/public/`;
 
 export const DevelopMood = true;
 export const AdminEmail = "mahesh.chudasama098@gmail.ocm";
-export const ProjectName = "New";
+export const ProjectName = "FV2";
 
 // Time Format 
 export const DateFormat = "DD/MM/YYYY";
 export const DateAndTimeFormat = "DD/MM/YYYY - HH:mm A";
 export const TimeFormat = "HH:mm";
 export const MonthFormat = "MMM";
-
-export const StaffID = 1;
-export const ContractorID = 2;
-export const JuniorEngineerID = 3;
-export const SuperAdminID = 4;
-export const JE = 5;
-export const VisitorID = 6;
 
 export const SUCCESS_CODE = 200;
 export const ERROR_CODE = 500;
