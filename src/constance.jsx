@@ -1,5 +1,6 @@
-export const apiURL = "http://localhost:8100"
-// export const apiURL = "http://www.smartsdn.in:8181"
+
+// export const apiURL = "http://localhost:8100"
+export const apiURL = "http://www.smartsdn.in:8181"
 export const ImgUrl = `${apiURL}/public/`;
 
 export const DevelopMood = true;
