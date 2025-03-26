@@ -317,6 +317,13 @@ export default function Index() {
   };
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
+      <Box sx={{ 
+        border: "solid 1px #a1a1a1",
+        height: "200px",
+        marginBottom: "16px",
+        borderStyle: "dashed",
+        borderRadius: "12px"
+      }}/>
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
@@ -358,7 +365,6 @@ export default function Index() {
                 callBack={setSearchValue}
               />
             </Box>
-           
 
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
@@ -374,23 +380,19 @@ export default function Index() {
                   <Table
                     columns={columns}
                     dataSource={tableSetData}
-                    pagination={{ pageSize: 10 }}
+                    pagination={false}
                     onRow={(record) => ({
                       onClick: () => {
-                        console.log(record , "recordrecord record record record");
-                        
                         setSelectedAccountId(record.key); // Update selectedAccountId on row click
                       },
                     })}
-                    
                   />
                 ) : (
                   <DataNotFound />
                 )}
               </Box>
             )}
-             <CustomDataFlow selectedAccountId={selectedAccountId} />
-
+            <CustomDataFlow selectedAccountId={selectedAccountId} />
           </Box>
         )}
       </Card>

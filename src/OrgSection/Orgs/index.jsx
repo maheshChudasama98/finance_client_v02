@@ -115,8 +115,7 @@ export default function Index() {
     { Header: 'Branch Name', keyLabel: 'BranchName', xs: 4 },
     { Header: 'Create Date', keyLabel: 'CreateAt', xs: 4 },
     { Header: 'Branch Users', keyLabel: 'BranchUsers', xs: 4 },
-    // { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    // { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    
   ];
 
   const tableSetData = list.map((item, index) => ({
@@ -329,7 +328,7 @@ export default function Index() {
                 {list && list?.length > 0 ? (
                   <Box
                     sx={{
-                      marginX: 2,
+                      // marginX: 2,
                       minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}

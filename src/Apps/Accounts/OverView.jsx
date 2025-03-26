@@ -4,10 +4,11 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
+import { formatToINR } from 'src/utils/format-number';
+
 import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
-
 export default function OverView({ title, subheader, chart, ...other }) {
   const { labels, series, options } = chart;
   const absoluteMax = Math.max(...series.flatMap((s) => s.data.map((value) => Math.abs(value))));
@@ -38,7 +39,9 @@ export default function OverView({ title, subheader, chart, ...other }) {
       y: {
         formatter: (value) => {
           const isNegative = value < 0;
-          return `<div style="font-weight: bold; color: ${isNegative ? '#FF4C4C' : '#2ECC71'};">${value.toLocaleString('en-IN')} ${isNegative ? 'Out' : 'In'}</div>`;
+          return `<div style="font-weight: bold; color: ${
+            isNegative ? '#FF4C4C' : '#2ECC71'
+          };">${value.toLocaleString('en-IN')} ${isNegative ? 'Out' : 'In'}</div>`;
         },
       },
     },
@@ -55,13 +58,13 @@ export default function OverView({ title, subheader, chart, ...other }) {
     },
     dataLabels: {
       enabled: true,
-      formatter: (value) => `${value.toLocaleString('en-IN')}`,
+      formatter: (value) => `${formatToINR(value)}`,
       style: { fontWeight: 'bold' },
       background: {
         enabled: true,
         foreColor: '#fff',
         borderRadius: 4,
-        padding: 6,
+        padding: 10,
       },
       offsetY: -8,
     },
@@ -78,13 +81,7 @@ export default function OverView({ title, subheader, chart, ...other }) {
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
       <Box sx={{ p: 3, pb: 1 }}>
-        <Chart
-          type="line"
-          series={series}
-          options={chartOptions}
-          width="100%"
-          height={345}
-        />
+        <Chart type="line" series={series} options={chartOptions} width="100%" height={345} />
       </Box>
     </Card>
   );

@@ -24,14 +24,9 @@ import {
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import {
-  CustomTable,
-  CustomAvatar,
-  CustomCheckbox,
-  CustomSearchInput,
-} from 'src/components/CustomComponents';
+import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import Form from './BranchForm';
 
@@ -168,7 +163,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -187,7 +182,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
@@ -223,9 +218,15 @@ export default function Index() {
     ),
     child: (
       <>
-        <CustomTable
-          columns={subColumns}
-          data={
+        <Table
+          pagination={false}
+          columns={subColumns.map((col) => ({
+            title: col.Header,
+            dataIndex: col.keyLabel,
+            key: col.keyLabel,
+            width: col.xs * 100, // Adjust width based on xs value
+          }))}
+          dataSource={
             item?.UserList?.length > 0
               ? item?.UserList?.map((subItem, i) => ({
                   BranchName: (
@@ -249,6 +250,7 @@ export default function Index() {
                 }))
               : []
           }
+          rowKey={(record) => record.BranchName}
         />
         {!item?.UserList?.length > 0 && <DataNotFound />}
       </>
@@ -321,12 +323,25 @@ export default function Index() {
                 {list && list?.length > 0 ? (
                   <Box
                     sx={{
-                      marginX: 2,
+                      // marginX: 2,
                       minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable columns={columns} data={tableSetData} expanded  />
+                    <Table
+                      columns={columns.map((col) => ({
+                        title: col.Header,
+                        dataIndex: col.keyLabel,
+                        key: col.keyLabel,
+                        width: col.xs * 100, // Adjust width based on xs value
+                      }))}
+                      pagination={false}
+                      dataSource={tableSetData}
+                      expandable={{
+                        expandedRowRender: (record) => record.child,
+                      }}
+                      rowKey={(record) => record.Index}
+                    />
                   </Box>
                 ) : (
                   <DataNotFound />

@@ -21,9 +21,9 @@ import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { ModalDialog } from 'src/components/model/index';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomTable, CustomAvatar, CustomCheckbox } from 'src/components/CustomComponents';
+import { CustomAvatar, CustomCheckbox } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import UserGrid from './UserGrid';
 import FormDetails from './UserForm';
@@ -62,28 +62,28 @@ export default function Index() {
   const DeleteAction = () => {};
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'User Name', keyLabel: 'UserInfo', xs: 4 },
-    { Header: 'Role Name', keyLabel: 'RoleName', xs: 3 },
-    { Header: 'Registration', keyLabel: 'CreateAt', xs: 3 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    { title: '#', dataIndex: 'Index', key: 'Index', width: '5%' },
+    { title: 'User Name', dataIndex: 'UserInfo', key: 'UserInfo', width: '40%' },
+    { title: 'Role Name', dataIndex: 'RoleName', key: 'RoleName', width: '30%' },
+    { title: 'Registration', dataIndex: 'CreateAt', key: 'CreateAt', width: '20%' },
+    { title: 'Active', dataIndex: 'Active', key: 'Active', width: '5%' },
+    { title: 'Action', dataIndex: 'Action', key: 'Action', width: '5%' },
   ];
 
   const tableSetData = userList?.map((item, index) => ({
+    key: index,
     Index: <Typography variant="light">{index + 1 || ''}</Typography>,
-
     UserInfo: (
       <Stack direction="row" alignItems="center" spacing={2}>
         <CustomAvatar
           displayName={item?.AvatarName}
-          //   width={60}
-          //   height={60}
           iconSize={15}
+          width={45}
+          height={45}
           bgColor="#05a972"
           photoURL={item?.ImgPath || ''}
         />
-        <Typography variant="normal">
+        <Typography variant="">
           {item?.FullName}
           <Typography
             variant="light"
@@ -110,7 +110,6 @@ export default function Index() {
         loading={loadingSwitch[item?.UserId]}
         checked={item?.isActive}
         onClick={(e) => {
-          //   StatusChange(item?.UserId);
           e.stopPropagation();
         }}
       />
@@ -123,7 +122,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -142,7 +141,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
@@ -194,12 +193,11 @@ export default function Index() {
             </Button>
           }
         />
-
         <Box
           sx={{
             borderRadius: 1.3,
             paddingY: 2,
-            paddingX: 2,
+            paddingX: displayFlag ? 2 : 0,
           }}
         >
           {displayFlag ? (
@@ -213,22 +211,17 @@ export default function Index() {
               ) : (
                 <Box
                   sx={{
-                    marginTop: 1.5,
-                    overflowY: 'hidden',
                     overflowX: 'auto',
                   }}
                 >
                   {userList && userList?.length > 0 ? (
                     <>
-                      <Box
-                        sx={{
-                          display: { xs: 'none', md: 'block' },
-                          minWidth: '1000px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        <CustomTable columns={columns} data={tableSetData} />
-                      </Box>
+                      <Table columns={columns} dataSource={tableSetData} pagination={false}
+                      onRow={(record) => ({
+                        onClick: () => {
+                          // setSelectedAccountId(record.key); // Update selectedAccountId on row click
+                        },
+                      })} />
                       <Box
                         sx={{
                           display: { xs: 'block', md: 'none' },
