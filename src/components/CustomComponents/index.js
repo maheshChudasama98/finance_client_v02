@@ -5,6 +5,7 @@ export { CustomTooltip } from './CustomTooltip';
 export { GoogleAddress } from './GoogleAddress';
 export { CustomCheckbox } from './CustomCheckbox';
 export { CustomIconPicker } from './CustomIconPicker';
+export { CustomPageHeader } from './CustomPageHeader';
 export { CustomColorPicker } from './CustomColorPicker';
 export { CustomSearchInput } from './CustomSearchInput';
 export { CustomLabelComponent } from './CustomLabelComponent';

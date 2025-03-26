@@ -22,7 +22,12 @@ import { AccountActionService, AccountsFetchListService } from 'src/Services/Met
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
+import {
+  CustomAvatar,
+  CustomCheckbox,
+  CustomPageHeader,
+  CustomSearchInput,
+} from 'src/components/CustomComponents';
 
 import { Table, Dropdown } from 'antd';
 
@@ -42,6 +47,7 @@ export default function Index() {
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState(null);
+  const [headerTitles, setHeaderTitles] = useState([]);
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -161,6 +167,7 @@ export default function Index() {
 
   const tableSetData = accountsList.map((item, index) => ({
     key: item?.AccountId,
+    value: item,
     Index: <Typography variant="light">{index + 1 || ''}</Typography>,
     AccountName: (
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -317,13 +324,15 @@ export default function Index() {
   };
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Box sx={{ 
-        border: "solid 1px #a1a1a1",
-        height: "200px",
-        marginBottom: "16px",
-        borderStyle: "dashed",
-        borderRadius: "12px"
-      }}/>
+      <CustomPageHeader
+        // dataArray={[
+        //   { title: 'Account Name', value: 'Angel one' },
+        //   { title: 'Account Type', value: 'Investments' },
+        //   { title: 'Current Amount', value: '₹ 16,400' },
+        //   { title: 'Start Amount', value: '₹ 16,400' },
+        // ]}
+        dataArray={headerTitles}
+      />
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
@@ -383,7 +392,18 @@ export default function Index() {
                     pagination={false}
                     onRow={(record) => ({
                       onClick: () => {
-                        setSelectedAccountId(record.key); // Update selectedAccountId on row click
+                        setSelectedAccountId(record.key);
+                        setHeaderTitles([
+                          { title: 'Account Name', value: record?.value?.AccountName },
+                          {
+                            title: 'Account Type',
+                            value: record?.value?.TypeId
+                              ? AccountTypes?.find((e) => e?.key === record?.value?.TypeId)?.value
+                              : '',
+                          },
+                          { title: 'Current Amount', value: record?.value?.CurrentAmount },
+                          { title: 'Start Amount', value: record?.value?.StartAmount },
+                        ]); 
                       },
                     })}
                   />
