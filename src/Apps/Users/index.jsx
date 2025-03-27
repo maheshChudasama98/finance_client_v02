@@ -15,6 +15,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
+import { success } from 'src/theme/palette';
 import { FetchUserListController } from 'src/Services/User.Services';
 
 import SvgColor from 'src/components/svg-color';
@@ -80,7 +81,7 @@ export default function Index() {
           iconSize={15}
           width={45}
           height={45}
-          bgColor="#05a972"
+          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="">

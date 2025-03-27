@@ -99,45 +99,45 @@ export function overrides(theme) {
       },
     },
 
-    // MuiTextField: {
-    //   styleOverrides: {
-    //     root: {
-    //       '& .MuiOutlinedInput-root': {
-    //         '& fieldset': {
-    //           borderColor: theme.palette.grey[500], // Default border color
-    //         },
-    //         '&:hover fieldset': {
-    //           borderColor: theme.palette.success.main, // Hover border color
-    //         },
-    //         '&.Mui-focused fieldset': {
-    //           borderColor: theme.palette.success.main, // Focus border color
-    //         },
-    //         '&.Mui-error fieldset': {
-    //           borderColor: theme.palette.error.main, // Error border color
-    //         },
-    //         '&.Mui-error.Mui-focused fieldset': {
-    //           borderColor: theme.palette.error.main, // Error focus border color
-    //         },
-    //       },
-    //     },
-    //   },
-    // },
-    // MuiInputLabel: {
-    //   styleOverrides: {
-    //     root: {
-    //       color: theme.palette.grey[600], // Default label color
-    //       '&.Mui-focused': {
-    //         color: theme.palette.success.main, // Focused label color
-    //       },
-    //       '&.Mui-error': {
-    //         color: theme.palette.error.main, // Error label color
-    //       },
-    //       '&.Mui-error.Mui-focused': {
-    //         color: theme.palette.error.main, // Error and focused label color
-    //       },
-    //     },
-    //   },
-    // },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              // borderColor: theme.palette.grey[500], // Default border color
+            },
+            '&:hover fieldset': {
+              borderColor: theme.palette.success.main, // Hover border color
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: theme.palette.success.main, // Focus border color
+            },
+            '&.Mui-error fieldset': {
+              borderColor: theme.palette.error.main, // Error border color
+            },
+            '&.Mui-error.Mui-focused fieldset': {
+              borderColor: theme.palette.error.main, // Error focus border color
+            },
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: theme.palette.grey[600], // Default label color
+          '&.Mui-focused': {
+            color: theme.palette.success.main, // Focused label color
+          },
+          '&.Mui-error': {
+            color: theme.palette.error.main, // Error label color
+          },
+          '&.Mui-error.Mui-focused': {
+            color: theme.palette.error.main, // Error and focused label color
+          },
+        },
+      },
+    },
     MuiCard: {
       styleOverrides: {
         root: {

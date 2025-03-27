@@ -78,15 +78,23 @@ export const info = {
   darker: '#003768',
   contrastText: '#FFFFFF',
 };
-
 export const success = {
-  lighter: '#C8FAD6',
-  light: '#5BE49B',
-  main: '#00A76F',
-  dark: '#007867',
-  darker: '#004B50',
-  contrastText: '#FFFFFF',
+  lighter: '#C8FAD0', // Lightest shade
+  light: '#7BE86B', // Lighter shade
+  main: '#5BC43A', // Base color
+  dark: '#3A8F2A', // Darker shade
+  darker: '#1F5A18', // Darkest shade
+  contrastText: '#FFFFFF', // Contrast text color
 };
+
+// export const success = {
+//   lighter: '#C8FAD6',
+//   light: '#5BE49B',
+//   main: '#00A76F',
+//   dark: '#007867',
+//   darker: '#004B50',
+//   contrastText: '#FFFFFF',
+// };
 
 export const warning = {
   lighter: '#FFF5CC',
@@ -137,7 +145,7 @@ const base = {
   common,
   divider: alpha(grey[500], 0.2),
   action,
-  CancelButton
+  CancelButton,
 };
 
 const nav = {
@@ -172,4 +180,4 @@ export function palette() {
       active: grey[600],
     },
   };
-};
+}

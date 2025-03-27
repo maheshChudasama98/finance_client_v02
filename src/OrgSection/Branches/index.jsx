@@ -15,6 +15,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
+import { success } from 'src/theme/palette';
 import {
   BranchListService,
   BranchActiveService,
@@ -124,7 +125,7 @@ export default function Index() {
           height={45}
           iconSize={15}
           icon={'fa-solid fa-sitemap' || ''}
-          bgColor="#05a972"
+          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="light">{item?.BranchName}</Typography>
@@ -235,7 +236,7 @@ export default function Index() {
                         width={45}
                         height={45}
                         iconSize={15}
-                        bgColor="#05a972"
+                        bgColor={success?.main}
                         photoURL={subItem?.ImgPath || ''}
                         displayName={subItem?.AvatarName || ''}
                       />
@@ -252,7 +253,7 @@ export default function Index() {
           }
           rowKey={(record) => record.BranchName}
         />
-        {!item?.UserList?.length > 0 && <DataNotFound />}
+        {/* {!item?.UserList?.length > 0 && <DataNotFound />} */}
       </>
     ),
   }));

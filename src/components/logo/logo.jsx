@@ -2,6 +2,9 @@ import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
+
+import { ImgUrl, LogoDefaultPath } from 'src/constance';
+
 // import Link from '@mui/material/Link';
 // import { useTheme } from '@mui/material/styles';
 
@@ -9,7 +12,7 @@ import Box from '@mui/material/Box';
 
 // ----------------------------------------------------------------------
 
-const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
+const Logo = forwardRef(({ disabledLink = false, orgImg, sx, ...other }, ref) => {
   // const theme = useTheme();
 
   // const PRIMARY_LIGHT = theme.palette.primary.light;
@@ -40,7 +43,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
       }}
       {...other}
     >
-      <img src='Logos/logo.png' width="auto" alt='logo' />
+      <img src={orgImg ? ImgUrl + orgImg : LogoDefaultPath} width="auto" alt="logo" />
 
       {/* <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 512 512">
         <defs>
@@ -91,16 +94,15 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
     return logo;
   }
 
-  return (
-    logo
-    // <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
-    // </Link >
-  );
+  return logo;
+  // <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
+  // </Link >
 });
 
 Logo.propTypes = {
   disabledLink: PropTypes.bool,
   sx: PropTypes.object,
+  orgImg: PropTypes.string,
 };
 
 export default Logo;

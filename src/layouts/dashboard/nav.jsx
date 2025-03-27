@@ -38,7 +38,6 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
       onCloseNav();
     }
   }, [pathname]);
-  
 
   useEffect(() => {
     //  const filterData = navConfig.filter((item) => {
@@ -48,7 +47,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
     //   }
     //   return '';
     // });
-    const filterData = PermissionList?.filter((item)=> item?.CanRead === 1)
+    const filterData = PermissionList?.filter((item) => item?.CanRead === 1);
     setFilterNavItems(filterData);
   }, [PermissionList]);
 
@@ -149,18 +148,18 @@ function NavItem({ item }) {
         textTransform: 'capitalize',
         fontWeight: 'fontWeightMedium',
         ...(active && {
-          color: 'primary.main',
+          color: 'success.main',
           fontWeight: 'fontWeightSemiBold',
-          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+          bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
           '&:hover': {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+            bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
           },
         }),
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
         {/* {item.icon} */}
-        <i className={item?.Icon}  />
+        <i className={item?.Icon} />
       </Box>
 
       <Box component="span">{item.ModulesName} </Box>
@@ -195,23 +194,25 @@ function NavMobileItem({ item }) {
           display: 'grid',
           placeContent: 'center',
           ...(active && {
-            color: 'primary.main',
+            color: 'success.main',
             fontWeight: 'fontWeightSemiBold',
-            // border: (theme) => `dashed 1px ${theme.palette.primary.main}`,
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+            // border: (theme) => `dashed 1px ${theme.palette.success.main}`,
+            bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
             '&:hover': {
-              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+              bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
             },
           }),
         }}
       >
         <Box component="span" sx={{ width: 20, height: 20, margin: 'auto', mb: 0.5 }}>
-          <i className={item?.Icon}  style={{ fontSize :20 }} />
+          <i className={item?.Icon} style={{ fontSize: 20 }} />
           {/* {item.icon} */}
         </Box>
 
         <Box component="span" sx={{ textAlign: 'center' }}>
-          {`${item?.ModulesName ? item?.ModulesName?.slice(0, 9) : ''}${item?.ModulesName?.length > 9 ? '...' : ''}`}
+          {`${item?.ModulesName ? item?.ModulesName?.slice(0, 9) : ''}${
+            item?.ModulesName?.length > 9 ? '...' : ''
+          }`}
         </Box>
       </ListItemButton>
     </CustomTooltip>

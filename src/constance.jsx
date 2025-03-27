@@ -1,13 +1,15 @@
 
-// export const apiURL = "http://localhost:8100"
-export const apiURL = "http://www.smartsdn.in:8181"
+export const apiURL = "http://localhost:8200"
+// export const apiURL = "http://www.smartsdn.in:8181"
 export const ImgUrl = `${apiURL}/public/`;
 
 export const DevelopMood = true;
-export const AdminEmail = "mahesh.chudasama098@gmail.ocm";
 export const ProjectName = "FV2";
+export const LogoDefaultPath = "Logos/logo2.png";
+export const AdminEmail = "mahesh.chudasama098@gmail.ocm";
 
 // Time Format 
+export const BackEndSendFormat = "YYYY-MM-DD";
 export const DateFormat = "DD/MM/YYYY";
 export const DateAndTimeFormat = "DD/MM/YYYY - HH:mm A";
 export const TimeFormat = "HH:mm";

@@ -15,6 +15,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
+import { success } from 'src/theme/palette';
 import { OrgListService, OrgActiveService, OrgRemoveService } from 'src/Services/org/Org.Services';
 
 import SvgColor from 'src/components/svg-color';
@@ -115,7 +116,6 @@ export default function Index() {
     { Header: 'Branch Name', keyLabel: 'BranchName', xs: 4 },
     { Header: 'Create Date', keyLabel: 'CreateAt', xs: 4 },
     { Header: 'Branch Users', keyLabel: 'BranchUsers', xs: 4 },
-    
   ];
 
   const tableSetData = list.map((item, index) => ({
@@ -127,12 +127,10 @@ export default function Index() {
           height={45}
           iconSize={15}
           icon={'fa-solid fa-sitemap' || ''}
-          bgColor="#05a972"
+          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
-        <Typography variant="light">
-          {item?.OrgName}
-        </Typography>
+        <Typography variant="light">{item?.OrgName}</Typography>
       </Stack>
     ),
     Branches: (
@@ -237,7 +235,7 @@ export default function Index() {
                         height={45}
                         iconSize={15}
                         icon="fa-solid fa-code-branch"
-                        bgColor="#05a972"
+                        bgColor={success?.main}
                         photoURL={subItem?.ImgPath || ''}
                       />
                       <Typography variant="light">{subItem?.BranchName}</Typography>

@@ -18,11 +18,11 @@ import Iconify from 'src/components/iconify';
 
 // import Searchbar from './common/searchbar';
 import { NAV, HEADER } from './config-layout';
-import BranchPopover from './common/branch-popover';
+// import BranchPopover from './common/branch-popover';
 import AccountPopover from './common/account-popover';
 // import LanguagePopover from './common/language-popover';
-import TransactionsPopover from './common/transactions-popover';
-import NotificationsPopover from './common/notifications-popover';
+// import TransactionsPopover from './common/transactions-popover';
+// import NotificationsPopover from './common/notifications-popover';
 
 // ----------------------------------------------------------------------
 
@@ -45,9 +45,9 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       <Box sx={{ flexGrow: 1 }} />
 
       <Stack direction="row" alignItems="center" spacing={1}>
-        <BranchPopover />
-        <TransactionsPopover />
-        <NotificationsPopover />
+        {/* <BranchPopover /> */}
+        {/* <TransactionsPopover /> */}
+        {/* <NotificationsPopover /> */}
         <AccountPopover />
       </Stack>
     </>
@@ -82,7 +82,6 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
 
       {
         upLg &&
-
         <IconButton
           size="small"
           onClick={() => setIsActive(!isActive)}
