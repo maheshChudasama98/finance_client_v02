@@ -18,7 +18,6 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { useRouter } from 'src/routes/hooks';
 
 import { bgGradient } from 'src/theme/css';
-import { ProjectName } from 'src/constance';
 import { LoginApiAction, InfoApiActionService } from 'src/Services/Auth.Services';
 
 import Logo from 'src/components/logo';
@@ -85,7 +84,7 @@ export default function LoginView() {
           }}
         >
           <Typography variant="h4" align="center" sx={{ mt: 2, mb: 5 }}>
-            Sign in to {ProjectName}
+            Sign in to {__PROJECT_NAME__}
           </Typography>
 
           <Formik

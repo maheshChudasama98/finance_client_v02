@@ -1,10 +1,8 @@
 
-export const apiURL = "http://localhost:8200"
-// export const apiURL = "http://www.smartsdn.in:8181"
+export const apiURL = __API_URL__
 export const ImgUrl = `${apiURL}/public/`;
 
 export const DevelopMood = true;
-export const ProjectName = "FV2";
 export const LogoDefaultPath = "Logos/logo2.png";
 export const AdminEmail = "mahesh.chudasama098@gmail.ocm";
 
@@ -42,8 +40,8 @@ export const TransactionActions = [
 ];
 
 // Weather Api 
-export const WEATHER_API_KEY = '5d519472e191015e1b7549761c7015ec';
-export const OPEN_WEATHER_API = 'https://api.openweathermap.org/data/2.5';
+export const WEATHER_API_KEY = __WEATHER_API_KEY__;
+export const OPEN_WEATHER_API = __OPEN_WEATHER_API__;
 export const DAILY_FORECAST_API_URL = `${OPEN_WEATHER_API}/forecast/daily`; // Seven days api
 export const WEATHER_API_URL = `${OPEN_WEATHER_API}/weather`; // Single day WEATHER api
 export const FORECAST_API_URL = `${OPEN_WEATHER_API}/forecast`; // Forecast api
