@@ -2,6 +2,14 @@
   "root": true,
   "globals": {
     "__APP_VERSION__": "readonly",
+    "__ENV_MODE__": "readonly",
+    "__DEVELOPER_MODE__": "readonly",
+    "__PROJECT_NAME__": "readonly",
+    "__API_URL__": "readonly",
+    "__ADMIN_GMAIL__": "readonly",
+    "__WEATHER_API_KEY__": "readonly",
+    "__OPEN_WEATHER_API__": "readonly",
+    "__GOOGLE_MAPS_API_KEY__": "readonly"
   },
   "env": {
     "browser": true,
@@ -177,6 +185,7 @@
           "custom-@fortawesome/free-solid-svg-icons",
           "custom-@fortawesome/react-fontawesome",
           "custom-react-color",
+          "custom-tinycolor2",
           [
             "parent",
             "sibling",
@@ -215,7 +224,8 @@
             "custom-@fortawesome/free-brands-svg-icons": "@fortawesome/free-brands-svg-icons",
             "custom-@fortawesome/free-solid-svg-icons": "@fortawesome/free-solid-svg-icons",
             "custom-@fortawesome/react-fontawesome": "@fortawesome/react-fontawesome",
-            "custom-react-color": "react-color"
+            "custom-react-color": "react-color",
+            "custom-tinycolor2": "tinycolor2"
           }
         },
         "internal-pattern": [

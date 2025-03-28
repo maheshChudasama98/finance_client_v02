@@ -1,7 +1,9 @@
 import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
+import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -25,6 +27,7 @@ import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomAvatar,
   CustomCheckbox,
+  CustomTabLabel,
   CustomPageHeader,
   CustomSearchInput,
 } from 'src/components/CustomComponents';
@@ -32,6 +35,7 @@ import {
 import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
+import Transactions from './Transactions';
 import CustomDataFlow from './CustomDataFlow';
 
 export default function Index() {
@@ -48,6 +52,7 @@ export default function Index() {
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState(null);
   const [headerTitles, setHeaderTitles] = useState([]);
+  const [tabValue, setTabValue] = useState('list');
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -322,20 +327,17 @@ export default function Index() {
     }
     return 'New Account';
   };
+
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <CustomPageHeader
-        // dataArray={[
-        //   { title: 'Account Name', value: 'Angel one' },
-        //   { title: 'Account Type', value: 'Investments' },
-        //   { title: 'Current Amount', value: '₹ 16,400' },
-        //   { title: 'Start Amount', value: '₹ 16,400' },
-        // ]}
-        dataArray={headerTitles}
-      />
+      <CustomPageHeader dataArray={headerTitles} />
       <Card>
         <CardHeader
-          title={titleAction(!displayFlag)}
+          title={<>{titleAction(!displayFlag)}</>}
           sx={{ marginBottom: 2 }}
           action={
             <Button
@@ -366,7 +368,37 @@ export default function Index() {
                 justifyContent: 'space-between',
               }}
             >
-              <Box />
+              <Tabs
+                variant="scrollable"
+                scrollButtons="auto"
+                value={tabValue}
+                onChange={handleChange}
+              >
+                <Tab
+                  label={
+                    <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
+                  }
+                  value="list"
+                />
+
+                <Tab
+                  label={
+                    <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
+                  }
+                  value="analysis"
+                />
+
+                <Tab
+                  label={
+                    <CustomTabLabel
+                      selectValue={tabValue}
+                      label="Transactions"
+                      value="transactions"
+                    />
+                  }
+                  value="transactions"
+                />
+              </Tabs>
 
               <CustomSearchInput
                 loading={loadingSearchLoader}
@@ -385,34 +417,44 @@ export default function Index() {
                   overflow: 'auto',
                 }}
               >
-                {accountsList && accountsList?.length > 0 ? (
-                  <Table
-                    columns={columns}
-                    dataSource={tableSetData}
-                    pagination={false}
-                    onRow={(record) => ({
-                      onClick: () => {
-                        setSelectedAccountId(record.key);
-                        setHeaderTitles([
-                          { title: 'Account Name', value: record?.value?.AccountName },
-                          {
-                            title: 'Account Type',
-                            value: record?.value?.TypeId
-                              ? AccountTypes?.find((e) => e?.key === record?.value?.TypeId)?.value
-                              : '',
+                {tabValue === 'list' && (
+                  <>
+                    {accountsList && accountsList?.length > 0 ? (
+                      <Table
+                        columns={columns}
+                        dataSource={tableSetData}
+                        pagination={false}
+                        onRow={(record) => ({
+                          onClick: () => {
+                            setSelectedAccountId(record.key);
+                            setHeaderTitles([
+                              { title: 'Account Name', value: record?.value?.AccountName },
+                              {
+                                title: 'Account Type',
+                                value: record?.value?.TypeId
+                                  ? AccountTypes?.find((e) => e?.key === record?.value?.TypeId)
+                                      ?.value
+                                  : '',
+                              },
+                              { title: 'Current Amount', value: record?.value?.CurrentAmount },
+                              { title: 'Start Amount', value: record?.value?.StartAmount },
+                            ]);
                           },
-                          { title: 'Current Amount', value: record?.value?.CurrentAmount },
-                          { title: 'Start Amount', value: record?.value?.StartAmount },
-                        ]); 
-                      },
-                    })}
-                  />
-                ) : (
-                  <DataNotFound />
+                        })}
+                      />
+                    ) : (
+                      <DataNotFound />
+                    )}
+                  </>
+                )}
+                {tabValue === 'analysis' && (
+                  <CustomDataFlow selectedAccountId={selectedAccountId} />
+                )}
+                {tabValue === 'transactions' && (
+                  <Transactions selectedAccountId={selectedAccountId} />
                 )}
               </Box>
             )}
-            <CustomDataFlow selectedAccountId={selectedAccountId} />
           </Box>
         )}
       </Card>

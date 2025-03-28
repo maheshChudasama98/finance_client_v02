@@ -15,8 +15,6 @@ import { shadows } from 'src/theme/shadows';
 
 import { Empty } from 'antd';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyAzJrI7iGhyHIbhLXcG_n8T_19x-JdhCWk';
-
 function loadScript(src, position, id) {
     return new Promise((resolve, reject) => {
         if (!position) {
@@ -63,7 +61,7 @@ export function GoogleAddress({ callBackAction }) {
 
     if (typeof window !== 'undefined' && !loaded.current) {
         loadScript(
-            `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&sensor=false`,
+            `https://maps.googleapis.com/maps/api/js?key=${__GOOGLE_MAPS_API_KEY__}&libraries=places&sensor=false`,
             document.querySelector('head'),
             'google-maps'
         ).then(() => {
