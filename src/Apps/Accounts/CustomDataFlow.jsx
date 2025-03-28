@@ -43,7 +43,7 @@ const CustomDataFlow = ({selectedAccountId}) => {
         labels: cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
         series: [
           {
-            name: 'Flow',
+            name: 'Saving Account',
             // type: 'line',
             // color: '#00A76F',
             data:

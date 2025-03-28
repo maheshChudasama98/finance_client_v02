@@ -6,6 +6,8 @@ import DashboardLayout from 'src/layouts/dashboard';
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
+export const ChangePasswordPage = lazy(() => import('src/pages/change.password'));
+export const ProfilePage = lazy(() => import('src/pages/profile'));
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +69,8 @@ export default function Router({ permissionList }) {
       children: [
         ...filterData,
         { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
+        { path: '/change-password', element: <ChangePasswordPage />, title: 'Change Password' },
+        { path: '/profile', element: <ProfilePage />, title: 'Profile' },
       ],
     },
     ...CommRoutes,

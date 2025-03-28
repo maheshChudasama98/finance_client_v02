@@ -23,9 +23,9 @@ import {
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomTable, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
+import { CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import Form from './RoleForm';
 import Permission from './Permission';
@@ -101,17 +101,47 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Role Name', keyLabel: 'RoleName', xs: 3.3 },
-    { Header: 'Description', keyLabel: 'Description', xs: 3.3 },
-    { Header: 'Registration', keyLabel: 'CreateAt', xs: 3.3 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    {
+      title: '#',
+      dataIndex: 'Index',
+      key: 'Index',
+      width: '5%',
+    },
+    {
+      title: 'Role Name',
+      dataIndex: 'RoleName',
+      key: 'RoleName',
+      width: '25%',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'Description',
+      key: 'Description',
+      width: '25%',
+    },
+    {
+      title: 'Registration',
+      dataIndex: 'CreateAt',
+      key: 'CreateAt',
+      width: '25%',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      width: '10%',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      width: '10%',
+    },
   ];
 
   const tableSetData = list.map((item, index) => ({
+    key: item?.RoleId,
     Index: <Typography variant="light">{index + 1 || ''}</Typography>,
-
     RoleName: (
       <Typography variant="light" className="">
         {item?.RoleName || ''}
@@ -145,7 +175,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -164,7 +194,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
@@ -198,9 +228,7 @@ export default function Index() {
         </IconButton>
       </Dropdown>
     ),
-    child: (
-        <Permission dataValues={item} />
-    ),
+    child: <Permission dataValues={item} />,
   }));
 
   const titleAction = (display) => {
@@ -269,12 +297,19 @@ export default function Index() {
                 {list && list?.length > 0 ? (
                   <Box
                     sx={{
-                      marginX: 2,
+                      // marginX: 2,
                       minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable columns={columns} data={tableSetData} expanded />
+                    <Table
+                      columns={columns}
+                      dataSource={tableSetData}
+                      expandable={{
+                        expandedRowRender: (record) => record.child,
+                      }}
+                      pagination={false}
+                    />
                   </Box>
                 ) : (
                   <DataNotFound />

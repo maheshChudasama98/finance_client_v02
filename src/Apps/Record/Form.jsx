@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
-import { TransactionActions } from 'src/constance';
+import { BackEndSendFormat, TransactionActions } from 'src/constance';
 import {
   TransactionModifyService,
   TransactionFetchDataService,
@@ -18,8 +18,8 @@ import {
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
 import { CustomAvatar } from 'src/components/CustomComponents';
 import {
+  DateAndTime,
   TextFieldForm,
-  DatePickerCustom,
   AutoCompleteSelectMenu,
   AutoCompleteSelectMultiple,
 } from 'src/components/inputs';
@@ -51,13 +51,12 @@ export default function Index({ backAction, editObject, deleteAction }) {
     );
   }, [show]);
 
-
   return (
     <Formik
       enableReinitialize
       initialValues={{
         Action: editObject?.Action === 'From' ? 'Transfer' : editObject?.Action || 'Out',
-        Date: editObject?.Date ? dayjs(editObject?.Date) : null,
+        DateDay: editObject?.Date ? dayjs(editObject?.Date) : null,
         Amount: editObject?.Amount || null,
         AccountId: editObject?.AccountId || null,
         CategoryId: editObject?.CategoryId || null,
@@ -69,7 +68,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
       }}
       validationSchema={Yup.object().shape({
         Action: Yup.string().required('Action is required.'),
-        Date: Yup.string().required('Date is required.'),
+        DateDay: Yup.string().required('Date is required.'),
         Amount: Yup.string().required('Amount is required.'),
         AccountId: Yup.string().required('Account is required.'),
         CategoryId: Yup.number().when('Action', {
@@ -112,7 +111,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
         if (editObject?.TransactionId) {
           values.TransactionId = editObject?.TransactionId;
         }
-
+        values.Date = dayjs(values.DateDay).startOf('day').format(BackEndSendFormat);
+        delete values.DateDay;
         dispatch(
           TransactionModifyService(values, (res) => {
             setFormSubmitLoader(false);
@@ -150,13 +150,13 @@ export default function Index({ backAction, editObject, deleteAction }) {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <DatePickerCustom
+                <DateAndTime
                   formik={props}
                   label="Date"
-                  field="Date"
-                  defaultValue={values.Date}
+                  field="DateDay"
+                  defaultValue={values.DateDay}
                   callBackAction={(event) => {
-                    setFieldValue('Date', dayjs(event));
+                    setFieldValue('DateDay', dayjs(event));
                   }}
                 />
               </Grid>

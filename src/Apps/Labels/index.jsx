@@ -18,9 +18,9 @@ import { LabelActionService, LabelsFetchListService } from 'src/Services/Meter.S
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomTable, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
+import { CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
 
@@ -87,19 +87,42 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Label', keyLabel: 'Label', xs: 2 },
-    { Header: 'Color', keyLabel: 'Color', xs: 2 },
-    { Header: '', keyLabel: '', xs: 5 },
-    { Header: 'Used', keyLabel: 'Used', xs: 1 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    {
+      title: '#',
+      dataIndex: 'Index',
+      key: 'Index',
+      width: '80px',
+      render: (text) => <Typography variant="">{text}</Typography>,
+    },
+    {
+      title: 'Label',
+      dataIndex: 'Label',
+      key: 'Label',
+      render: (text) => <Typography variant=" ">{text}</Typography>,
+    },
+    {
+      title: 'Used',
+      dataIndex: 'Used',
+      key: 'Used',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      width: '100px',
+    },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
-    Index: <Typography variant="normal">{index + 1 || ''}</Typography>,
-    Label: <Typography variant="normal">{item?.LabelName || ''}</Typography>,
-    Color: <Typography variant="normal">{item?.StartAmount || '-'}</Typography>,
+    key: item?.LabelId,
+    Index: index + 1 || '',
+    Label: item?.LabelName || '',
+    Color: item?.StartAmount || '-',
     Used: (
       <CustomCheckbox
         checked={item?.isUsing}
@@ -120,7 +143,6 @@ export default function Index() {
         }}
       />
     ),
-
     Action: (
       <Dropdown
         trigger={['click']}
@@ -129,7 +151,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -148,7 +170,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant=""
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
@@ -183,6 +205,10 @@ export default function Index() {
       </Dropdown>
     ),
   }));
+
+  const handleRowClick = (record) => {
+    console.log('Row clicked:', record);
+  };
 
   const titleAction = (display) => {
     if (display) {
@@ -250,12 +276,19 @@ export default function Index() {
                 {accountsList && accountsList?.length > 0 ? (
                   <Box
                     sx={{
-                      marginX: 2,
+                      // marginX: 2,
                       minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable columns={columns} data={tableSetData} />
+                    <Table
+                      columns={columns}
+                      dataSource={tableSetData}
+                      onRow={(record) => ({
+                        onClick: () => handleRowClick(record),
+                      })}
+                      pagination={false}
+                    />
                   </Box>
                 ) : (
                   <DataNotFound />

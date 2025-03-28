@@ -3,6 +3,8 @@ import React, { useRef } from 'react';
 
 import FormHelperText from '@mui/material/FormHelperText';
 
+import { success } from 'src/theme/palette';
+
 import { ErrorMessage } from 'formik';
 
 import { CustomAvatar } from '../CustomComponents';
@@ -47,7 +49,7 @@ export function ImagePicker({
         src={formik?.values[field]}
         iconSize={heightWidth / 3}
         displayName="Select image"
-        bgColor="#05a972"
+        bgColor={success?.main}
         error={formik?.errors[field]}
       />
 

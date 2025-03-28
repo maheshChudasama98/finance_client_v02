@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 
 import { fDate } from 'src/utils/format-time';
 
+import { success } from 'src/theme/palette';
+
 import { CustomAvatar } from 'src/components/CustomComponents';
 
 const ProjectItem = ({ item, editAction, deleteAction }) => (
@@ -31,7 +33,7 @@ const ProjectItem = ({ item, editAction, deleteAction }) => (
             <CustomAvatar
               width={{ xs: 60, md: 60, lg: 60 }} // default width
               height={{ xs: 60, md: 60, lg: 60 }}
-              bgColor="#05a972"
+              bgColor={success?.main}
               displayName={item?.AvatarName}
               photoURL={item?.ImgPath || ''}
             />
