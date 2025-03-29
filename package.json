@@ -1,7 +1,7 @@
 {
   "name": "@minimal/material-kit-react",
   "author": "minimals.cc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "type": "module",
   "scripts": {
@@ -89,5 +89,5 @@
     "vite": "^4.4.11",
     "vite-plugin-checker": "^0.6.2"
   },
-  "buildTime": "2025-03-25T15:47:18.977Z"
+  "buildTime": "2025-03-29T18:19:23.407Z"
 }
