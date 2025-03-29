@@ -185,6 +185,7 @@
           "custom-@fortawesome/free-solid-svg-icons",
           "custom-@fortawesome/react-fontawesome",
           "custom-react-color",
+          "custom-tinycolor2",
           [
             "parent",
             "sibling",
@@ -223,7 +224,8 @@
             "custom-@fortawesome/free-brands-svg-icons": "@fortawesome/free-brands-svg-icons",
             "custom-@fortawesome/free-solid-svg-icons": "@fortawesome/free-solid-svg-icons",
             "custom-@fortawesome/react-fontawesome": "@fortawesome/react-fontawesome",
-            "custom-react-color": "react-color"
+            "custom-react-color": "react-color",
+            "custom-tinycolor2": "tinycolor2"
           }
         },
         "internal-pattern": [

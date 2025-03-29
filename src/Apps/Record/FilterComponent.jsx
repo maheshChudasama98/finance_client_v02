@@ -95,6 +95,18 @@ export default function FilterComponent({ backAction, defaultValue }) {
                 <AutoCompleteSelectMultiple
                   required={false}
                   formik={props}
+                  label="Party"
+                  field="PartyIds"
+                  menuList={partyList}
+                  valueKey="PartyId"
+                  labelKey="FullName"
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <AutoCompleteSelectMultiple
+                  required={false}
+                  formik={props}
                   label="Labels"
                   field="Tags"
                   menuList={labelsList}
@@ -124,18 +136,6 @@ export default function FilterComponent({ backAction, defaultValue }) {
                   menuList={subCategoriesList}
                   valueKey="SubCategoryId"
                   labelKey="SubCategoriesName"
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <AutoCompleteSelectMultiple
-                  required={false}
-                  formik={props}
-                  label="Party"
-                  field="PartyId"
-                  menuList={partyList}
-                  valueKey="PartyId"
-                  labelKey="FullName"
                 />
               </Grid>
 

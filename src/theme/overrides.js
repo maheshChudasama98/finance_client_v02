@@ -98,7 +98,6 @@ export function overrides(theme) {
         },
       },
     },
-
     MuiTextField: {
       styleOverrides: {
         root: {
@@ -206,7 +205,6 @@ export function overrides(theme) {
         root: {
           ...theme.typography.body2,
           marginBottom: theme.spacing(0),
-
         },
       },
     },
@@ -218,21 +216,46 @@ export function overrides(theme) {
         },
       },
     },
-    MuiTab: {
+    MuiTabs: {
       styleOverrides: {
         root: {
           backgroundColor: 'transparent',
-          '&.Mui-selected': {
+          borderBottom: 'none !important',
+          boxShadow: 'none !important',
+          position: 'relative',
+          '& .MuiTabs-flexContainer': {
+            borderBottom: 'none !important',
+          },
+          border: 'none',
+          '& .MuiTabs-indicator': {
+            backgroundColor: theme.palette.success.main,
+          },
+        },
+      },
+    },
+    MuiTab: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          minWidth: 0,
+          padding: '6px 12px',
+          '&:hover': {
+            color: theme.palette.success.main,
             backgroundColor: 'transparent',
           },
-          '&:hover': {
+          '&.Mui-selected': {
+            color: theme.palette.success.main,
+            fontWeight: 'bold',
             backgroundColor: 'transparent',
           },
           '&.Mui-focusVisible': {
-            backgroundColor: 'success',
+            backgroundColor: 'transparent',
           },
         },
       },
     },
   };
-};
+}

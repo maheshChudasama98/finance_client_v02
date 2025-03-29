@@ -158,10 +158,8 @@ function NavItem({ item }) {
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-        {/* {item.icon} */}
-        <i className={item?.Icon} />
+        <i className={item?.Icon} style={{ fontSize: 18 }} />
       </Box>
-
       <Box component="span">{item.ModulesName} </Box>
     </ListItemButton>
   );

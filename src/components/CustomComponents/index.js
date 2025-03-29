@@ -4,6 +4,7 @@ export { CustomSelect } from './CustomSelect';
 export { CustomTooltip } from './CustomTooltip';
 export { GoogleAddress } from './GoogleAddress';
 export { CustomCheckbox } from './CustomCheckbox';
+export { CustomTabLabel } from './CustomTabLabel';
 export { CustomIconPicker } from './CustomIconPicker';
 export { CustomPageHeader } from './CustomPageHeader';
 export { CustomColorPicker } from './CustomColorPicker';

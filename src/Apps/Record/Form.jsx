@@ -55,7 +55,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
     <Formik
       enableReinitialize
       initialValues={{
-        Action: editObject?.Action === 'From' ? 'Transfer' : editObject?.Action || 'Out',
+        Action: editObject?.Action || 'Out',
         DateDay: editObject?.Date ? dayjs(editObject?.Date) : null,
         Amount: editObject?.Amount || null,
         AccountId: editObject?.AccountId || null,
@@ -82,7 +82,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
           otherwise: (schema) => schema.nullable(),
         }),
         TransferToAccountId: Yup.number().when('Action', {
-          is: (value) => value === 'Investment' || value === 'Transfer',
+          is: (value) => value === 'Investment' || value === 'From',
           then: (schema) => schema.required('Transfer is required'),
           otherwise: (schema) => schema.nullable(),
         }),
@@ -98,7 +98,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
           delete values.TransferToAccountId;
           delete values.PartyId;
         } else if (
-          values?.Action === 'Transfer' ||
+          values?.Action === 'From' ||
           values?.Action === 'Investment' ||
           values?.Action === 'Credit' ||
           values?.Action === 'Debit'
@@ -108,9 +108,14 @@ export default function Index({ backAction, editObject, deleteAction }) {
           delete values.Tags;
         }
 
+        if (values?.Action === 'From') {
+          values.Action = 'Transfer';
+        }
+
         if (editObject?.TransactionId) {
           values.TransactionId = editObject?.TransactionId;
         }
+
         values.Date = dayjs(values.DateDay).startOf('day').format(BackEndSendFormat);
         delete values.DateDay;
         dispatch(
@@ -169,7 +174,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                 <AutoCompleteSelectMenu
                   formik={props}
                   label={
-                    values?.Action === 'Transfer' || values?.Action === 'Investment'
+                    values?.Action === 'From' || values?.Action === 'Investment'
                       ? 'From'
                       : 'Account'
                   }
@@ -396,7 +401,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   </Grid>
                 </>
               )}
-              {(values?.Action === 'Transfer' || values?.Action === 'Investment') && (
+              {(values?.Action === 'From' || values?.Action === 'Investment') && (
                 <Grid item xs={12} md={6}>
                   <AutoCompleteSelectMenu
                     formik={props}
