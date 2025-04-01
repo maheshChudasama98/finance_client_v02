@@ -31,7 +31,7 @@ export function ImagePicker({
         ref={fileInputRef}
         id={field}
         name={field}
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/jpg"
         style={{ display: 'none' }}
         onChange={(event) => {
           if (imageReturn) imageReturn(event.target.files[0]);
@@ -41,6 +41,7 @@ export function ImagePicker({
       />
 
       <CustomAvatar
+        borderDashed
         imgDefault={false}
         icon={defaultIcon}
         width={{ xs: IconHeightWidth, md: IconHeightWidth, lg: IconHeightWidth }}
@@ -48,7 +49,7 @@ export function ImagePicker({
         onClick={handleButtonClick}
         src={formik?.values[field]}
         iconSize={heightWidth / 3}
-        displayName="Select image"
+        
         bgColor={success?.main}
         error={formik?.errors[field]}
       />
