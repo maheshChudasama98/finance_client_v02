@@ -21,6 +21,7 @@ export const CustomAvatar = ({
   handleOpen,
   width = { xs: 40, md: 45, lg: 56 }, // default width
   height = { xs: 40, md: 45, lg: 56 }, // default height
+  borderDashed = false,
   ...props
 }) => {
   // Calculate the size for IconButton and Avatar
@@ -48,7 +49,8 @@ export const CustomAvatar = ({
       onClick={handleOpen}
       sx={{
         ...buttonSize,
-        background: (theme) => alpha(theme.palette.grey[900], 0.08),
+        background: (theme) => (borderDashed !== true ? alpha(theme.palette.grey[900], 0.08) : ''),
+        border: (theme) => (borderDashed === true ? `dashed 1px ${theme.palette.grey[400]}` : ''),
         ...(open && {
           background: (theme) =>
             `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
@@ -65,7 +67,8 @@ export const CustomAvatar = ({
         sx={{
           ...avatarSize,
           border: (theme) => `solid 2px ${theme.palette.background.default}`,
-          background: (theme) => alpha(bgColor || theme.palette.primary.main, 0.8),
+          background: (theme) =>
+            borderDashed !== true ? alpha(bgColor || theme.palette.primary.main, 0.8) : '',
         }}
         {...props}
       >

@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
+import Typography from '@mui/material/Typography';
 
 import { UserModifyService } from 'src/Services/User.Services';
 import { RoleListService } from 'src/Services/org/Org.Services';
@@ -61,12 +62,17 @@ export default function Index({ backAction, editObject }) {
   }, []);
 
   return (
-    <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
+    <Stack alignItems="center" justifyContent="center">
       <Box sx={{ width: 1, maxWidth: 1100 }}>
+        <Box sx={{ mx: 1, mb: 5 }}>
+          <Typography variant="h4">Profile</Typography>
+        </Box>
+
         <Formik
           enableReinitialize
           initialValues={{
-            ImgPath: 'http://localhost:8200/public/users/c0b6e03f-c122-4335-abba-1f3c9ba3f4f1/1abf0c41-125c-47a3-8b33-7f36e80edfe6.jpeg',
+            ImgPath:
+              'http://localhost:8200/public/users/c0b6e03f-c122-4335-abba-1f3c9ba3f4f1/1abf0c41-125c-47a3-8b33-7f36e80edfe6.jpeg',
             FirstName: editObject?.FirstName || '',
             LastName: editObject?.LastName || '',
             UserEmail: editObject?.Email || '',
@@ -90,8 +96,13 @@ export default function Index({ backAction, editObject }) {
             return (
               <Form>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4}>
-                    <Card sx={{ p: 2 }}>
+                  <Grid
+                    item
+                    xs={12}
+                    md={4}
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
+                  >
+                    <Card sx={{ p: 2, flex: 1 }}>
                       <ImagePicker
                         formik={props}
                         label="Profile Image"
@@ -102,11 +113,21 @@ export default function Index({ backAction, editObject }) {
                           setImgUrl(e);
                         }}
                       />
-                    
+                      <Typography
+                        sx={{ fontSize: 12, textAlign: 'center', mt: 3, mx: 10 }}
+                        color="text.secondary"
+                      >
+                        Allowed *.jpeg, *.jpg, *.png max size of 1 Mb
+                      </Typography>
                     </Card>
                   </Grid>
-                  <Grid item xs={12} md={8}>
-                    <Card sx={{ p: 2 }}>
+                  <Grid
+                    item
+                    xs={12}
+                    md={8}
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
+                  >
+                    <Card sx={{ p: 2, flex: 1 }}>
                       <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
                           <TextFieldForm formik={props} label="First Name" field="FirstName" />
