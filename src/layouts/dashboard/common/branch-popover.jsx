@@ -1,43 +1,25 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import Popover from '@mui/material/Popover';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+// import Popover from '@mui/material/Popover';
+// import MenuItem from '@mui/material/MenuItem';
+// import IconButton from '@mui/material/IconButton';
 
 import { DefaultBrachService } from 'src/Services/User.Services';
 
-// ----------------------------------------------------------------------
-
-const LANGS = [
-  {
-    value: 'en',
-    label: 'English',
-    icon: '/assets/icons/ic_flag_en.svg',
-  },
-  {
-    value: 'de',
-    label: 'German',
-    icon: '/assets/icons/ic_flag_de.svg',
-  },
-  {
-    value: 'fr',
-    label: 'French',
-    icon: '/assets/icons/ic_flag_fr.svg',
-  },
-];
+import { CustomSelect } from 'src/components/CustomComponents';
 
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
-  const [open, setOpen] = useState(null);
+  // const [open, setOpen] = useState(null);
   const dispatch = useDispatch();
 
   const { BranchesList, SelectBranch } = useSelector((state) => state?.master?.BranchesList);
 
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
-  };
+  // const handleOpen = (event) => {
+  //   setOpen(event.currentTarget);
+  // };
 
   const handleClose = (BranchId) => {
     dispatch(
@@ -45,12 +27,21 @@ export default function LanguagePopover() {
         window.location.reload();
       })
     );
-    setOpen(null);
+    // setOpen(null);
   };
 
   return (
     <>
-      <IconButton
+      <CustomSelect
+        valueKey="BranchId"
+        labelKey="BranchName"
+        size="small"
+        sx={{ width: 200 }}
+        menuList={BranchesList}
+        defaultValue={SelectBranch?.BranchId}
+        callBackAction={(value) => handleClose(value)}
+      />
+      {/* <IconButton
         onClick={handleOpen}
         sx={{
           width: 40,
@@ -85,17 +76,10 @@ export default function LanguagePopover() {
             onClick={() => handleClose(option?.BranchId)}
             sx={{ typography: 'body2', py: 1 }}
           >
-            {/* <Box
-              component="img"
-              alt={option?.BranchName}
-              src={option?.ImgPath}
-              sx={{ width: 28, mr: 2 }}
-            /> */}
-
             {option?.BranchName}
           </MenuItem>
         ))}
-      </Popover>
+      </Popover> */}
     </>
   );
 }

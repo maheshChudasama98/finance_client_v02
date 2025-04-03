@@ -26,6 +26,7 @@ import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomAvatar,
+  CustomSelect,
   CustomCheckbox,
   CustomTabLabel,
   CustomPageHeader,
@@ -332,6 +333,23 @@ export default function Index() {
     setTabValue(newValue);
   };
 
+  const selectItemAction = (key) => {
+    const accounts = accountsList?.find((e) => e?.AccountId === key);
+
+    setSelectedAccountId(key);
+    setHeaderTitles([
+      { title: 'Account Name', value: accounts?.AccountName },
+      {
+        title: 'Account Type',
+        value: accounts?.TypeId
+          ? AccountTypes?.find((e) => e?.key === accounts?.TypeId)?.value
+          : '',
+      },
+      { title: 'Current Amount', value: accounts?.CurrentAmount },
+      { title: 'Start Amount', value: accounts?.StartAmount },
+    ]);
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <CustomPageHeader dataArray={headerTitles} />
@@ -368,43 +386,66 @@ export default function Index() {
                 justifyContent: 'space-between',
               }}
             >
-              <Tabs
-                variant="scrollable"
-                scrollButtons="auto"
-                value={tabValue}
-                onChange={handleChange}
-              >
-                <Tab
-                  label={
-                    <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
-                  }
-                  value="list"
-                />
+              {selectedAccountId ? (
+                <Tabs
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  value={tabValue}
+                  onChange={handleChange}
+                >
+                  <Tab
+                    label={
+                      <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
+                    }
+                    value="list"
+                  />
 
-                <Tab
-                  label={
-                    <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
-                  }
-                  value="analysis"
-                />
+                  <Tab
+                    label={
+                      <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
+                    }
+                    value="analysis"
+                  />
 
-                <Tab
-                  label={
-                    <CustomTabLabel
-                      selectValue={tabValue}
-                      label="Transactions"
-                      value="transactions"
-                    />
-                  }
-                  value="transactions"
-                />
-              </Tabs>
+                  <Tab
+                    label={
+                      <CustomTabLabel
+                        selectValue={tabValue}
+                        label="Transactions"
+                        value="transactions"
+                      />
+                    }
+                    value="transactions"
+                  />
+                </Tabs>
+              ) : (
+                <Box />
+              )}
 
-              <CustomSearchInput
-                loading={loadingSearchLoader}
-                searchValue={searchValue}
-                callBack={setSearchValue}
-              />
+              {tabValue === 'analysis' || tabValue === 'transactions' ? (
+                // <CustomSearchInput
+                //   loading={loadingSearchLoader}
+                //   searchValue={searchValue}
+                //   callBack={setSearchValue}
+                // />
+                <Box>
+                  <CustomSelect
+                    valueKey="AccountId"
+                    labelKey="AccountName"
+                    size="small"
+                    sx={{ width: 200 }}
+                    menuList={accountsList}
+                    defaultValue={selectedAccountId}
+                    callBackAction={(value) => selectItemAction(value)}
+                  />
+                </Box>
+              ) : (
+                <CustomSearchInput
+                  loading={loadingSearchLoader}
+                  searchValue={searchValue}
+                  callBack={setSearchValue}
+                />
+              )}
             </Box>
 
             {loadingLoader ? (
@@ -426,19 +467,7 @@ export default function Index() {
                         pagination={false}
                         onRow={(record) => ({
                           onClick: () => {
-                            setSelectedAccountId(record.key);
-                            setHeaderTitles([
-                              { title: 'Account Name', value: record?.value?.AccountName },
-                              {
-                                title: 'Account Type',
-                                value: record?.value?.TypeId
-                                  ? AccountTypes?.find((e) => e?.key === record?.value?.TypeId)
-                                      ?.value
-                                  : '',
-                              },
-                              { title: 'Current Amount', value: record?.value?.CurrentAmount },
-                              { title: 'Start Amount', value: record?.value?.StartAmount },
-                            ]);
+                            selectItemAction(record.key);
                           },
                         })}
                       />

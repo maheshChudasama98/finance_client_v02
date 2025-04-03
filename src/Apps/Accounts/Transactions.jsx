@@ -66,7 +66,7 @@ const Transactions = ({ selectedAccountId }) => {
     Date: <Typography variant="light">{fDate(item?.Date)}</Typography>,
     Details: (
       <Typography variant="light" className="">
-        {item?.CategoryName }
+        {item?.Details}
       </Typography>
     ),
     StartAmount: (
@@ -74,7 +74,7 @@ const Transactions = ({ selectedAccountId }) => {
         {formatToINR(item?.StartAmount) || '-'}
       </Typography>
     ),
-    Debits: (
+    Debits: (item?.Action === 'Out' || item?.Action === 'Debit') && (
       <Typography
         variant="light"
         sx={{
@@ -84,7 +84,7 @@ const Transactions = ({ selectedAccountId }) => {
         {formatToINR(item?.AccountAmount) || '-'}
       </Typography>
     ),
-    Credits: (
+    Credits: (item?.Action === 'In' || item?.Action === 'To') && (
       <Typography
         sx={{
           color: 'green',

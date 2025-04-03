@@ -106,10 +106,10 @@ export function overrides(theme) {
               // borderColor: theme.palette.grey[500], // Default border color
             },
             '&:hover fieldset': {
-              borderColor: theme.palette.success.main, // Hover border color
+              borderColor: theme.palette.grey[1000], // Hover border color
             },
             '&.Mui-focused fieldset': {
-              borderColor: theme.palette.success.main, // Focus border color
+              borderColor: theme.palette.grey[1000], // Focus border color
             },
             '&.Mui-error fieldset': {
               borderColor: theme.palette.error.main, // Error border color
@@ -126,7 +126,7 @@ export function overrides(theme) {
         root: {
           color: theme.palette.grey[600], // Default label color
           '&.Mui-focused': {
-            color: theme.palette.success.main, // Focused label color
+            color: theme.palette.grey[1000], // Focused label color
           },
           '&.Mui-error': {
             color: theme.palette.error.main, // Error label color

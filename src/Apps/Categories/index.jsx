@@ -484,7 +484,7 @@ export default function Index() {
                 {accountsList && accountsList?.length > 0 ? (
                   <Box
                     sx={{
-                      marginX: 2,
+                      // marginX: 2,
                       minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}

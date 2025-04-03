@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 
 const Loader = () => {
     const theme = useTheme();
-    const PRIMARY_LIGHT = theme.palette.primary.main;
+    const PRIMARY_LIGHT = theme.palette.success.main;
     return (
         <Box sx={{ textAlign: 'center', p: 3, m: 'auto' }}>
             <div className="spinner" >

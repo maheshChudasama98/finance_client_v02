@@ -44,7 +44,7 @@ export const CustomSearchInput = ({
 
   const button = () => {
     if (loading) {
-      return <CircularProgress size={20} />;
+      return <CircularProgress size={20} color='success' />;
     }
     if (searchValue) {
       return (
