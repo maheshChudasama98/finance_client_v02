@@ -113,7 +113,9 @@ export default function Index() {
 
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Category', keyLabel: 'CategoryName', xs: 9 },
+    { Header: 'Category', keyLabel: 'CategoryName', xs: 4 },
+    { Header: 'Income', keyLabel: 'In', xs: 2.5 },
+    { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
     { Header: 'Used', keyLabel: 'Used', xs: 1 },
     { Header: 'Active', keyLabel: 'Active', xs: 1 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
@@ -127,7 +129,7 @@ export default function Index() {
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
-    Index: <Typography variant="normal">{index + 1 || ''}</Typography>,
+    Index: <Typography variant="light">{index + 1 || ''}</Typography>,
     CategoryName: (
       <Stack direction="row" alignItems="center" spacing={2}>
         <CustomAvatar
@@ -137,17 +139,12 @@ export default function Index() {
           icon={item?.Icon || ''}
           bgColor={item?.Color || ''}
         />
-        <Typography variant="normal">
+        <Typography variant="light">
           {item?.CategoryName}
           <Typography
-            variant="light"
             color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center' }}
+            sx={{ display: 'flex', alignItems: 'center', fontSize: 12 }}
           >
-            <SvgColor
-              src="/assets/icons/general/calendar.svg"
-              sx={{ width: 18, height: 18, mr: 0.5 }}
-            />
             {fDate(item?.createdAt)}
           </Typography>
         </Typography>
@@ -159,9 +156,7 @@ export default function Index() {
     Used: (
       <CustomCheckbox
         checked={item?.isUsing}
-        loading={
-          loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isUsing' 
-        }
+        loading={loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isUsing'}
         onClick={(e) => {
           StatusChange('isUsing', !item?.isUsing, item?.CategoryId);
           e.stopPropagation();
@@ -171,9 +166,7 @@ export default function Index() {
     Active: (
       <CustomCheckbox
         checked={item?.isActive}
-        loading={
-          loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isActive'
-        }
+        loading={loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isActive'}
         onClick={(e) => {
           StatusChange('isActive', !item?.isActive, item?.CategoryId);
           e.stopPropagation();

@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -378,11 +379,82 @@ export default function Index() {
               borderRadius: 1.3,
             }}
           >
-            <Box
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                paddingY: 2,
+                paddingX: 2,
+              }}
+            >
+              <Grid item xs={12} md={6}>
+                {selectedAccountId ? (
+                  <Tabs
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    value={tabValue}
+                    onChange={handleChange}
+                  >
+                    <Tab
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
+                      }
+                      value="list"
+                    />
+
+                    <Tab
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
+                      }
+                      value="analysis"
+                    />
+
+                    <Tab
+                      label={
+                        <CustomTabLabel
+                          selectValue={tabValue}
+                          label="Transactions"
+                          value="transactions"
+                        />
+                      }
+                      value="transactions"
+                    />
+                  </Tabs>
+                ) : (
+                  <Box />
+                )}
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Box sx={{ float: 'right', display: 'flex' }}>
+                  {tabValue === 'analysis' || tabValue === 'transactions' ? (
+                    <Box>
+                      <CustomSelect
+                        valueKey="AccountId"
+                        labelKey="AccountName"
+                        size="small"
+                        sx={{ width: 200 }}
+                        menuList={accountsList}
+                        defaultValue={selectedAccountId}
+                        callBackAction={(value) => selectItemAction(value)}
+                      />
+                    </Box>
+                  ) : (
+                    <CustomSearchInput
+                      loading={loadingSearchLoader}
+                      searchValue={searchValue}
+                      callBack={setSearchValue}
+                    />
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* <Box
               sx={{
                 marginX: 2,
                 marginY: 2,
-                display: 'flex',
+                display: { sx: 'block', xs: 'flex' },
                 justifyContent: 'space-between',
               }}
             >
@@ -421,32 +493,7 @@ export default function Index() {
               ) : (
                 <Box />
               )}
-
-              {tabValue === 'analysis' || tabValue === 'transactions' ? (
-                // <CustomSearchInput
-                //   loading={loadingSearchLoader}
-                //   searchValue={searchValue}
-                //   callBack={setSearchValue}
-                // />
-                <Box>
-                  <CustomSelect
-                    valueKey="AccountId"
-                    labelKey="AccountName"
-                    size="small"
-                    sx={{ width: 200 }}
-                    menuList={accountsList}
-                    defaultValue={selectedAccountId}
-                    callBackAction={(value) => selectItemAction(value)}
-                  />
-                </Box>
-              ) : (
-                <CustomSearchInput
-                  loading={loadingSearchLoader}
-                  searchValue={searchValue}
-                  callBack={setSearchValue}
-                />
-              )}
-            </Box>
+            </Box> */}
 
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>

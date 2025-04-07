@@ -228,7 +228,12 @@ const RecordList = ({ item, isHeader, index, deleteAction, editAction }) => {
                 <Grid xs={1.5}>
                   {record?.PartyDetails?.FullName && (
                     <Stack direction="row" alignItems="center" spacing={2}>
-                      <CustomAvatar width={45} height={45} iconSize={15} displayName="AS" />
+                      <CustomAvatar
+                        width={45}
+                        height={45}
+                        iconSize={15}
+                        displayName={record?.PartyDetails?.PartyAvatar}
+                      />
                       <Typography variant="light">
                         {fText(`${record?.PartyDetails?.FullName}`)}
                       </Typography>

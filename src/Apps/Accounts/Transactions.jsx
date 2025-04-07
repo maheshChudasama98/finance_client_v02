@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import { fDate } from 'src/utils/format-time';
@@ -8,21 +9,26 @@ import { formatToINR } from 'src/utils/format-number';
 
 import { AccountService } from 'src/Services/AnalystData.Services';
 
+import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 
 import { Table } from 'antd';
 
 const Transactions = ({ selectedAccountId }) => {
   const dispatch = useDispatch();
+  
   const [list, setList] = useState([]);
+  const [loadingLoader, setLoadingLoader] = useState(false);
 
   useEffect(() => {
+    setLoadingLoader(true);
     dispatch(
       AccountService(
         {
           AccountId: selectedAccountId,
         },
         (res) => {
+          setLoadingLoader(false);
           if (res.status) {
             setList(res?.data?.list);
           }
@@ -30,6 +36,7 @@ const Transactions = ({ selectedAccountId }) => {
       )
     );
   }, [selectedAccountId]);
+
   const columns = [
     {
       title: 'Date',
@@ -74,7 +81,7 @@ const Transactions = ({ selectedAccountId }) => {
         {formatToINR(item?.StartAmount) || '-'}
       </Typography>
     ),
-    Debits: (item?.Action === 'Out' || item?.Action === 'Debit') && (
+    Debits: item?.AccountAmount < 0 && (
       <Typography
         variant="light"
         sx={{
@@ -84,7 +91,7 @@ const Transactions = ({ selectedAccountId }) => {
         {formatToINR(item?.AccountAmount) || '-'}
       </Typography>
     ),
-    Credits: (item?.Action === 'In' || item?.Action === 'To') && (
+    Credits: item?.AccountAmount > 0 && (
       <Typography
         sx={{
           color: 'green',
@@ -98,10 +105,18 @@ const Transactions = ({ selectedAccountId }) => {
 
   return (
     <>
-      {list && list?.length > 0 ? (
-        <Table columns={columns} dataSource={tableSetData} pagination={false} />
+      {loadingLoader ? (
+        <Box sx={{ display: 'flex', height: '50vh' }}>
+          <Loader />
+        </Box>
       ) : (
-        <DataNotFound />
+        <>
+          {list && list?.length > 0 ? (
+            <Table columns={columns} dataSource={tableSetData} pagination={false} />
+          ) : (
+            <DataNotFound />
+          )}
+        </>
       )}
     </>
   );

@@ -43,10 +43,29 @@ export default function Index({ backAction, editObject, deleteAction }) {
   useEffect(() => {
     dispatch(
       TransactionFetchDataService((res) => {
-        setAccountList(res?.accountList || []);
-        setCategoriesList(res?.categoriesList || []);
+
+        setAccountList(
+          res?.accountList?.filter(
+            (item) => item?.isActive === true || editObject?.AccountId === item?.AccountId
+          ) || []
+        );
+
+        setCategoriesList(
+          res?.categoriesList?.filter(
+            (item) => item?.isActive ===true || editObject?.CategoryId === item?.CategoryId
+          ) || []
+        );
+
         setLabelsList(res?.labelsList || []);
-        setPartyList(res?.partyList || []);
+
+        setPartyList(
+          res?.partyList?.filter(
+            (item) => item?.isActive === true || editObject?.PartyId === item?.PartyId
+          ) || []
+        );
+        // setCategoriesList(res?.categoriesList || []);
+        // setLabelsList(res?.labelsList || []);
+        // setPartyList(res?.partyList || []);
       })
     );
   }, [show]);
