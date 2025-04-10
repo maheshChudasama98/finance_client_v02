@@ -152,12 +152,12 @@ export default function Index() {
       align: 'right',
       width: '15%',
     },
-    {
-      title: 'Used',
-      dataIndex: 'Used',
-      key: 'Used',
-      width: '10%',
-    },
+    // {
+    //   title: 'Used',
+    //   dataIndex: 'Used',
+    //   key: 'Used',
+    //   width: '10%',
+    // },
     {
       title: 'Active',
       dataIndex: 'Active',

@@ -100,16 +100,18 @@ export default function Index() {
       key: 'Label',
       render: (text) => <Typography variant=" ">{text}</Typography>,
     },
-    {
-      title: 'Used',
-      dataIndex: 'Used',
-      key: 'Used',
-    },
-    {
-      title: 'Active',
-      dataIndex: 'Active',
-      key: 'Active',
-    },
+    // {
+    //   title: 'Used',
+    //   dataIndex: 'Used',
+    //   key: 'Used',
+    // },
+      {
+        title: 'Active',
+        dataIndex: 'Active',
+        key: 'Active',
+        width: '100px',
+        align: 'center',
+      },
     {
       title: 'Action',
       dataIndex: 'Action',

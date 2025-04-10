@@ -166,25 +166,26 @@ export default function Index() {
         </Typography>
       ),
     },
-    {
-      title: 'Used',
-      dataIndex: 'Used',
-      key: 'Used',
-      render: (_, item) => (
-        <CustomCheckbox
-          loading={loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isUsing'}
-          checked={item?.isUsing}
-          onClick={(e) => {
-            StatusChange('isUsing', !item?.isUsing, item?.PartyId);
-            e.stopPropagation();
-          }}
-        />
-      ),
-    },
+    // {
+    //   title: 'Used',
+    //   dataIndex: 'Used',
+    //   key: 'Used',
+    //   render: (_, item) => (
+    //     <CustomCheckbox
+    //       loading={loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isUsing'}
+    //       checked={item?.isUsing}
+    //       onClick={(e) => {
+    //         StatusChange('isUsing', !item?.isUsing, item?.PartyId);
+    //         e.stopPropagation();
+    //       }}
+    //     />
+    //   ),
+    // },
     {
       title: 'Active',
       dataIndex: 'Active',
       key: 'Active',
+      align: 'center',
       render: (_, item) => (
         <CustomCheckbox
           loading={loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive'}
@@ -200,6 +201,7 @@ export default function Index() {
       title: 'Action',
       dataIndex: 'Action',
       key: 'Action',
+      align: 'center',
       render: (_, item) => (
         <Dropdown
           trigger={['click']}
