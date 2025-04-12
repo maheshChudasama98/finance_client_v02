@@ -182,15 +182,7 @@ export default function Index() {
                         ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
                         : [],
                   },
-                  {
-                    name: 'Investment',
-                    type: 'column',
-                    fill: 'solid',
-                    data:
-                      currentYearMonthBaseData?.length > 0
-                        ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
-                        : [],
-                  },
+                 
                 ],
               }}
             />
@@ -256,6 +248,15 @@ export default function Index() {
                         ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
                         : [],
                   },
+                  {
+                    name: 'Expense',
+                    type: 'area',
+                    fill: 'gradient',
+                    data:
+                      dataFlowIncrement?.length > 0
+                        ? dataFlowIncrement?.map((item, key) => item?.totalInvestment  || 0)
+                        : [],
+                  },
                 ],
               }}
             />
@@ -295,6 +296,30 @@ export default function Index() {
                     data:
                       cashFlowData?.length > 0
                         ? cashFlowData?.map((item, key) => item?.Count || 0)
+                        : [],
+                  },
+                ],
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <OverView
+              title="Investment"
+              chart={{
+                labels:
+                  currentYearMonthBaseData?.length > 0
+                    ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
+                    : [],
+                series: [
+                  {
+                    name: '',
+                    type: 'column',
+                    fill: 'solid',
+                    color: '#00b8d9',
+                    data:
+                      currentYearMonthBaseData?.length > 0
+                        ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
                         : [],
                   },
                 ],
