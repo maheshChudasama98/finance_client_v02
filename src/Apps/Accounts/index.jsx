@@ -106,12 +106,12 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    {
-      title: '#',
-      dataIndex: 'Index',
-      key: 'Index',
-      width: '5%',
-    },
+    // {
+    //   title: '#',
+    //   dataIndex: 'Index',
+    //   key: 'Index',
+    //   width: '5%',
+    // },
     {
       title: 'Account Name',
       dataIndex: 'AccountName',
@@ -138,20 +138,20 @@ export default function Index() {
       align: 'right',
       width: '15%',
     },
-    {
-      title: 'Min Amount',
-      dataIndex: 'MinAmount',
-      key: 'MinAmount',
-      align: 'right',
-      width: '15%',
-    },
-    {
-      title: 'Max Amount',
-      dataIndex: 'MaxAmount',
-      key: 'MaxAmount',
-      align: 'right',
-      width: '15%',
-    },
+    // {
+    //   title: 'Min Amount',
+    //   dataIndex: 'MinAmount',
+    //   key: 'MinAmount',
+    //   align: 'right',
+    //   width: '15%',
+    // },
+    // {
+    //   title: 'Max Amount',
+    //   dataIndex: 'MaxAmount',
+    //   key: 'MaxAmount',
+    //   align: 'right',
+    //   width: '15%',
+    // },
     // {
     //   title: 'Used',
     //   dataIndex: 'Used',
@@ -162,12 +162,14 @@ export default function Index() {
       title: 'Active',
       dataIndex: 'Active',
       key: 'Active',
+      align: 'right',
       width: '10%',
     },
     {
       title: 'Action',
       dataIndex: 'Action',
       key: 'Action',
+      align: 'right',
       width: '10%',
     },
   ];
@@ -188,9 +190,9 @@ export default function Index() {
         <Typography variant="light">
           {item?.AccountName}
           <Typography
-            variant="light"
+            // variant="light"
             color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center' }}
+            sx={{ display: 'flex', alignItems: 'center', fontSize: 12 }}
           >
             <SvgColor
               src="/assets/icons/general/calendar.svg"
@@ -206,15 +208,10 @@ export default function Index() {
         {item?.TypeId ? AccountTypes?.find((e) => e?.key === item?.TypeId)?.value : ''}
       </Typography>
     ),
-    StartAmount: (
-      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
-        {formatToINR(item?.StartAmount) || '-'}
-      </Typography>
-    ),
+    StartAmount: <Typography variant="light">{formatToINR(item?.StartAmount) || '-'}</Typography>,
     CurrentAmount: (
       <Typography
         variant="light"
-        className="custom-text-align-end custom-truncateRight"
         sx={{
           color: item?.CurrentAmount < item?.MinAmount ? 'red' : '',
         }}
@@ -222,16 +219,8 @@ export default function Index() {
         {formatToINR(item?.CurrentAmount) || '-'}
       </Typography>
     ),
-    MinAmount: (
-      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
-        {formatToINR(item?.MinAmount) || '-'}
-      </Typography>
-    ),
-    MaxAmount: (
-      <Typography variant="light" className="custom-text-align-end custom-truncateRight">
-        {formatToINR(item?.MaxAmount) || '-'}
-      </Typography>
-    ),
+    MinAmount: <Typography variant="light">{formatToINR(item?.MinAmount) || '-'}</Typography>,
+    MaxAmount: <Typography variant="light">{formatToINR(item?.MaxAmount) || '-'}</Typography>,
     Used: (
       <Box>
         <CustomCheckbox
@@ -346,8 +335,8 @@ export default function Index() {
           ? AccountTypes?.find((e) => e?.key === accounts?.TypeId)?.value
           : '',
       },
-      { title: 'Current Amount', value: accounts?.CurrentAmount },
-      { title: 'Start Amount', value: accounts?.StartAmount },
+      { title: 'Current Amount', value: formatToINR(accounts?.CurrentAmount) },
+      { title: 'Start Amount', value: formatToINR(accounts?.StartAmount) },
     ]);
   };
 
@@ -388,112 +377,77 @@ export default function Index() {
               }}
             >
               <Grid item xs={12} md={6}>
-                {selectedAccountId ? (
-                  <Tabs
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    value={tabValue}
-                    onChange={handleChange}
-                  >
-                    <Tab
-                      label={
-                        <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
-                      }
-                      value="list"
+                {/* <Box sx={{ float: 'right', display: 'flex' }}> */}
+                {tabValue === 'analysis' || tabValue === 'transactions' ? (
+                  <Box>
+                    <CustomSelect
+                      valueKey="AccountId"
+                      labelKey="AccountName"
+                      size="small"
+                      sx={{ width: 200 }}
+                      menuList={accountsList}
+                      defaultValue={selectedAccountId}
+                      callBackAction={(value) => selectItemAction(value)}
                     />
-
-                    <Tab
-                      label={
-                        <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
-                      }
-                      value="analysis"
-                    />
-
-                    <Tab
-                      label={
-                        <CustomTabLabel
-                          selectValue={tabValue}
-                          label="Transactions"
-                          value="transactions"
-                        />
-                      }
-                      value="transactions"
-                    />
-                  </Tabs>
+                  </Box>
                 ) : (
-                  <Box />
+                  <CustomSearchInput
+                    loading={loadingSearchLoader}
+                    searchValue={searchValue}
+                    callBack={setSearchValue}
+                  />
                 )}
+                {/* </Box> */}
               </Grid>
 
               <Grid item xs={12} md={6}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
-                  {tabValue === 'analysis' || tabValue === 'transactions' ? (
-                    <Box>
-                      <CustomSelect
-                        valueKey="AccountId"
-                        labelKey="AccountName"
-                        size="small"
-                        sx={{ width: 200 }}
-                        menuList={accountsList}
-                        defaultValue={selectedAccountId}
-                        callBackAction={(value) => selectItemAction(value)}
+                  {selectedAccountId ? (
+                    <Tabs
+                      variant="scrollable"
+                      scrollButtons="auto"
+                      value={tabValue}
+                      onChange={handleChange}
+                    >
+                      <Tab
+                        label={
+                          <CustomTabLabel
+                            selectValue={tabValue}
+                            label="Account List"
+                            value="list"
+                          />
+                        }
+                        value="list"
                       />
-                    </Box>
+
+                      <Tab
+                        label={
+                          <CustomTabLabel
+                            selectValue={tabValue}
+                            label="Analysis"
+                            value="analysis"
+                          />
+                        }
+                        value="analysis"
+                      />
+
+                      <Tab
+                        label={
+                          <CustomTabLabel
+                            selectValue={tabValue}
+                            label="Transactions"
+                            value="transactions"
+                          />
+                        }
+                        value="transactions"
+                      />
+                    </Tabs>
                   ) : (
-                    <CustomSearchInput
-                      loading={loadingSearchLoader}
-                      searchValue={searchValue}
-                      callBack={setSearchValue}
-                    />
+                    <Box />
                   )}
                 </Box>
               </Grid>
             </Grid>
-
-            {/* <Box
-              sx={{
-                marginX: 2,
-                marginY: 2,
-                display: { sx: 'block', xs: 'flex' },
-                justifyContent: 'space-between',
-              }}
-            >
-              {selectedAccountId ? (
-                <Tabs
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  value={tabValue}
-                  onChange={handleChange}
-                >
-                  <Tab
-                    label={
-                      <CustomTabLabel selectValue={tabValue} label="Account List" value="list" />
-                    }
-                    value="list"
-                  />
-
-                  <Tab
-                    label={
-                      <CustomTabLabel selectValue={tabValue} label="Analysis" value="analysis" />
-                    }
-                    value="analysis"
-                  />
-
-                  <Tab
-                    label={
-                      <CustomTabLabel
-                        selectValue={tabValue}
-                        label="Transactions"
-                        value="transactions"
-                      />
-                    }
-                    value="transactions"
-                  />
-                </Tabs>
-              ) : (
-                <Box />
-              )}
-            </Box> */}
 
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
@@ -524,7 +478,7 @@ export default function Index() {
                   </>
                 )}
                 {tabValue === 'analysis' && (
-                  <CustomDataFlow selectedAccountId={selectedAccountId} />
+                    <CustomDataFlow selectedAccountId={selectedAccountId} />
                 )}
                 {tabValue === 'transactions' && (
                   <Transactions selectedAccountId={selectedAccountId} />

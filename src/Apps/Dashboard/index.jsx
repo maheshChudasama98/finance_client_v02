@@ -248,15 +248,15 @@ export default function Index() {
                         ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
                         : [],
                   },
-                  {
-                    name: 'Expense',
-                    type: 'area',
-                    fill: 'gradient',
-                    data:
-                      dataFlowIncrement?.length > 0
-                        ? dataFlowIncrement?.map((item, key) => item?.totalInvestment  || 0)
-                        : [],
-                  },
+                  // {
+                  //   name: 'Expense',
+                  //   type: 'area',
+                  //   fill: 'gradient',
+                  //   data:
+                  //     dataFlowIncrement?.length > 0
+                  //       ? dataFlowIncrement?.map((item, key) => item?.totalInvestment  || 0)
+                  //       : [],
+                  // },
                 ],
               }}
             />

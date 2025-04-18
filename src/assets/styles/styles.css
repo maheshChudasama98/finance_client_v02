@@ -133,3 +133,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.custom-info-icon-css {
+  background: #5bc43a;
+  color: white;
+  /* border: solid 1px ; */
+  /* color: #5bc43a; */
+  padding: 4px 6px;
+  margin-right:  25px;
+  font-size: 9px;
+  border-radius: 10px;
+  place-self: anchor-center;
+
+}
