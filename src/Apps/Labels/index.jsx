@@ -214,7 +214,7 @@ export default function Index() {
 
   const titleAction = (display) => {
     if (display) {
-      return 'Parties';
+      return 'Labels';
     }
     if (editObject?.AccountId) {
       return 'Edit Label';

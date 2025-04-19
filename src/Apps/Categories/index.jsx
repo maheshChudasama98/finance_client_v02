@@ -35,6 +35,7 @@ import { Dropdown } from 'antd';
 
 import Form from './Form';
 import SubForm from './SubForm';
+import { formatToINR } from 'src/utils/format-number';
 
 export default function Index() {
   const filterValue = 'All';
@@ -113,17 +114,19 @@ export default function Index() {
 
   const columns = [
     { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Category', keyLabel: 'CategoryName', xs: 4 },
+    { Header: 'Category', keyLabel: 'CategoryName', xs: 5 },
     { Header: 'Income', keyLabel: 'In', xs: 2.5 },
     { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
-    { Header: 'Used', keyLabel: 'Used', xs: 1 },
+    // { Header: 'Used', keyLabel: 'Used', xs: 1 },
     { Header: 'Active', keyLabel: 'Active', xs: 1 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
   ];
 
   const subColumns = [
-    { Header: 'Sub Category', keyLabel: 'SubCategoriesName', xs: 9.5 },
-    { Header: 'Used', keyLabel: 'Used', xs: 1 },
+    { Header: 'Sub Category', keyLabel: 'SubCategoriesName', xs: 5.5 },
+    // { Header: 'Used', keyLabel: 'Used', xs: 1 },
+    { Header: 'Income', keyLabel: 'In', xs: 2.5 },
+    { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
     { Header: 'Active', keyLabel: 'Active', xs: 1 },
     { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
   ];
@@ -150,9 +153,21 @@ export default function Index() {
         </Typography>
       </Stack>
     ),
-    StartAmount: <Typography variant="normal">{item?.StartAmount || '-'}</Typography>,
-    CurrentAmount: <Typography variant="normal">{item?.CurrentAmount || '-'}</Typography>,
-    MinAmount: <Typography variant="normal">{item?.MinAmount || '-'}</Typography>,
+    In: (
+      <Typography variant="light">
+        {item?.TransactionSummary?.TotalInCome
+          ? formatToINR(item?.TransactionSummary?.TotalInCome)
+          : '' || ''}
+      </Typography>
+    ),
+    Out: (
+      <Typography variant="light">
+        {item?.TransactionSummary?.TotalExpense
+          ? formatToINR(item?.TransactionSummary?.TotalExpense)
+          : '' || ''}
+      </Typography>
+    ),
+
     Used: (
       <CustomCheckbox
         checked={item?.isUsing}
@@ -182,7 +197,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant="light"
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
@@ -201,7 +216,7 @@ export default function Index() {
             {
               label: (
                 <Typography
-                  variant="normal"
+                  variant="light"
                   color="error"
                   onClick={() => {
                     sweetAlertQuestion()
@@ -251,7 +266,7 @@ export default function Index() {
                         icon={subItem?.Icon || ''}
                         bgColor={item?.Color || ''}
                       />
-                      <Typography variant="normal">
+                      <Typography variant="light">
                         {subItem?.SubCategoriesName}
                         <Typography
                           variant="light"
@@ -278,6 +293,20 @@ export default function Index() {
                         sx={{ width: 18, height: 18, mr: 0.5 }}
                       />
                       {fDate(subItem?.createdAt)}
+                    </Typography>
+                  ),
+                  In: (
+                    <Typography variant="light">
+                      {subItem?.TotalInCome
+                        ? formatToINR(subItem?.TotalInCome)
+                        : '' || ''}
+                    </Typography>
+                  ),
+                  Out: (
+                    <Typography variant="light">
+                      {subItem?.TotalExpense
+                        ? formatToINR(subItem?.TotalExpense)
+                        : '' || ''}
                     </Typography>
                   ),
                   Used: (
@@ -482,7 +511,7 @@ export default function Index() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable expanded columns={columns} data={tableSetData} />
+                    <CustomTable expanded columns={columns} data={tableSetData}  />
                   </Box>
                 ) : (
                   <DataNotFound />

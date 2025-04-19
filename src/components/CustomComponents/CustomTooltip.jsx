@@ -5,21 +5,24 @@ import { success } from 'src/theme/palette';
 
 import { Tooltip } from 'antd';
 
-export const CustomTooltip = ({ label, Placement, children, ...props }) => (
-    <Tooltip
-        placement={Placement}
-        title={label}
-        color={success?.main}
-        overlayInnerStyle={{ fontSize: '16px' }}
-        {...props}  >
-        {children}
-    </Tooltip>
-);
+export const CustomTooltip = ({ label, Placement, children, ...props }) => {
+  // Check if label is a string or JSX
+  const renderLabel = typeof label === 'string' ? <span>{label}</span> : label;
 
+  return (
+    <Tooltip
+      placement={Placement}
+      title={renderLabel}
+      color={success?.main}
+      overlayInnerStyle={{ fontSize: '16px' }}
+      {...props}
+    >
+      {children}
+    </Tooltip>
+  );
+};
 
 CustomTooltip.propTypes = {
-    label: PropTypes.string,
-    Placement: PropTypes.string,
-}
-
-
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  Placement: PropTypes.string,
+};
