@@ -12,6 +12,7 @@ import {
   AccountService,
   DataFollService,
   FinanceYearService,
+  TopCategoriesService,
 } from 'src/Services/AnalystData.Services';
 
 import { CustomSelect } from 'src/components/CustomComponents';
@@ -19,7 +20,7 @@ import { CustomSelect } from 'src/components/CustomComponents';
 import InfoBox from './InfoBox';
 import OverView from './OverView';
 // import { topTen } from '../Consumer/data';
-// import AppCurrentVisits from './app-current-visits';
+import AppCurrentVisits from './app-current-visits';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export default function Index() {
   const [currentYearBaseData, setCurrentYearBaseData] = useState({});
   const [lastYearBaseData, setLastYearBaseData] = useState({});
   const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
+  const [topTen, setTopTen] = useState([]);
 
   const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState('WEEK');
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
@@ -43,6 +45,14 @@ export default function Index() {
           setCurrentYearBaseData(res?.data?.currentYear || {});
           setLastYearBaseData(res?.data?.lastYear || {});
           setCurrentYearMonthBaseData(res?.data?.monthBase || []);
+        }
+      })
+    );
+    dispatch(
+      TopCategoriesService({ TimeDuration: 'MONTH' }, (res) => {
+        setCurrentYearBaseLoader(false);
+        if (res.status) {
+          setTopTen(res?.data?.list?.[0]?.topTenOut || []);
         }
       })
     );
@@ -182,25 +192,25 @@ export default function Index() {
                         ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
                         : [],
                   },
-                 
                 ],
               }}
             />
           </Grid>
 
-          {/*
-                    <Grid item xs={12} md={3}>
-                         <AppCurrentVisits
-                            title="Top 5 Categories "
-                            type='radialBar'
-                            chart={{
-                                series: topTen?.map((item, key) => ({ label: item?.CategoryName, value: item?.totalIn, }))
-                            }}
-                        /> 
-                    </Grid>
-                        */}
+          <Grid item xs={12} md={4}>
+            <AppCurrentVisits
+              title="Top 5 Categories "
+              type="radialBar"
+              chart={{
+                series: topTen?.map((item, key) => ({
+                  label: item?.CategoryName || '',
+                  value: item?.totalOut || 0,
+                })),
+              }}
+            />
+          </Grid>
 
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={8}>
             <OverView
               title={
                 <Box
@@ -272,7 +282,7 @@ export default function Index() {
                   }}
                 >
                   <Typography variant="big">Cash Flow</Typography>
-                  <Box>
+                  {/* <Box>
                     <CustomSelect
                       valueKey="Value"
                       labelKey="Key"
@@ -282,7 +292,7 @@ export default function Index() {
                       defaultValue={cashFlowDuration}
                       callBackAction={(value) => setCashFlowDuration(value)}
                     />
-                  </Box>
+                  </Box> */}
                 </Box>
               }
               chart={{

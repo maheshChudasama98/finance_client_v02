@@ -54,7 +54,7 @@ export default function OverView({ title, subheader, chart, ...other }) {
           series={series}
           options={chartOptions}
           width="100%"
-          height={345}
+          height={350}
         />
       </Box>
     </Card>

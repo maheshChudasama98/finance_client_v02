@@ -13,6 +13,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { fDate } from 'src/utils/format-time';
+import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import {
@@ -35,7 +36,6 @@ import { Dropdown } from 'antd';
 
 import Form from './Form';
 import SubForm from './SubForm';
-import { formatToINR } from 'src/utils/format-number';
 
 export default function Index() {
   const filterValue = 'All';
@@ -297,16 +297,12 @@ export default function Index() {
                   ),
                   In: (
                     <Typography variant="light">
-                      {subItem?.TotalInCome
-                        ? formatToINR(subItem?.TotalInCome)
-                        : '' || ''}
+                      {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
                     </Typography>
                   ),
                   Out: (
                     <Typography variant="light">
-                      {subItem?.TotalExpense
-                        ? formatToINR(subItem?.TotalExpense)
-                        : '' || ''}
+                      {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
                     </Typography>
                   ),
                   Used: (
@@ -511,7 +507,7 @@ export default function Index() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable expanded columns={columns} data={tableSetData}  />
+                    <CustomTable expanded columns={columns} data={tableSetData} />
                   </Box>
                 ) : (
                   <DataNotFound />
