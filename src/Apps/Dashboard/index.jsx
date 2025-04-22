@@ -282,7 +282,7 @@ export default function Index() {
                   }}
                 >
                   <Typography variant="big">Cash Flow</Typography>
-                  {/* <Box>
+                  <Box>
                     <CustomSelect
                       valueKey="Value"
                       labelKey="Key"
@@ -292,7 +292,7 @@ export default function Index() {
                       defaultValue={cashFlowDuration}
                       callBackAction={(value) => setCashFlowDuration(value)}
                     />
-                  </Box> */}
+                  </Box>
                 </Box>
               }
               chart={{

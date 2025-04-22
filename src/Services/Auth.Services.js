@@ -115,7 +115,7 @@ export function InfoApiActionService(cb) {
         jwtAuthAxios.get('/user/info').then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
-
+                
                 dispatch({
                     type: "ORGS_LIST",
                     OrgsList: res?.data?.data?.Org || {}
@@ -135,7 +135,14 @@ export function InfoApiActionService(cb) {
                     type: "USER_PERMISSION",
                     PermissionList: res?.data?.data?.PermissionList || []
                 });
-
+                console.log(res?.data?.data?.UserInfo?.AmountHide ,"res?.data?.data?.UserInfo?.AmountHide");
+                
+                localStorage.setItem('DefaultTimeFrame', res?.data?.data?.UserInfo?.DefaultTimeFrame || "MONTH");
+                localStorage.setItem('DefaultDuration', res?.data?.data?.UserInfo?.DefaultDuration || "Last_Thirty_Days");
+                localStorage.setItem('DefaultDateFormat', res?.data?.data?.UserInfo?.DefaultDateFormat || "DD/MM/YYYY");
+                localStorage.setItem('DefaultCurrency', res?.data?.data?.UserInfo?.DefaultCurrency || "INR");
+                localStorage.setItem('AmountHide', res?.data?.data?.UserInfo?.AmountHide);
+                
                 if (cb) cb(res.data)
                 } else {
                 if (cb) cb(res.data)    

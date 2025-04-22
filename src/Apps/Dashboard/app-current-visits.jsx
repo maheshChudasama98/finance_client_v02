@@ -97,7 +97,7 @@ export default function AppCurrentVisits({ title, type, subheader, chart, ...oth
 
       <StyledChart
         dir="ltr"
-        type="radialBar"
+        type="donut"
         series={chartSeries}
         options={chartOptions}
         width="100%"

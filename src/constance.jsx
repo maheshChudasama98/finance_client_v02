@@ -57,6 +57,25 @@ export const TimeDurationList = [
   { Key: 'YEAR', Value: 'Yearly' },
 ];
 
+export const SettingDurationList = [
+  { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },
+  { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
+  { Key: 'This Week', Value: 'This_Week' },
+  { Key: 'This Month', Value: 'This_Month' },
+  { Key: 'Last 6 Months', Value: 'Last_Six_Months' },
+  { Key: 'This Year', Value: 'This_Year' },
+  { Key: 'Last 5 Years', Value: 'Last_Five_Years' },
+];
+
+export const DateFormatList = [
+  { Key: 'DD/MM/YYYY', Value: 'DD/MM/YYYY' },
+  { Key: 'MM/DD/YYYY', Value: 'MM/DD/YYYY' },
+  { Key: 'YYYY/MM/DD', Value: 'YYYY/MM/DD' },
+  { Key: 'DD-MM-YYYY', Value: 'DD-MM-YYYY' },
+  { Key: 'MM-DD-YYYY', Value: 'MM-DD-YYYY' },
+  { Key: 'YYYY-MM-DD', Value: 'YYYY-MM-DD' },
+];
+
 export const DurationList = [
   { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },
   { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
@@ -68,4 +87,19 @@ export const DurationList = [
   { Key: 'This Year', Value: 'This_Year' },
   { Key: 'Last Year', Value: 'Last_Year' },
   { Key: 'Last Five Year', Value: 'Last_Five_Year' },
+];
+
+export const CurrencyList = [
+  { Key: 'US Dollar (USD)', Value: 'USD' },
+  { Key: 'Euro (EUR)', Value: 'EUR' },
+  // { Key: 'British Pound (GBP)', Value: 'GBP' },
+  { Key: 'Indian Rupee (INR)', Value: 'INR' },
+  // { Key: 'Japanese Yen (JPY)', Value: 'JPY' },
+  // { Key: 'Swiss Franc (CHF)', Value: 'CHF' },
+  // { Key: 'Canadian Dollar (CAD)', Value: 'CAD' },
+  // { Key: 'Australian Dollar (AUD)', Value: 'AUD' },
+  // { Key: 'Chinese Yuan (CNY)', Value: 'CNY' },
+  // { Key: 'Singapore Dollar (SGD)', Value: 'SGD' },
+  // { Key: 'UAE Dirham (AED)', Value: 'AED' },
+  // { Key: 'Russian Ruble (RUB)', Value: 'RUB' },
 ];

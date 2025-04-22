@@ -122,7 +122,7 @@ export default function Index() {
       title: 'Account Type',
       dataIndex: 'AccountType',
       key: 'AccountType',
-      width: '15%',
+      width: '30%',
     },
     {
       title: 'Current Amount',

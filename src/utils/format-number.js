@@ -35,15 +35,23 @@ function result(format, key = '.00') {
 
   return isInteger ? format.replace(key, '') : format;
 }
+
 export function formatToINR(value) {
   const number = Number(value);
   if (Number.isNaN(number)) return 'Invalid input';
 
+  const DefaultCurrency = localStorage.getItem('DefaultCurrency') || 'INR';
+  const AmountHide = localStorage.getItem('AmountHide');
+
   const formatter = new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'INR',
+    currency: DefaultCurrency,
     minimumFractionDigits: 0,
   });
 
+  if (AmountHide && Number(AmountHide) === 1) {
+    const lastTwoDigits = Math.floor(number % 100);
+    return `***${lastTwoDigits.toString().padStart(2, '0')}`;
+  }
   return formatter.format(number).replace('₹', '₹ ');
 }

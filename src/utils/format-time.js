@@ -5,7 +5,9 @@ import moment from 'moment';
 // ----------------------------------------------------------------------
 
 export function fDate(date) {
-  return date ? moment(date).format(DateFormat) : 'N/A';
+  const DefaultDateFormat = localStorage.getItem('DefaultDateFormat') || DateFormat;
+
+  return date ? moment(date).format(DefaultDateFormat) : 'N/A';
 }
 
 export function fDateTime(date) {

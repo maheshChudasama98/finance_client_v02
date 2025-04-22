@@ -186,6 +186,8 @@
           "custom-@fortawesome/react-fontawesome",
           "custom-react-color",
           "custom-tinycolor2",
+          "custom-highcharts",
+          "custom-highcharts-react-official",
           [
             "parent",
             "sibling",
@@ -225,7 +227,9 @@
             "custom-@fortawesome/free-solid-svg-icons": "@fortawesome/free-solid-svg-icons",
             "custom-@fortawesome/react-fontawesome": "@fortawesome/react-fontawesome",
             "custom-react-color": "react-color",
-            "custom-tinycolor2": "tinycolor2"
+            "custom-tinycolor2": "tinycolor2",
+            "custom-highcharts": "highcharts",
+            "custom-highcharts-react-official": "highcharts-react-official"
           }
         },
         "internal-pattern": [

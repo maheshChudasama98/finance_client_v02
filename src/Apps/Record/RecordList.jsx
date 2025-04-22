@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { fDate } from 'src/utils/format-time';
 import { fText } from 'src/utils/format-text';
 import { lightenColor } from 'src/utils/utils';
+import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { CustomAvatar, CustomTooltip } from 'src/components/CustomComponents';
@@ -129,14 +130,14 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
   };
   const tooltipString = (record) => {
     const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
-  
+
     let formattedTags = '';
     if (tagList.length > 1) {
       formattedTags = `${tagList.slice(0, -1).join(', ')} and ${tagList.slice(-1)}`;
     } else if (tagList.length === 1) {
       formattedTags = tagList[0];
     }
-  
+
     return (
       <div>
         {record?.Description && (
@@ -146,7 +147,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
             </small>
           </div>
         )}
-  
+
         {tagList.length > 0 && (
           <div>
             <small>
@@ -157,7 +158,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
       </div>
     );
   };
-  
 
   return (
     <>
@@ -185,7 +185,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
                 color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
               }}
             >
-              {item?.dayTotal || 0}.00 /-
+              {formatToINR(item?.dayTotal)}
             </Typography>
           </Grid>
         </Grid>
@@ -304,7 +304,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
                     color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
                   }}
                 >
-                  {fText(`${record?.AccountAmount} /-`)}
+                  {formatToINR(record?.AccountAmount)}
                 </Typography>
               </Grid>
 
@@ -384,7 +384,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
                     color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
                   }}
                 >
-                  {fText(`${record?.AccountAmount} /-`)}
+                  {formatToINR(record?.AccountAmount)}
 
                   <Typography fontSize={5} color="text.secondary">
                     {ChipFun(record?.Action, false)}

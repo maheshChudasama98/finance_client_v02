@@ -42,6 +42,7 @@ export const AutoCompleteSelectMenu = ({ formik, label, field, menuList, valueKe
                     }
                     InputProps={{
                         ...params.InputProps,
+                        readOnly: true,
                         endAdornment: (
                             <>
                                 {params.InputProps.endAdornment}
