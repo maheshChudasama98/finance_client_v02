@@ -10,7 +10,7 @@ import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-const CHART_HEIGHT = 372;
+const CHART_HEIGHT = 320;
 
 const LEGEND_HEIGHT = 72;
 
@@ -101,7 +101,7 @@ export default function AppCurrentVisits({ title, type, subheader, chart, ...oth
         series={chartSeries}
         options={chartOptions}
         width="100%"
-        height={280}
+        height={240}
       />
     </Card>
   );

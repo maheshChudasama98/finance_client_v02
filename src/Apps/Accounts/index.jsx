@@ -190,14 +190,9 @@ export default function Index() {
         <Typography variant="light">
           {item?.AccountName}
           <Typography
-            // variant="light"
             color="text.secondary"
             sx={{ display: 'flex', alignItems: 'center', fontSize: 12 }}
           >
-            <SvgColor
-              src="/assets/icons/general/calendar.svg"
-              sx={{ width: 18, height: 18, mr: 0.5 }}
-            />
             {fDate(item?.createdAt)}
           </Typography>
         </Typography>
@@ -478,7 +473,7 @@ export default function Index() {
                   </>
                 )}
                 {tabValue === 'analysis' && (
-                    <CustomDataFlow selectedAccountId={selectedAccountId} />
+                  <CustomDataFlow selectedAccountId={selectedAccountId} />
                 )}
                 {tabValue === 'transactions' && (
                   <Transactions selectedAccountId={selectedAccountId} />

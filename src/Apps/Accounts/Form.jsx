@@ -71,6 +71,15 @@ export default function Index({ backAction, editObject }) {
                 paddingX: 2,
               }}
             >
+              <Grid item xs={12} md={3}>
+                <CustomColorPicker formik={props} label="Color" field="Color" />
+              </Grid>
+
+              <Grid item xs={12} md={3}>
+                <CustomIconPicker formik={props} label="Icon" field="Icon" color={values?.Color} />
+              </Grid>
+
+              <Grid item xs={12} md={6} />
               <Grid item xs={12} md={6}>
                 <TextFieldForm formik={props} label="Account Name" field="AccountName" />
               </Grid>
@@ -127,14 +136,6 @@ export default function Index({ backAction, editObject }) {
                   rows={3}
                   maxRows={3}
                 />
-              </Grid>
-
-              <Grid item xs={12} md={3}>
-                <CustomColorPicker formik={props} label="Color" field="Color" />
-              </Grid>
-
-              <Grid item xs={12} md={3}>
-                <CustomIconPicker formik={props} label="Icon" field="Icon" color={values?.Color} />
               </Grid>
 
               <Grid xs={12}>

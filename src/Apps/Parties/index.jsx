@@ -6,7 +6,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import Grid from '@mui/material/Unstable_Grid2';
+// import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -91,13 +91,13 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    {
-      title: '#',
-      dataIndex: 'Index',
-      key: 'Index',
-      width: 50,
-      render: (_, __, index) => <Typography variant="light">{index + 1 || ''}</Typography>,
-    },
+    // {
+    //   title: '#',
+    //   dataIndex: 'Index',
+    //   key: 'Index',
+    //   width: 50,
+    //   render: (_, __, index) => <Typography variant="light">{index + 1 || ''}</Typography>,
+    // },
     {
       title: 'Party name',
       dataIndex: 'FullName',
@@ -112,10 +112,6 @@ export default function Index() {
               color="text.secondary"
               sx={{ display: 'flex', alignItems: 'center' }}
             >
-              <SvgColor
-                src="/assets/icons/general/calendar.svg"
-                sx={{ width: 18, height: 18, mr: 0.5 }}
-              />
               {fDate(item?.createdAt)}
             </Typography>
           </Typography>
@@ -127,6 +123,7 @@ export default function Index() {
       dataIndex: 'CurrentAmount',
       key: 'CurrentAmount',
       align: 'right',
+      width: '15%',
       render: (value) => (
         <Typography variant="light" className="custom-text-align-end">
           {formatToINR(value) || '-'}
@@ -138,34 +135,35 @@ export default function Index() {
       dataIndex: 'StartAmount',
       key: 'StartAmount',
       align: 'right',
+      width: '15%',
       render: (value) => (
         <Typography variant="light" className="custom-text-align-end">
           {formatToINR(value) || '-'}
         </Typography>
       ),
     },
-    {
-      title: 'Min Amount',
-      dataIndex: 'MinAmount',
-      key: 'MinAmount',
-      align: 'right',
-      render: (value) => (
-        <Typography variant="light" className="custom-text-align-end">
-          {formatToINR(value) || '-'}
-        </Typography>
-      ),
-    },
-    {
-      title: 'Max Amount',
-      dataIndex: 'MaxAmount',
-      key: 'MaxAmount',
-      align: 'right',
-      render: (value) => (
-        <Typography variant="light" className="custom-text-align-end">
-          {formatToINR(value) || '-'}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: 'Min Amount',
+    //   dataIndex: 'MinAmount',
+    //   key: 'MinAmount',
+    //   align: 'right',
+    //   render: (value) => (
+    //     <Typography variant="light" className="custom-text-align-end">
+    //       {formatToINR(value) || '-'}
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   title: 'Max Amount',
+    //   dataIndex: 'MaxAmount',
+    //   key: 'MaxAmount',
+    //   align: 'right',
+    //   render: (value) => (
+    //     <Typography variant="light" className="custom-text-align-end">
+    //       {formatToINR(value) || '-'}
+    //     </Typography>
+    //   ),
+    // },
     // {
     //   title: 'Used',
     //   dataIndex: 'Used',
@@ -185,7 +183,8 @@ export default function Index() {
       title: 'Active',
       dataIndex: 'Active',
       key: 'Active',
-      align: 'center',
+      align: 'right',
+      width: "10%",
       render: (_, item) => (
         <CustomCheckbox
           loading={loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive'}
@@ -201,7 +200,8 @@ export default function Index() {
       title: 'Action',
       dataIndex: 'Action',
       key: 'Action',
-      align: 'center',
+      align: 'right',
+      width: "10%",
       render: (_, item) => (
         <Dropdown
           trigger={['click']}
@@ -342,27 +342,27 @@ export default function Index() {
                       columns={columns}
                       dataSource={accountsList}
                       rowKey={(record) => record.PartyId}
-                      expandable={{
-                        expandedRowRender: (item) => (
-                          <Grid container spacing={2} sx={{ alignItems: 'center', mx: 1.5 }}>
-                            <Grid xs={12} sm={6}>
-                              <Typography variant="big">Email</Typography>
-                              <Typography variant="light">{item?.Email}</Typography>
-                            </Grid>
-                            <Grid xs={12} sm={6}>
-                              <Typography variant="big">Phone</Typography>
-                              <Typography variant="light">{item?.Phone}</Typography>
-                            </Grid>
-                            <Grid xs={12}>
-                              <Typography variant="big">Address</Typography>
-                              <Typography variant="light">{item?.Address}</Typography>
-                              <Typography variant="light">
-                                {item?.City} {item?.State}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        ),
-                      }}
+                      // expandable={{
+                      //   expandedRowRender: (item) => (
+                      //     <Grid container spacing={2} sx={{ alignItems: 'center', mx: 1.5 }}>
+                      //       <Grid xs={12} sm={6}>
+                      //         <Typography variant="big">Email</Typography>
+                      //         <Typography variant="light">{item?.Email}</Typography>
+                      //       </Grid>
+                      //       <Grid xs={12} sm={6}>
+                      //         <Typography variant="big">Phone</Typography>
+                      //         <Typography variant="light">{item?.Phone}</Typography>
+                      //       </Grid>
+                      //       <Grid xs={12}>
+                      //         <Typography variant="big">Address</Typography>
+                      //         <Typography variant="light">{item?.Address}</Typography>
+                      //         <Typography variant="light">
+                      //           {item?.City} {item?.State}
+                      //         </Typography>
+                      //       </Grid>
+                      //     </Grid>
+                      //   ),
+                      // }}
                     />
                   </Box>
                 ) : (

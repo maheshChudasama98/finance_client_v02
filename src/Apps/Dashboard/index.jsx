@@ -34,7 +34,7 @@ export default function Index() {
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  const [cashFlowDuration, setCashFlowDuration] = useState('This_Week');
+  const [cashFlowDuration, setCashFlowDuration] = useState('Last_Seven_Days');
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -84,6 +84,29 @@ export default function Index() {
       )
     );
   }, [cashFlowDuration]);
+
+  // const columns = [
+  //   {
+  //     title: 'Account Name',
+  //     dataIndex: 'Name',
+  //     key: 'Name',
+  //     width: '20%',
+  //   },
+  //   {
+  //     title: '',
+  //     dataIndex: 'CurrentAmount',
+  //     key: 'CurrentAmount',
+  //     align: 'right',
+  //     width: '15%',
+  //   },
+  //   {
+  //     title: 'Start Amount',
+  //     dataIndex: 'StartAmount',
+  //     key: 'StartAmount',
+  //     align: 'right',
+  //     width: '15%',
+  //   },
+  // ];
 
   return (
     <Box
@@ -167,6 +190,7 @@ export default function Index() {
           <Grid item xs={12} md={12}>
             <OverView
               title="Over View"
+              height={300}
               chart={{
                 labels:
                   currentYearMonthBaseData?.length > 0
@@ -202,7 +226,7 @@ export default function Index() {
               title="Top 5 Categories "
               type="radialBar"
               chart={{
-                series: topTen?.map((item, key) => ({
+                series: topTen?.slice(0, 5)?.map((item) => ({
                   label: item?.CategoryName || '',
                   value: item?.totalOut || 0,
                 })),
@@ -212,6 +236,7 @@ export default function Index() {
 
           <Grid item xs={12} md={8}>
             <OverView
+              height={300}
               title={
                 <Box
                   sx={{
@@ -274,6 +299,7 @@ export default function Index() {
 
           <Grid item xs={12} md={6}>
             <OverView
+              height={250}
               title={
                 <Box
                   sx={{
@@ -316,6 +342,7 @@ export default function Index() {
           <Grid item xs={12} md={6}>
             <OverView
               title="Investment"
+              height={260}
               chart={{
                 labels:
                   currentYearMonthBaseData?.length > 0
