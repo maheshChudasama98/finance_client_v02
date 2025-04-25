@@ -14,9 +14,9 @@ import { DataNotFound } from 'src/components/DataNotFound';
 
 import { Table } from 'antd';
 
-const Transactions = ({ selectedAccountId }) => {
+export const CustomTransactions = ({ selectedAccountId, selectedPartyId }) => {
   const dispatch = useDispatch();
-  
+
   const [list, setList] = useState([]);
   const [loadingLoader, setLoadingLoader] = useState(false);
 
@@ -26,6 +26,7 @@ const Transactions = ({ selectedAccountId }) => {
       AccountService(
         {
           AccountId: selectedAccountId,
+          PartyId: selectedPartyId,
         },
         (res) => {
           setLoadingLoader(false);
@@ -115,11 +116,9 @@ const Transactions = ({ selectedAccountId }) => {
             <Table columns={columns} dataSource={tableSetData} pagination={false} />
           ) : (
             <DataNotFound />
-          )}  
+          )}
         </>
       )}
     </>
   );
 };
-
-export default Transactions;

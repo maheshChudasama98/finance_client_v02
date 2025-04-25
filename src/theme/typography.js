@@ -111,13 +111,13 @@ export const typography = {
   mainHeader: {
     fontWeight: 700,
     lineHeight: 80 / 64,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 36, sm: 36, md: 36, lg: 36 }),
   },
   header: {
     fontWeight: 700,
     lineHeight: 1.5,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 26, sm: 26, md: 26, lg: 24 }),
   },
   subHeder: {
@@ -127,31 +127,37 @@ export const typography = {
   bold: {
     fontWeight: 700,
     lineHeight: 1.5,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 16, sm: 16, md: 17, lg: 17 }),
   },
   normal: {
     fontWeight: 600,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 14, sm: 14, md: 16, lg: 16 }),
   },
   tableHead: {
     fontWeight: 600,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 12, sm: 12, md: 14, lg: 14 }),
   },
   light: {
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 13, sm: 13, md: 14, lg: 14 }),
   },
   big: {
     fontWeight: 700,
     lineHeight: 1.5,
-    display: "block",
+    display: 'block',
     ...responsiveFontSizes({ xs: 18, sm: 18, md: 18, lg: 18 }),
   },
   small: {
     lineHeight: 22 / 14,
     ...responsiveFontSizes({ xs: 10, sm: 10, md: 10, lg: 14 }),
+  },
+  registerTest: {
+    lineHeight: 22 / 14,
+    display: 'flex',
+    color:"text.secondary",
+    ...responsiveFontSizes({ xs: 10, sm: 10, md: 10, lg: 12 }),
   },
 };

@@ -71,15 +71,14 @@ export default function Index({ backAction, editObject }) {
                 paddingX: 2,
               }}
             >
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={6}>
                 <CustomColorPicker formik={props} label="Color" field="Color" />
               </Grid>
 
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={6}>
                 <CustomIconPicker formik={props} label="Icon" field="Icon" color={values?.Color} />
               </Grid>
 
-              <Grid item xs={12} md={6} />
               <Grid item xs={12} md={6}>
                 <TextFieldForm formik={props} label="Account Name" field="AccountName" />
               </Grid>

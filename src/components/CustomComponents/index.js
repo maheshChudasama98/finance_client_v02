@@ -9,4 +9,5 @@ export { CustomIconPicker } from './CustomIconPicker';
 export { CustomPageHeader } from './CustomPageHeader';
 export { CustomColorPicker } from './CustomColorPicker';
 export { CustomSearchInput } from './CustomSearchInput';
+export { CustomTransactions } from './CustomTransactions';
 export { CustomLabelComponent } from './CustomLabelComponent';

@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 export const CustomPageHeader = ({ dataArray = [], ...props }) => {
@@ -19,24 +18,25 @@ export const CustomPageHeader = ({ dataArray = [], ...props }) => {
             borderRadius: '10px',
           }}
         >
-          <Stack direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
+          <Grid container spacing={2} sx={{}}>
             {dataArray?.length > 0 &&
               dataArray?.map((item, key) => (
-                <Box key={key} sx={{ flex: 1 }}>
-                  <Typography
-                    sx={{}}
-                    variant="body"
-                    fontWeight={600}
-                    fontSize={14}
-                    color="text.secondary"
-                  >
-                    {item?.title || ''}
-                  </Typography>
+                <Grid item xs={12} md={6} lg={3}>
+                  <Box key={key} sx={{ flex: 1 }}>
+                    <Typography
+                      variant="body"
+                      fontWeight={600}
+                      fontSize={12}
+                      color="text.secondary"
+                    >
+                      {item?.title || ''}
+                    </Typography>
 
-                  <Typography variant="h4">{item?.value || ''}</Typography>
-                </Box>
+                    <Typography variant="h5">{item?.value || ''}</Typography>
+                  </Box>
+                </Grid>
               ))}
-          </Stack>
+          </Grid>
         </Box>
       )}
     </>

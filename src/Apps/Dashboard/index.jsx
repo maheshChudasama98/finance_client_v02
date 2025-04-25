@@ -2,9 +2,13 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
+import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
+import { formatToINR } from 'src/utils/format-number';
 import { calculatePercentageChange } from 'src/utils/utils';
 
 import { DurationList, TimeDurationList } from 'src/constance';
@@ -13,13 +17,16 @@ import {
   DataFollService,
   FinanceYearService,
   TopCategoriesService,
+  TopSubCategoriesService,
 } from 'src/Services/AnalystData.Services';
 
-import { CustomSelect } from 'src/components/CustomComponents';
+import Scrollbar from 'src/components/scrollbar';
+import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
+
+import { Table } from 'antd';
 
 import InfoBox from './InfoBox';
 import OverView from './OverView';
-// import { topTen } from '../Consumer/data';
 import AppCurrentVisits from './app-current-visits';
 
 export default function Index() {
@@ -28,7 +35,10 @@ export default function Index() {
   const [currentYearBaseData, setCurrentYearBaseData] = useState({});
   const [lastYearBaseData, setLastYearBaseData] = useState({});
   const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
+  const [lastMonth, setLastMonth] = useState([]);
+  const [currentMonth, setCurrentMonth] = useState([]);
   const [topTen, setTopTen] = useState([]);
+  const [topTenSubCategories, setTopTenSubCategories] = useState([]);
 
   const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState('WEEK');
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
@@ -45,6 +55,8 @@ export default function Index() {
           setCurrentYearBaseData(res?.data?.currentYear || {});
           setLastYearBaseData(res?.data?.lastYear || {});
           setCurrentYearMonthBaseData(res?.data?.monthBase || []);
+          setLastMonth(res?.data?.lastMonthData || []);
+          setCurrentMonth(res?.data?.currentMonth || []);
         }
       })
     );
@@ -53,6 +65,14 @@ export default function Index() {
         setCurrentYearBaseLoader(false);
         if (res.status) {
           setTopTen(res?.data?.list?.[0]?.topTenOut || []);
+        }
+      })
+    );
+    dispatch(
+      TopSubCategoriesService({ TimeDuration: 'MONTH' }, (res) => {
+        setCurrentYearBaseLoader(false);
+        if (res.status) {
+          setTopTenSubCategories(res?.data?.list?.[0]?.topTenOut || []);
         }
       })
     );
@@ -85,35 +105,68 @@ export default function Index() {
     );
   }, [cashFlowDuration]);
 
-  // const columns = [
-  //   {
-  //     title: 'Account Name',
-  //     dataIndex: 'Name',
-  //     key: 'Name',
-  //     width: '20%',
-  //   },
-  //   {
-  //     title: '',
-  //     dataIndex: 'CurrentAmount',
-  //     key: 'CurrentAmount',
-  //     align: 'right',
-  //     width: '15%',
-  //   },
-  //   {
-  //     title: 'Start Amount',
-  //     dataIndex: 'StartAmount',
-  //     key: 'StartAmount',
-  //     align: 'right',
-  //     width: '15%',
-  //   },
-  // ];
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'CategoryName',
+      key: 'CategoryName',
+      width: '70%',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'totalOut',
+      key: 'totalOut',
+      align: 'right',
+      width: '30%',
+    },
+  ];
+
+  const tableSetData = topTen.map((item, index) => ({
+    item,
+    key: index,
+    CategoryName: (
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <CustomAvatar
+          width={{ xs: 40, md: 40, lg: 40 }}
+          height={{ xs: 40, md: 40, lg: 40 }}
+          iconSize={15}
+          icon={item?.Icon || ''}
+          bgColor={item?.Color || ''}
+        />
+        <Typography variant="light">{item?.CategoryName}</Typography>
+      </Stack>
+    ),
+    totalOut: (
+      <Typography variant="light" color="error">
+        {formatToINR(item?.totalOut) || ''}
+      </Typography>
+    ),
+  }));
+
+  const topTenSubCategoriesData = topTenSubCategories.map((item, index) => ({
+    item,
+    key: index,
+    CategoryName: (
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <CustomAvatar
+          width={{ xs: 40, md: 40, lg: 40 }}
+          height={{ xs: 40, md: 40, lg: 40 }}
+          iconSize={15}
+          icon={item?.Icon || ''}
+          bgColor={item?.Color || ''}
+        />
+        <Typography variant="light">{item?.SubCategoryName}</Typography>
+      </Stack>
+    ),
+    totalOut: (
+      <Typography variant="light" color="error">
+        {formatToINR(item?.totalOut) || ''}
+      </Typography>
+    ),
+  }));
 
   return (
-    <Box
-      sx={{
-        paddingX: { xs: 0, sm: 2 },
-      }}
-    >
+    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Box
         sx={{
           justifyContent: 'space-between',
@@ -136,10 +189,7 @@ export default function Index() {
               title="Total Income"
               amount={currentYearBaseData?.totalIn || 0}
               previousValue={
-                calculatePercentageChange(
-                  currentYearBaseData?.totalIn,
-                  lastYearBaseData?.totalIn
-                ) || 0
+                calculatePercentageChange(currentMonth?.totalIn, lastMonth?.totalIn) || 0
               }
               loader={currentYearBaseLoader}
             />
@@ -147,13 +197,11 @@ export default function Index() {
 
           <Grid item xs={12} md={3}>
             <InfoBox
+              flag={false}
               title="Total Expense"
               amount={currentYearBaseData?.totalOut || 0}
               previousValue={
-                calculatePercentageChange(
-                  currentYearBaseData?.totalOut,
-                  lastYearBaseData?.totalOut
-                ) || 0
+                calculatePercentageChange(currentMonth?.totalOut, lastMonth?.totalOut) || 0
               }
               loader={currentYearBaseLoader}
             />
@@ -165,8 +213,8 @@ export default function Index() {
               amount={currentYearBaseData?.totalInvestment || 0}
               previousValue={
                 calculatePercentageChange(
-                  currentYearBaseData?.totalInvestment,
-                  lastYearBaseData?.totalInvestment
+                  currentMonth?.totalInvestment,
+                  lastMonth?.totalInvestment
                 ) || 0
               }
               loader={currentYearBaseLoader}
@@ -283,15 +331,6 @@ export default function Index() {
                         ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
                         : [],
                   },
-                  // {
-                  //   name: 'Expense',
-                  //   type: 'area',
-                  //   fill: 'gradient',
-                  //   data:
-                  //     dataFlowIncrement?.length > 0
-                  //       ? dataFlowIncrement?.map((item, key) => item?.totalInvestment  || 0)
-                  //       : [],
-                  // },
                 ],
               }}
             />
@@ -362,6 +401,52 @@ export default function Index() {
                 ],
               }}
             />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardHeader title="Top Ten Category" />
+              <Scrollbar
+                sx={{
+                  height: 310,
+                  '& .simplebar-content': {
+                    height: 310,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  },
+                }}
+              >
+                <Table
+                  dataSource={tableSetData}
+                  showHeader={false}
+                  columns={columns}
+                  pagination={false}
+                  rowKey="CategoryName"
+                />
+              </Scrollbar>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardHeader title="Top ten sub category" />
+              <Scrollbar
+                sx={{
+                  height: 310,
+                  '& .simplebar-content': {
+                    height: 310,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  },
+                }}
+              >
+                <Table
+                  dataSource={topTenSubCategoriesData}
+                  showHeader={false}
+                  columns={columns}
+                  pagination={false}
+                  rowKey="CategoryName"
+                />
+              </Scrollbar>
+            </Card>
           </Grid>
         </Grid>
       </Box>
