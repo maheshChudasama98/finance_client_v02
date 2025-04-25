@@ -36,12 +36,14 @@ export default function Index() {
   const [accountsList, setAccountsList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
     dispatch(
       LabelActionService({ [action]: value, LabelId: id }, () => {
         setApiFlag(!apiFlag);
+        setDisplayFlag(false);
       })
     );
   };
@@ -87,40 +89,55 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    {
-      title: '#',
-      dataIndex: 'Index',
-      key: 'Index',
-      width: '80px',
-      render: (text) => <Typography variant="">{text}</Typography>,
-    },
+    // {
+    //   title: '#',
+    //   dataIndex: 'Index',
+    //   key: 'Index',
+    //   width: '50px',
+    //   render: (text) => <Typography variant="">{text}</Typography>,
+    // },
     {
       title: 'Label',
       dataIndex: 'Label',
       key: 'Label',
       render: (text) => <Typography variant=" ">{text}</Typography>,
     },
+    {
+      title: 'Income',
+      dataIndex: 'In',
+      key: 'In',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Expense',
+      dataIndex: 'Out',
+      key: 'Out',
+      align: 'right',
+      width: '15%',
+    },
     // {
     //   title: 'Used',
     //   dataIndex: 'Used',
     //   key: 'Used',
     // },
-      {
-        title: 'Active',
-        dataIndex: 'Active',
-        key: 'Active',
-        width: '100px',
-        align: 'center',
-      },
     {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
-      width: '100px',
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      align: 'right',
+      width: '10%',
     },
+    // {
+    //   title: 'Action',
+    //   dataIndex: 'Action',
+    //   key: 'Action',
+    //   width: '100px',
+    // },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
+    item,
     key: item?.LabelId,
     Index: index + 1 || '',
     Label: item?.LabelName || '',
@@ -208,18 +225,31 @@ export default function Index() {
     ),
   }));
 
-  const handleRowClick = (record) => {
-    console.log('Row clicked:', record);
-  };
+  // const handleRowClick = (record) => {
+  //   setDisplayFlag(true);
+  //   setEditObject(record?.item);
+  //   // setExpandedRowKeys([record.key]); // Set the clicked row as expanded
+  // };
 
   const titleAction = (display) => {
     if (display) {
       return 'Labels';
     }
-    if (editObject?.AccountId) {
+    if (editObject?.LabelId) {
       return 'Edit Label';
     }
     return 'New Label';
+  };
+  const DeletedAction = (item) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          StatusChange('isDeleted', true, item?.LabelId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -278,16 +308,44 @@ export default function Index() {
                 {accountsList && accountsList?.length > 0 ? (
                   <Box
                     sx={{
-                      // marginX: 2,
-                      minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >
                     <Table
+                      className="custom-ant-table"
                       columns={columns}
                       dataSource={tableSetData}
+                      expandable={{
+                        expandedRowRender: (record) => (
+                          <Box sx={{ backgroundColor: '#fff', padding: 2 }}>
+                            <Form
+                              backAction={showDisplayAction}
+                              editObject={record?.item}
+                              deletedAction={DeletedAction}
+                              apiCallAction={() => {
+                                setApiFlag(!apiFlag);
+                              }}
+                            />
+                          </Box>
+                        ),
+                        rowExpandable: (record) => true,
+                        expandIcon: () => null,
+                        indentSize: 0,
+                        expandIconColumnIndex: -1,
+                      }}
+                      expandedRowKeys={expandedRowKeys} // Control expanded rows
+                      onExpand={(expanded, record) => {
+                        setExpandedRowKeys(expanded ? [record.key] : []);
+                      }}
                       onRow={(record) => ({
-                        onClick: () => handleRowClick(record),
+                        onClick: () => {
+                          if (expandedRowKeys?.[0] === [record.key]?.[0]) {
+                            setExpandedRowKeys([]);
+                          } else {
+                            setExpandedRowKeys([record.key]); // Expand the clicked row
+                            setEditObject(record?.item); // Set the edit object
+                          }
+                        },
                       })}
                       pagination={false}
                     />

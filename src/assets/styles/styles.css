@@ -137,12 +137,20 @@
 .custom-info-icon-css {
   background: #5bc43a;
   color: white;
-  /* border: solid 1px ; */
-  /* color: #5bc43a; */
-  padding: 4px 6px;
+  padding: 4px 7px;
   margin-right:  25px;
   font-size: 9px;
   border-radius: 10px;
   place-self: anchor-center;
 
 }
+.custom-ant-table .ant-table-expanded-row > .ant-table-cell {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #fff !important;
+}
+
+.twitter-picker {
+  width:  500px !important;
+}
+

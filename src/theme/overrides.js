@@ -172,6 +172,23 @@ export function overrides(theme) {
         elevation: 0,
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: theme.palette.grey[500], 
+          '&.Mui-checked': {
+            color: theme.palette.success.main,
+          },
+          '&:hover': {
+            // backgroundColor: theme.palette.grey[300], // hover background
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: 18, 
+            borderRadius: '80%',
+          },
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         head: {

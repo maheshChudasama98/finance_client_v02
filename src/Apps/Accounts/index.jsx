@@ -1,14 +1,11 @@
 import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
-import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -27,10 +24,8 @@ import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomAvatar,
-  CustomSelect,
+  // CustomSelect,
   CustomCheckbox,
-  CustomTabLabel,
-  CustomPageHeader,
   CustomSearchInput,
 } from 'src/components/CustomComponents';
 
@@ -53,8 +48,6 @@ export default function Index() {
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState(null);
-  const [headerTitles, setHeaderTitles] = useState([]);
-  const [tabValue, setTabValue] = useState('list');
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -68,6 +61,7 @@ export default function Index() {
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
     setEditObject({});
+    setSelectedAccountId(null);
   };
 
   useEffect(() => {
@@ -106,12 +100,6 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    // {
-    //   title: '#',
-    //   dataIndex: 'Index',
-    //   key: 'Index',
-    //   width: '5%',
-    // },
     {
       title: 'Account Name',
       dataIndex: 'AccountName',
@@ -138,40 +126,20 @@ export default function Index() {
       align: 'right',
       width: '15%',
     },
-    // {
-    //   title: 'Min Amount',
-    //   dataIndex: 'MinAmount',
-    //   key: 'MinAmount',
-    //   align: 'right',
-    //   width: '15%',
-    // },
-    // {
-    //   title: 'Max Amount',
-    //   dataIndex: 'MaxAmount',
-    //   key: 'MaxAmount',
-    //   align: 'right',
-    //   width: '15%',
-    // },
-    // {
-    //   title: 'Used',
-    //   dataIndex: 'Used',
-    //   key: 'Used',
-    //   width: '10%',
-    // },
     {
       title: 'Active',
       dataIndex: 'Active',
       key: 'Active',
-      align: 'right',
+      align: 'center',
       width: '10%',
     },
-    {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
-      align: 'right',
-      width: '10%',
-    },
+    // {
+    //   title: 'Action',
+    //   dataIndex: 'DeleteAction',
+    //   key: 'DeleteAction',
+    //   align: 'right',
+    //   width: '10%',
+    // },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
@@ -189,15 +157,7 @@ export default function Index() {
         />
         <Typography variant="light">
           {item?.AccountName}
-          <Typography
-            // variant="light"
-            color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center', fontSize: 12 }}
-          >
-            <SvgColor
-              src="/assets/icons/general/calendar.svg"
-              sx={{ width: 18, height: 18, mr: 0.5 }}
-            />
+          <Typography variant="registerTest" color="text.secondary">
             {fDate(item?.createdAt)}
           </Typography>
         </Typography>
@@ -307,6 +267,27 @@ export default function Index() {
         </IconButton>
       </Dropdown>
     ),
+    DeleteAction: (
+      <Typography
+        variant="light"
+        color="error"
+        onClick={() => {
+          sweetAlertQuestion()
+            .then((result) => {
+              if (result === 'Yes') {
+                StatusChange('isDeleted', true, item?.AccountId);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }}
+      >
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <SvgColor src="/assets/icons/general/trash.svg" sx={{ width: 20, height: 20 }} />
+        </Box>
+      </Typography>
+    ),
   }));
 
   const titleAction = (display) => {
@@ -319,30 +300,26 @@ export default function Index() {
     return 'New Account';
   };
 
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
   const selectItemAction = (key) => {
-    const accounts = accountsList?.find((e) => e?.AccountId === key);
-
+    const account = accountsList?.find((e) => e?.AccountId === key);
+    setDisplayFlag(true);
     setSelectedAccountId(key);
-    setHeaderTitles([
-      { title: 'Account Name', value: accounts?.AccountName },
-      {
-        title: 'Account Type',
-        value: accounts?.TypeId
-          ? AccountTypes?.find((e) => e?.key === accounts?.TypeId)?.value
-          : '',
-      },
-      { title: 'Current Amount', value: formatToINR(accounts?.CurrentAmount) },
-      { title: 'Start Amount', value: formatToINR(accounts?.StartAmount) },
-    ]);
+    setEditObject(account);
+    // setHeaderTitles([
+    //   { title: 'Account Name', value: accounts?.AccountName },
+    //   {
+    //     title: 'Account Type',
+    //     value: accounts?.TypeId
+    //       ? AccountTypes?.find((e) => e?.key === accounts?.TypeId)?.value
+    //       : '',
+    //   },
+    //   { title: 'Current Amount', value: formatToINR(accounts?.CurrentAmount) },
+    //   { title: 'Start Amount', value: formatToINR(accounts?.StartAmount) },
+    // ]);
   };
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <CustomPageHeader dataArray={headerTitles} />
       <Card>
         <CardHeader
           title={<>{titleAction(!displayFlag)}</>}
@@ -363,92 +340,7 @@ export default function Index() {
         {displayFlag ? (
           <Form backAction={showDisplayAction} editObject={editObject} />
         ) : (
-          <Box
-            sx={{
-              borderRadius: 1.3,
-            }}
-          >
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                paddingY: 2,
-                paddingX: 2,
-              }}
-            >
-              <Grid item xs={12} md={6}>
-                {/* <Box sx={{ float: 'right', display: 'flex' }}> */}
-                {tabValue === 'analysis' || tabValue === 'transactions' ? (
-                  <Box>
-                    <CustomSelect
-                      valueKey="AccountId"
-                      labelKey="AccountName"
-                      size="small"
-                      sx={{ width: 200 }}
-                      menuList={accountsList}
-                      defaultValue={selectedAccountId}
-                      callBackAction={(value) => selectItemAction(value)}
-                    />
-                  </Box>
-                ) : (
-                  <CustomSearchInput
-                    loading={loadingSearchLoader}
-                    searchValue={searchValue}
-                    callBack={setSearchValue}
-                  />
-                )}
-                {/* </Box> */}
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <Box sx={{ float: 'right', display: 'flex' }}>
-                  {selectedAccountId ? (
-                    <Tabs
-                      variant="scrollable"
-                      scrollButtons="auto"
-                      value={tabValue}
-                      onChange={handleChange}
-                    >
-                      <Tab
-                        label={
-                          <CustomTabLabel
-                            selectValue={tabValue}
-                            label="Account List"
-                            value="list"
-                          />
-                        }
-                        value="list"
-                      />
-
-                      <Tab
-                        label={
-                          <CustomTabLabel
-                            selectValue={tabValue}
-                            label="Analysis"
-                            value="analysis"
-                          />
-                        }
-                        value="analysis"
-                      />
-
-                      <Tab
-                        label={
-                          <CustomTabLabel
-                            selectValue={tabValue}
-                            label="Transactions"
-                            value="transactions"
-                          />
-                        }
-                        value="transactions"
-                      />
-                    </Tabs>
-                  ) : (
-                    <Box />
-                  )}
-                </Box>
-              </Grid>
-            </Grid>
-
+          <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
                 <Loader />
@@ -459,35 +351,44 @@ export default function Index() {
                   overflow: 'auto',
                 }}
               >
-                {tabValue === 'list' && (
-                  <>
-                    {accountsList && accountsList?.length > 0 ? (
-                      <Table
-                        columns={columns}
-                        dataSource={tableSetData}
-                        pagination={false}
-                        onRow={(record) => ({
-                          onClick: () => {
-                            selectItemAction(record.key);
-                          },
-                        })}
-                      />
-                    ) : (
-                      <DataNotFound />
-                    )}
-                  </>
-                )}
-                {tabValue === 'analysis' && (
-                    <CustomDataFlow selectedAccountId={selectedAccountId} />
-                )}
-                {tabValue === 'transactions' && (
-                  <Transactions selectedAccountId={selectedAccountId} />
+                <Box sx={{ m: 2 }}>
+                  <CustomSearchInput
+                    loading={loadingSearchLoader}
+                    searchValue={searchValue}
+                    callBack={setSearchValue}
+                  />
+                </Box>
+
+                {accountsList && accountsList?.length > 0 ? (
+                  <Table
+                    className="custom-ant-table"
+                    columns={columns}
+                    dataSource={tableSetData}
+                    pagination={false}
+                    onRow={(record) => ({
+                      onClick: () => {
+                        selectItemAction(record.key);
+                      },
+                    })}
+                  />
+                ) : (
+                  <DataNotFound />
                 )}
               </Box>
             )}
           </Box>
         )}
       </Card>
+      {selectedAccountId && (
+        <Box sx={{ paddingY: 2 }}>
+          <CustomDataFlow selectedAccountId={selectedAccountId} />
+        </Box>
+      )}
+      {selectedAccountId && (
+        <Card>
+          <Transactions selectedAccountId={selectedAccountId} />
+        </Card>
+      )}
     </Box>
   );
 }

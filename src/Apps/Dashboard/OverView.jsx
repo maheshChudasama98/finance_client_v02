@@ -8,7 +8,7 @@ import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export default function OverView({ title, subheader, chart, ...other }) {
+export default function OverView({ title, subheader, height, chart, ...other }) {
   const { labels, colors, series, options } = chart;
 
   const chartOptions = useChart({
@@ -54,7 +54,7 @@ export default function OverView({ title, subheader, chart, ...other }) {
           series={series}
           options={chartOptions}
           width="100%"
-          height={350}
+          height={height}
         />
       </Box>
     </Card>
@@ -64,5 +64,6 @@ export default function OverView({ title, subheader, chart, ...other }) {
 OverView.propTypes = {
   chart: PropTypes.object,
   subheader: PropTypes.string,
+  height: PropTypes.number,
   title: PropTypes.string,
 };

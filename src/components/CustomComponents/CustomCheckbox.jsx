@@ -5,7 +5,6 @@ import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export const CustomCheckbox = ({ loading, ...props }) => {
-
   if (loading) {
     return <CircularProgress color="success" size={30} />;
   }
