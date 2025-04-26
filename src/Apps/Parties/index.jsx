@@ -342,7 +342,6 @@ export default function Index() {
                 {getList && getList?.length > 0 ? (
                   <Box
                     sx={{
-                      minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >

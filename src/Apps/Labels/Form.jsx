@@ -94,7 +94,7 @@ export default function Index({ backAction, editObject, deletedAction, apiCallAc
                       variant="contained"
                       sx={{ marginX: 1 }}
                       onClick={() => {
-                        deletedAction();
+                        deletedAction(editObject);
                       }}
                       color="error"
                     >

@@ -16,7 +16,7 @@ import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
-export default function Index({ backAction, editObject }) {
+export default function Index({ backAction, editObject, deleteAction }) {
   const dispatch = useDispatch();
 
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
@@ -139,6 +139,18 @@ export default function Index({ backAction, editObject }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
+                  {editObject?.AccountId && (
+                    <Button
+                      variant="contained"
+                      sx={{ marginX: 1 }}
+                      onClick={() => {
+                        deleteAction(editObject);
+                      }}
+                      color="error"
+                    >
+                      Deleted
+                    </Button>
+                  )}
                   {dirty && (
                     <Button
                       variant="outlined"

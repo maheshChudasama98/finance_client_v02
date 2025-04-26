@@ -225,11 +225,11 @@ export default function Index() {
     ),
   }));
 
-  // const handleRowClick = (record) => {
-  //   setDisplayFlag(true);
-  //   setEditObject(record?.item);
-  //   // setExpandedRowKeys([record.key]); // Set the clicked row as expanded
-  // };
+  const handleRowClick = (record) => {
+    setDisplayFlag(true);
+    setEditObject(record?.item);
+    // setExpandedRowKeys([record.key]); // Set the clicked row as expanded
+  };
 
   const titleAction = (display) => {
     if (display) {
@@ -272,7 +272,7 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form backAction={showDisplayAction} editObject={editObject}  deletedAction={DeletedAction} />
         ) : (
           <Box
             sx={{
@@ -333,18 +333,19 @@ export default function Index() {
                         indentSize: 0,
                         expandIconColumnIndex: -1,
                       }}
-                      expandedRowKeys={expandedRowKeys} // Control expanded rows
+                      expandedRowKeys={expandedRowKeys}
                       onExpand={(expanded, record) => {
                         setExpandedRowKeys(expanded ? [record.key] : []);
                       }}
                       onRow={(record) => ({
                         onClick: () => {
-                          if (expandedRowKeys?.[0] === [record.key]?.[0]) {
-                            setExpandedRowKeys([]);
-                          } else {
-                            setExpandedRowKeys([record.key]); // Expand the clicked row
-                            setEditObject(record?.item); // Set the edit object
-                          }
+                          handleRowClick(record);
+                          // if (expandedRowKeys?.[0] === [record.key]?.[0]) {
+                          //   setExpandedRowKeys([]);
+                          // } else {
+                          //   setExpandedRowKeys([record.key]); // Expand the clicked row
+                          //   setEditObject(record?.item); // Set the edit object
+                          // }
                         },
                       })}
                       pagination={false}

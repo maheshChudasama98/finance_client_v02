@@ -318,6 +318,18 @@ export default function Index() {
     // ]);
   };
 
+  const deleteAction = (item) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          StatusChange('isDeleted', true, item?.AccountId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -338,7 +350,7 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form backAction={showDisplayAction} editObject={editObject} deleteAction={deleteAction} />
         ) : (
           <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (

@@ -33,8 +33,8 @@ export default function Router({ permissionList }) {
   const CommRoutes = [
     { path: 'login', element: <LoginPage />, index: true },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
-    { path: '404', element: <Page404 /> },
-    { path: '*', element: <Navigate to="login" replace /> },
+    { path: '*', element: <Page404 /> },
+    { path: '', element: <Navigate to="login" replace /> },
   ];
 
   const OrgRouters = [
@@ -45,7 +45,7 @@ export default function Router({ permissionList }) {
 
     { path: '/accounts', element: <AccountsPage />, title: 'Accounts' },
     { path: '/labels', element: <LabelsPage />, title: 'Labels' },
-    { path: '/parties', element: <PartiesPage />, title: 'Party' },
+    { path: '/parties', element: <PartiesPage />, title: 'Parties' },
     { path: '/categories', element: <CategoriesPage />, title: 'Categories' },
     { path: '/records', element: <RecordsPage />, title: 'Record' },
     { path: '/users', element: <UsersPage />, title: 'Users' },
