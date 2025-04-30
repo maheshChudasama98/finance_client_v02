@@ -38,9 +38,9 @@ export default function Analyst({ PartyId }) {
         <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
         <Scrollbar
           sx={{
-            height: 500,
+            maxHeight: 500,
             '& .simplebar-content': {
-              height: 500,
+              maxHeight: 500,
               display: 'flex',
               flexDirection: 'column',
             },

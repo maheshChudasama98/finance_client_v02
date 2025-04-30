@@ -65,11 +65,9 @@ export const CustomTransactions = ({ list }) => {
         {formatToINR(item?.AccountAmount) || '-'}
       </Typography>
     ),
-    Balance: item?.Balance > 0 && (
-      <Typography variant="light">{formatToINR(item?.Balance) || '-'}</Typography>
-    ),
+    Balance: <Typography variant="light">{formatToINR(item?.Balance) || '-'}</Typography>,
   }));
-  
+
   return (
     <>
       {list && list?.length > 0 ? (

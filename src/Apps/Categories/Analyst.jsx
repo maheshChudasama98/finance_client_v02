@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
+// import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
 import { AnalystService } from 'src/Services/AnalystData.Services';
@@ -10,7 +10,7 @@ import { AnalystService } from 'src/Services/AnalystData.Services';
 import Scrollbar from 'src/components/scrollbar';
 import { CustomFlowChart, CustomTransactions } from 'src/components/CustomComponents';
 
-export default function Analyst({ AccountId }) {
+export default function Analyst({ CategoryId }) {
   const dispatch = useDispatch();
 
   const [list, setList] = useState([]);
@@ -18,23 +18,23 @@ export default function Analyst({ AccountId }) {
 
   useEffect(() => {
     dispatch(
-      AnalystService({ AccountId }, (res) => {
+      AnalystService({ CategoryId }, (res) => {
         if (res.status) {
           setList(res?.data?.list);
           setGraphList(res?.data?.graphList);
         }
       })
     );
-  }, [AccountId]);
+  }, [CategoryId]);
 
   return (
     <Box>
-      <Card sx={{ marginY: 2 }}>
+      <Box sx={{ marginY: 2 }}>
         <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
         <CustomFlowChart graphList={graphList} />
-      </Card>
+      </Box>
 
-      <Card>
+      <Box sx={{ marginBottom: 2 }}>
         <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
         <Scrollbar
           sx={{
@@ -48,7 +48,7 @@ export default function Analyst({ AccountId }) {
         >
           <CustomTransactions list={list} />
         </Scrollbar>
-      </Card>
+      </Box>
     </Box>
   );
 }

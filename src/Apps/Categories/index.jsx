@@ -36,6 +36,7 @@ import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
 import SubForm from './SubForm';
+import Analyst from './Analyst';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -53,29 +54,6 @@ export default function Index() {
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [childExpandedRowKeys, setChildExpandedRowKeys] = useState({});
-
-  const StatusChange = (action, value, id) => {
-    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      CategoryActionService({ [action]: value, CategoryId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const SubStatusChange = (action, value, id) => {
-    setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const showDisplayAction = () => {
-    setDisplayFlag(!displayFlag);
-    setEditObject({});
-  };
 
   useEffect(() => {
     if (!displayFlag) {
@@ -112,25 +90,6 @@ export default function Index() {
       );
     }
   }, [searchValue, apiFlag]);
-
-  // const columns = [
-  //   { Header: '#', keyLabel: 'Index', xs: 0.5 },
-  //   { Header: 'Category', keyLabel: 'CategoryName', xs: 5 },
-  //   { Header: 'Income', keyLabel: 'In', xs: 2.5 },
-  //   { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
-  //   // { Header: 'Used', keyLabel: 'Used', xs: 1 },
-  //   { Header: 'Active', keyLabel: 'Active', xs: 1 },
-  //   { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
-  // ];
-
-  // const subColumns = [
-  //   { Header: 'Sub Category', keyLabel: 'SubCategoriesName', xs: 5.5 },
-  //   // { Header: 'Used', keyLabel: 'Used', xs: 1 },
-  //   { Header: 'Income', keyLabel: 'In', xs: 2.5 },
-  //   { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
-  //   { Header: 'Active', keyLabel: 'Active', xs: 1 },
-  //   { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
-  // ];
 
   const titleAction = (display) => {
     if (display) {
@@ -462,6 +421,29 @@ export default function Index() {
         : [],
   }));
 
+  const StatusChange = (action, value, id) => {
+    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      CategoryActionService({ [action]: value, CategoryId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const SubStatusChange = (action, value, id) => {
+    setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const showDisplayAction = () => {
+    setDisplayFlag(!displayFlag);
+    setEditObject({});
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -539,6 +521,7 @@ export default function Index() {
                                   setApiFlag(!apiFlag);
                                 }}
                               />
+                              <Analyst CategoryId={record?.item?.CategoryId} />
                               <Table
                                 className="custom-ant-table"
                                 columns={subColumns}
@@ -623,7 +606,9 @@ export default function Index() {
                       expandedRowKeys={expandedRowKeys}
                       onExpand={(expanded, record) => {
                         setExpandedRowKeys((prev) =>
-                          expanded ? [...prev, record.key] : prev.filter((key) => key !== record.key)
+                          expanded
+                            ? [...prev, record.key]
+                            : prev.filter((key) => key !== record.key)
                         );
                       }}
                       onRow={(record) => ({
