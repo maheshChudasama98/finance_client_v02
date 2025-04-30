@@ -88,6 +88,16 @@ export const success = {
   contrastText: '#FFFFFF', // Contrast text color
 };
 
+export const darker = {
+  lighter: '#F4F6F8', // Lightest shade
+  light: '#C4CDD5',   // Lighter shade
+  main: '#919EAB',    // Base color
+  dark: '#637381',    // Darker shade
+  darker: '#212B36',  // Darkest shade
+  contrastText: '#FFFFFF', // Contrast text color
+};
+
+
 // export const success = {
 //   lighter: '#C8FAD6',
 //   light: '#5BE49B',
@@ -140,6 +150,7 @@ const base = {
   secondary,
   info,
   success,
+  darker,
   warning,
   error,
   grey,

@@ -54,7 +54,6 @@ export default function Index({ backAction, editObject, deleteAction }) {
         StartAmount: Yup.number().nullable(),
         MinAmount: Yup.number().nullable(),
         TypeId: Yup.number().required('Account type  is required.'),
-        // Icon: Yup.string().required("Icon is required."),
         Description: Yup.string().trim().nullable(),
       })}
       onSubmit={ActionSubmit}

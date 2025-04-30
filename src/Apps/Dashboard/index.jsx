@@ -167,23 +167,15 @@ export default function Index() {
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Box
-        sx={{
-          justifyContent: 'space-between',
-          display: 'flex',
-        }}
-      >
+      <Box sx={{ justifyContent: 'space-between', display: 'flex' }}>
         <Typography variant="h4" sx={{ ml: 2 }} color="text.secondary">
           Hi, Welcome back 👋
         </Typography>
       </Box>
 
-      <Box
-        sx={{
-          marginTop: 3,
-        }}
-      >
+      <Box sx={{ marginTop: 3 }}>
         <Grid container spacing={2}>
+          {/*  Total Income  */}
           <Grid item xs={12} md={3}>
             <InfoBox
               title="Total Income"
@@ -195,6 +187,7 @@ export default function Index() {
             />
           </Grid>
 
+          {/*  Total Expense  */}
           <Grid item xs={12} md={3}>
             <InfoBox
               flag={false}
@@ -207,6 +200,7 @@ export default function Index() {
             />
           </Grid>
 
+          {/*  Total Investment  */}
           <Grid item xs={12} md={3}>
             <InfoBox
               title="Total Investment"
@@ -221,6 +215,7 @@ export default function Index() {
             />
           </Grid>
 
+          {/*  Total Debit  */}
           <Grid item xs={12} md={3}>
             <InfoBox
               title="Total Debit"
@@ -237,7 +232,7 @@ export default function Index() {
 
           <Grid item xs={12} md={12}>
             <OverView
-              title="Over View"
+              title="Balance overview"
               height={300}
               chart={{
                 labels:
@@ -271,7 +266,7 @@ export default function Index() {
 
           <Grid item xs={12} md={4}>
             <AppCurrentVisits
-              title="Top 5 Categories "
+              title="Top 5 Categories"
               type="radialBar"
               chart={{
                 series: topTen?.slice(0, 5)?.map((item) => ({

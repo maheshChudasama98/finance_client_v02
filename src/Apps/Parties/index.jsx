@@ -22,14 +22,14 @@ import { PartyActionService, PartiesFetchListService } from 'src/Services/Meter.
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomAvatar, CustomCheckbox, CustomSearchInput, CustomTransactions } from 'src/components/CustomComponents';
+import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
 import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
+import AnalystComponent from './Analyst';
 
 export default function Index() {
-  const filterValue = 'All';
   const dispatch = useDispatch();
 
   const [apiFlag, setApiFlag] = useState(false);
@@ -40,22 +40,6 @@ export default function Index() {
   const [getList, setGetList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
-  const [selectedPartyId, setSelectedPartyId] = useState(null);
-
-  const StatusChange = (action, value, id) => {
-    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      PartyActionService({ [action]: value, PartyId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const showDisplayAction = () => {
-    setDisplayFlag(!displayFlag);
-    setEditObject({});
-    setSelectedPartyId(null)
-  };
 
   useEffect(() => {
     if (!displayFlag) {
@@ -74,7 +58,7 @@ export default function Index() {
         })
       );
     }
-  }, [displayFlag, filterValue]);
+  }, [displayFlag]);
 
   useEffect(() => {
     if (!displayFlag) {
@@ -194,7 +178,6 @@ export default function Index() {
                     e.stopPropagation();
                     setDisplayFlag(true);
                     setEditObject(item);
-                    setSelectedPartyId(item?.PartyId); // Set PartyId dynamically
                   }}
                 >
                   <Box display="flex" alignItems="center">
@@ -279,11 +262,36 @@ export default function Index() {
     return 'New Party';
   };
 
+  const StatusChange = (action, value, id) => {
+    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      PartyActionService({ [action]: value, PartyId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const showDisplayAction = () => {
+    setDisplayFlag(!displayFlag);
+    setEditObject({});
+  };
+
   const selectItemAction = (key) => {
     const data = getList?.find((e) => e?.PartyId === key);
     setDisplayFlag(true);
-    setSelectedPartyId(key);
     setEditObject(data);
+  };
+
+  const deleteAction = (item) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          StatusChange('isDeleted', true, item?.PartyId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -306,29 +314,13 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form
+            backAction={showDisplayAction}
+            editObject={editObject}
+            deleteAction={deleteAction}
+          />
         ) : (
-          <Box
-            sx={{
-              borderRadius: 1.3,
-            }}
-          >
-            <Box
-              sx={{
-                marginX: 2,
-                marginY: 2,
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box />
-              <CustomSearchInput
-                loading={loadingSearchLoader}
-                searchValue={searchValue}
-                callBack={setSearchValue}
-              />
-            </Box>
-
+          <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
                 <Loader />
@@ -339,24 +331,27 @@ export default function Index() {
                   overflow: 'auto',
                 }}
               >
+                <Box sx={{ m: 2 }}>
+                  <CustomSearchInput
+                    loading={loadingSearchLoader}
+                    searchValue={searchValue}
+                    callBack={setSearchValue}
+                  />
+                </Box>
+
                 {getList && getList?.length > 0 ? (
-                  <Box
-                    sx={{
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <Table
-                      pagination={false}
-                      columns={columns}
-                      dataSource={tableSetData}
-                      rowKey={(record) => record.PartyId}
-                      onRow={(record) => ({
-                        onClick: () => {
-                          selectItemAction(record.key);
-                        },
-                      })}
-                    />
-                  </Box>
+                  <Table
+                    className="custom-ant-table"
+                    columns={columns}
+                    dataSource={tableSetData}
+                    pagination={false}
+                    rowKey={(record) => record.PartyId}
+                    onRow={(record) => ({
+                      onClick: () => {
+                        selectItemAction(record.key);
+                      },
+                    })}
+                  />
                 ) : (
                   <DataNotFound />
                 )}
@@ -366,11 +361,7 @@ export default function Index() {
         )}
       </Card>
 
-      {selectedPartyId && (
-        <Card sx={{mt:2}}>
-          <CustomTransactions selectedPartyId={selectedPartyId} />
-        </Card>
-      )}
+      {editObject.PartyId && <AnalystComponent PartyId={editObject.PartyId} />}
     </Box>
   );
 }
