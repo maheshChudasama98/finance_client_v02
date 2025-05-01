@@ -26,7 +26,7 @@ export default function InfoBox({
           <CardHeader
             sx={{ pt: 1.5 }}
             title={
-              <Typography variant="body" fontWeight={600} fontSize={12} color="text.secondary">
+              <Typography variant="body" fontWeight={600} fontSize={12}>
                 {title}
               </Typography>
             }

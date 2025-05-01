@@ -1,16 +1,24 @@
-import PropTypes from 'prop-types';
+import React from 'react';
 
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-
+import { fDate } from 'src/utils/format-time';
 import { formatToINR } from 'src/utils/format-number';
 
 import Chart, { useChart } from 'src/components/chart';
+import { DataNotFound } from 'src/components/DataNotFound';
 
-// ----------------------------------------------------------------------
-export default function OverView({ title, subheader, chart, ...other }) {
-  const { labels, series, options } = chart;
+
+
+export const CustomFlowChart = ({ list, graphList }) => {
+  const labels = graphList?.length > 0 ? graphList?.map((item, key) => fDate(item?.Date)) : [];
+
+  const series = [
+    {
+      name: " ",
+      // color: '#00A76F',
+      data: graphList?.length > 0 ? graphList?.map((item, key) => item?.Balance || 0) : [],
+    },
+  ];
+
   const absoluteMax = Math.max(...series.flatMap((s) => s.data.map((value) => Math.abs(value))));
 
   const chartOptions = useChart({
@@ -41,7 +49,7 @@ export default function OverView({ title, subheader, chart, ...other }) {
           const isNegative = value < 0;
           return `<div style="font-weight: bold; color: ${
             isNegative ? '#FF4C4C' : '#2ECC71'
-          };">${value.toLocaleString('en-IN')} ${isNegative ? 'Out' : 'In'}</div>`;
+          };">${formatToINR(value)} ${isNegative ? 'Out' : 'In'}</div>`;
         },
       },
     },
@@ -71,24 +79,18 @@ export default function OverView({ title, subheader, chart, ...other }) {
     yaxis: {
       min: -absoluteMax,
       max: absoluteMax,
-      labels: { formatter: (value) => value.toLocaleString('en-IN') },
+      labels: { formatter: (value) =>  value.toLocaleString('en-IN') },
     },
     xaxis: { categories: labels },
-    ...options,
   });
 
   return (
-    <Card {...other}>
-      <CardHeader title={title} subheader={subheader} />
-      <Box sx={{ p: 3, pb: 1 }}>
+    <>
+      {graphList && graphList?.length > 0 ? (
         <Chart type="line" series={series} options={chartOptions} width="100%" height={345} />
-      </Box>
-    </Card>
+      ) : (
+        <DataNotFound />
+      )}
+    </>
   );
-}
-
-OverView.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
 };

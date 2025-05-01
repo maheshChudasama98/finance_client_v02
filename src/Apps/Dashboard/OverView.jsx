@@ -22,14 +22,17 @@ export default function OverView({ title, subheader, height, chart, ...other }) 
       type: series.map((i) => i.fill),
     },
     labels,
-
+    xaxis: {
+      labels: {
+      },
+    },
     tooltip: {
       shared: true,
       intersect: false,
       y: {
         formatter: (value) => {
           if (typeof value !== 'undefined') {
-            return `${value?.toLocaleString('en-IN') || value || "0"} `;
+            return `${value?.toLocaleString('en-IN') || value || '0'} `;
           }
           return value;
         },
@@ -38,7 +41,9 @@ export default function OverView({ title, subheader, height, chart, ...other }) 
     yaxis: {
       // min: -10, // Set minimum value
       // max: 10,  // Set maximum value
-  
+      labels: {
+        show: false, 
+      },
     },
     ...options,
   });

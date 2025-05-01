@@ -16,7 +16,7 @@ import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
-export default function Index({ backAction, editObject }) {
+export default function Index({ backAction, editObject, deleteAction }) {
   const dispatch = useDispatch();
 
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
@@ -54,7 +54,6 @@ export default function Index({ backAction, editObject }) {
         StartAmount: Yup.number().nullable(),
         MinAmount: Yup.number().nullable(),
         TypeId: Yup.number().required('Account type  is required.'),
-        // Icon: Yup.string().required("Icon is required."),
         Description: Yup.string().trim().nullable(),
       })}
       onSubmit={ActionSubmit}
@@ -139,6 +138,18 @@ export default function Index({ backAction, editObject }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
+                  {editObject?.AccountId && (
+                    <Button
+                      variant="contained"
+                      sx={{ marginX: 1 }}
+                      onClick={() => {
+                        deleteAction(editObject);
+                      }}
+                      color="error"
+                    >
+                      Deleted
+                    </Button>
+                  )}
                   {dirty && (
                     <Button
                       variant="outlined"

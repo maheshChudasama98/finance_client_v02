@@ -22,21 +22,14 @@ import { AccountActionService, AccountsFetchListService } from 'src/Services/Met
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import {
-  CustomAvatar,
-  // CustomSelect,
-  CustomCheckbox,
-  CustomSearchInput,
-} from 'src/components/CustomComponents';
+import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
 import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
-import Transactions from './Transactions';
-import CustomDataFlow from './CustomDataFlow';
+import AnalystComponent from './Analyst';
 
 export default function Index() {
-  const filterValue = 'All';
   const dispatch = useDispatch();
 
   const [apiFlag, setApiFlag] = useState(false);
@@ -47,22 +40,6 @@ export default function Index() {
   const [accountsList, setAccountsList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
-  const [selectedAccountId, setSelectedAccountId] = useState(null);
-
-  const StatusChange = (action, value, id) => {
-    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      AccountActionService({ [action]: value, AccountId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const showDisplayAction = () => {
-    setDisplayFlag(!displayFlag);
-    setEditObject({});
-    setSelectedAccountId(null);
-  };
 
   useEffect(() => {
     if (!displayFlag) {
@@ -79,7 +56,7 @@ export default function Index() {
         })
       );
     }
-  }, [displayFlag, filterValue]);
+  }, [displayFlag]);
 
   useEffect(() => {
     if (!displayFlag) {
@@ -217,7 +194,6 @@ export default function Index() {
                   onClick={() => {
                     setDisplayFlag(true);
                     setEditObject(item);
-                    setSelectedAccountId(item?.AccountId); // Set AccountId dynamically
                   }}
                 >
                   <Box display="flex" alignItems="center">
@@ -303,26 +279,40 @@ export default function Index() {
   const selectItemAction = (key) => {
     const account = accountsList?.find((e) => e?.AccountId === key);
     setDisplayFlag(true);
-    setSelectedAccountId(key);
     setEditObject(account);
-    // setHeaderTitles([
-    //   { title: 'Account Name', value: accounts?.AccountName },
-    //   {
-    //     title: 'Account Type',
-    //     value: accounts?.TypeId
-    //       ? AccountTypes?.find((e) => e?.key === accounts?.TypeId)?.value
-    //       : '',
-    //   },
-    //   { title: 'Current Amount', value: formatToINR(accounts?.CurrentAmount) },
-    //   { title: 'Start Amount', value: formatToINR(accounts?.StartAmount) },
-    // ]);
+  };
+
+  const deleteAction = (item) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          StatusChange('isDeleted', true, item?.AccountId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const StatusChange = (action, value, id) => {
+    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      AccountActionService({ [action]: value, AccountId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const showDisplayAction = () => {
+    setDisplayFlag(!displayFlag);
+    setEditObject({});
   };
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
         <CardHeader
-          title={<>{titleAction(!displayFlag)}</>}
+          title={titleAction(!displayFlag)}
           sx={{ marginBottom: 2 }}
           action={
             <Button
@@ -338,7 +328,11 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form
+            backAction={showDisplayAction}
+            editObject={editObject}
+            deleteAction={deleteAction}
+          />
         ) : (
           <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
@@ -379,16 +373,7 @@ export default function Index() {
           </Box>
         )}
       </Card>
-      {selectedAccountId && (
-        <Box sx={{ paddingY: 2 }}>
-          <CustomDataFlow selectedAccountId={selectedAccountId} />
-        </Box>
-      )}
-      {selectedAccountId && (
-        <Card>
-          <Transactions selectedAccountId={selectedAccountId} />
-        </Card>
-      )}
+      {editObject.AccountId && <AnalystComponent AccountId={editObject.AccountId} />}
     </Box>
   );
 }
