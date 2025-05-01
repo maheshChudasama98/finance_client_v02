@@ -21,6 +21,7 @@ import {
 } from 'src/Services/AnalystData.Services';
 
 import Scrollbar from 'src/components/scrollbar';
+import { DataNotFound } from 'src/components/DataNotFound';
 import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
 
 import { Table } from 'antd';
@@ -410,13 +411,17 @@ export default function Index() {
                   },
                 }}
               >
-                <Table
-                  dataSource={tableSetData}
-                  showHeader={false}
-                  columns={columns}
-                  pagination={false}
-                  rowKey="CategoryName"
-                />
+                {tableSetData && tableSetData.length > 0 ? (
+                  <Table
+                    dataSource={tableSetData}
+                    showHeader={false}
+                    columns={columns}
+                    pagination={false}
+                    rowKey="CategoryName"
+                  />
+                ) : (
+                  <DataNotFound />
+                )}
               </Scrollbar>
             </Card>
           </Grid>
@@ -433,13 +438,17 @@ export default function Index() {
                   },
                 }}
               >
-                <Table
-                  dataSource={topTenSubCategoriesData}
-                  showHeader={false}
-                  columns={columns}
-                  pagination={false}
-                  rowKey="CategoryName"
-                />
+                {topTenSubCategoriesData && topTenSubCategoriesData.length > 0 ? (
+                  <Table
+                    dataSource={topTenSubCategoriesData}
+                    showHeader={false}
+                    columns={columns}
+                    pagination={false}
+                    rowKey="CategoryName"
+                  />
+                ) : (
+                  <DataNotFound />
+                )}
               </Scrollbar>
             </Card>
           </Grid>

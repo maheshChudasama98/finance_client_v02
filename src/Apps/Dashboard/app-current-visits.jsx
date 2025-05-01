@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import { styled, useTheme } from '@mui/material/styles';
@@ -7,6 +8,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { fNumber } from 'src/utils/format-number';
 
 import Chart, { useChart } from 'src/components/chart';
+import { DataNotFound } from 'src/components/DataNotFound';
 
 // ----------------------------------------------------------------------
 
@@ -94,15 +96,20 @@ export default function AppCurrentVisits({ title, type, subheader, chart, ...oth
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
-
-      <StyledChart
-        dir="ltr"
-        type="donut"
-        series={chartSeries}
-        options={chartOptions}
-        width="100%"
-        height={240}
-      />
+      {chartSeries && chartSeries.length > 0 ? (
+        <StyledChart
+          dir="ltr"
+          type="donut"
+          series={chartSeries}
+          options={chartOptions}
+          width="100%"
+          height={240}
+        />
+      ) : (
+        <Box sx={{ minHeight: 320 }}>
+          <DataNotFound />
+        </Box>
+      )}
     </Card>
   );
 }
