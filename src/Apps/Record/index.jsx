@@ -156,6 +156,12 @@ export default function Index() {
 
   const count = Object.values(FilterBy).filter(hasValue).length;
 
+  const filterHeader = (field, value) => {
+    setFilterBy((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -213,7 +219,7 @@ export default function Index() {
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <Box
                     sx={{
-                      width: { xs: "80%", md: 800 },
+                      width: { xs: '80%', md: 800 },
                       borderRadius: 2,
                       boxShadow: shadows()[10],
                       backgroundColor: (theme) => theme?.palette?.success?.contrastText,
@@ -252,6 +258,7 @@ export default function Index() {
                         index={index}
                         deleteAction={deleteAction}
                         editAction={editAction}
+                        filterHeader={filterHeader}
                       />
                     ))}
                   </Box>

@@ -6,15 +6,13 @@ import { formatToINR } from 'src/utils/format-number';
 import Chart, { useChart } from 'src/components/chart';
 import { DataNotFound } from 'src/components/DataNotFound';
 
-
-
 export const CustomFlowChart = ({ list, graphList }) => {
   const labels = graphList?.length > 0 ? graphList?.map((item, key) => fDate(item?.Date)) : [];
 
   const series = [
     {
-      name: " ",
-      // color: '#00A76F',
+      name: '',
+      color: '#00A76F',
       data: graphList?.length > 0 ? graphList?.map((item, key) => item?.Balance || 0) : [],
     },
   ];
@@ -23,9 +21,9 @@ export const CustomFlowChart = ({ list, graphList }) => {
 
   const chartOptions = useChart({
     chart: {
-      type: 'line',
+      // type: 'line',
       height: 350,
-      zoom: { enabled: false },
+      zoom: { enabled: true },
     },
     stroke: {
       width: 2,
@@ -64,24 +62,29 @@ export const CustomFlowChart = ({ list, graphList }) => {
         opacityTo: 0.6,
       },
     },
-    dataLabels: {
-      enabled: true,
-      formatter: (value) => `${formatToINR(value)}`,
-      style: { fontWeight: 'bold' },
-      background: {
-        enabled: true,
-        foreColor: '#fff',
-        borderRadius: 4,
-        padding: 10,
-      },
-      offsetY: -8,
-    },
+    // dataLabels: {
+    //   enabled: true,
+    //   formatter: (value) => `${formatToINR(value)}`,
+    //   style: { fontWeight: 'bold' },
+    //   background: {
+    //     enabled: true,
+    //     foreColor: '#fff',
+    //     borderRadius: 4,
+    //     padding: 10,
+    //   },
+    //   offsetY: -8,
+    // },
     yaxis: {
       min: -absoluteMax,
       max: absoluteMax,
-      labels: { formatter: (value) =>  value.toLocaleString('en-IN') },
+      labels: { formatter: (value) => value.toLocaleString('en-IN'), },
     },
-    xaxis: { categories: labels },
+    xaxis: {
+      categories: labels,
+      labels: {
+        show: false,
+      },
+    },
   });
 
   return (

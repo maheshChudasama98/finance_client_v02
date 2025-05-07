@@ -71,7 +71,12 @@ export const CustomTransactions = ({ list }) => {
   return (
     <>
       {list && list?.length > 0 ? (
-        <Table columns={columns} dataSource={tableSetData} pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={tableSetData}
+          pagination={false}
+          scroll={{ x: 'max-content', y: 100 * 5 }}
+        />
       ) : (
         <DataNotFound />
       )}

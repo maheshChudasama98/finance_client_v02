@@ -39,11 +39,6 @@ export default function Analyst({ CategoryId }) {
         <Scrollbar
           sx={{
             maxHeight: 500,
-            '& .simplebar-content': {
-              maxHeight: 500,
-              display: 'flex',
-              flexDirection: 'column',
-            },
           }}
         >
           <CustomTransactions list={list} />

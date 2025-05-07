@@ -52,6 +52,8 @@ export default function FilterComponent({ backAction, defaultValue }) {
       }}
       validationSchema={Yup.object().shape({})}
       onSubmit={(values) => {
+        values.StartDate = values.StartDate ? values.StartDate.format('YYYY-MM-DD') : null;
+        values.EndDate = values.EndDate ? values.EndDate.format('YYYY-MM-DD') : null;
         backAction(values);
       }}
     >

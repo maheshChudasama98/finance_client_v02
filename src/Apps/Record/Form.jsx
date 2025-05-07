@@ -123,7 +123,6 @@ export default function Index({ backAction, editObject, deleteAction }) {
         ) {
           delete values.SubCategoryId;
           delete values.CategoryId;
-          delete values.Tags;
         }
 
         if (values?.Action === 'From') {
@@ -262,20 +261,20 @@ export default function Index({ backAction, editObject, deleteAction }) {
                 />
               </Grid>
 
+              <Grid item xs={12} md={6}>
+                <AutoCompleteSelectMultiple
+                  required={false}
+                  formik={props}
+                  label="Labels"
+                  field="Tags"
+                  menuList={labelsList}
+                  valueKey="LabelId"
+                  labelKey="LabelName"
+                />
+              </Grid>
+
               {(values?.Action === 'In' || values?.Action === 'Out') && (
                 <>
-                  <Grid item xs={12} md={6}>
-                    <AutoCompleteSelectMultiple
-                      required={false}
-                      formik={props}
-                      label="Labels"
-                      field="Tags"
-                      menuList={labelsList}
-                      valueKey="LabelId"
-                      labelKey="LabelName"
-                    />
-                  </Grid>
-
                   <Grid item xs={12} md={6}>
                     <AutoCompleteSelectMenu
                       formik={props}

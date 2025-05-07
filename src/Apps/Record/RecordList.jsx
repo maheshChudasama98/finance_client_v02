@@ -15,7 +15,7 @@ import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { CustomAvatar, CustomTooltip } from 'src/components/CustomComponents';
 
-const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
+const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) => {
   const styes = {
     fontSize: { xs: 11, md: 12 },
     borderRadius: 1,
@@ -27,6 +27,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
       case 'In':
         return (
           <Chip
+            onClick={() => filterHeader('Actions', ['In'])}
             size="small"
             sx={{
               ...styes,
@@ -40,6 +41,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
       case 'Out':
         return (
           <Chip
+            onClick={() => filterHeader('Actions', ['Out'])}
             size="small"
             sx={{
               ...styes,
@@ -53,6 +55,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
       case 'From':
         return (
           <Chip
+            onClick={() => filterHeader('Actions', ['From'])}
             size="small"
             sx={{
               ...styes,
@@ -66,6 +69,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
         return (
           <Chip
             size="small"
+            onClick={() => filterHeader('Actions', ['Investment'])}
             sx={{
               ...styes,
               color: '#1877F2',
@@ -78,6 +82,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
         return (
           <Chip
             size="small"
+            onClick={() => filterHeader('Actions', ['Debit'])}
             sx={{
               ...styes,
               color: '#00B8D9',
@@ -91,6 +96,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
         return (
           <Chip
             size="small"
+            onClick={() => filterHeader('Actions', ['Credit'])}
             sx={{
               ...styes,
               color: '#5119b7',
@@ -140,18 +146,18 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
 
     return (
       <div>
-        {record?.Description && (
-          <div>
-            <small>
-              <b>Desc:</b> {record.Description}
-            </small>
-          </div>
-        )}
-
         {tagList.length > 0 && (
           <div>
             <small>
               <b>Label:</b> {formattedTags}
+            </small>
+          </div>
+        )}
+        
+        {record?.Description && (
+          <div>
+            <small>
+              <b>Desc:</b> {record.Description}
             </small>
           </div>
         )}
@@ -245,8 +251,8 @@ const RecordList = ({ item, isHeader, deleteAction, editAction }) => {
                 <Typography variant="light">
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <Chip
+                      onClick={() => filterHeader('AccountsIds', [record?.AccountId])}
                       size="small"
-                      avatar="M"
                       sx={{
                         ...styes,
                         color: record?.AccountDetails?.Color || '#1b925e',
