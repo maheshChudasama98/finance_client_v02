@@ -62,9 +62,17 @@ export const SettingDurationList = [
   { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
   { Key: 'This Week', Value: 'This_Week' },
   { Key: 'This Month', Value: 'This_Month' },
-  { Key: 'Last 6 Months', Value: 'Last_Six_Months' },
+  { Key: 'Last 6 Months', Value: 'Six_Month' },
   { Key: 'This Year', Value: 'This_Year' },
-  { Key: 'Last 5 Years', Value: 'Last_Five_Years' },
+  { Key: 'Last 5 Years', Value: 'Last_Five_Year' },
+];
+
+export const ButtonGroupDurationList = [
+  { Key: '30 Days', Value: 'Last_Thirty_Days' },
+  { Key: '6M', Value: 'Six_Month' },
+  { Key: '1Y', Value: 'This_Year' },
+  { Key: '5Y', Value: 'Last_Five_Year' },
+  { Key: 'All', Value: 'All' },
 ];
 
 export const DateFormatList = [

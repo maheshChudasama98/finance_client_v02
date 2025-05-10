@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -17,7 +16,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { useRouter } from 'src/routes/hooks';
 
 import { bgGradient } from 'src/theme/css';
-import { OTPPasswordService, ForgotPasswordService, } from 'src/Services/Auth.Services';
+import { OTPPasswordService, ForgotPasswordService } from 'src/Services/Auth.Services';
 
 import Logo from 'src/components/logo';
 import { TextFieldForm } from 'src/components/inputs';
@@ -27,7 +26,6 @@ import { Alert } from 'antd';
 import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
-
 
 // ----------------------------------------------------------------------
 
@@ -50,65 +48,67 @@ export default function LoginView() {
     event.preventDefault();
   };
 
-
   const handleSubmitAction = (values) => {
     const payload = {
-      "UserEmail": values.UserEmail,
-      "UserEmploymentNumber": values.UserEmploymentNumber,
-    }
-    if (values.UserEmail) {
-      setUserEmail(values.UserEmail)
+      UserEmail: values.UserEmail,
+      UserEmploymentNumber: values.UserEmploymentNumber,
     };
+    if (values.UserEmail) {
+      setUserEmail(values.UserEmail);
+    }
 
     if (values.UserEmploymentNumber) {
-      setUserEmploymentNumber(values.UserEmploymentNumber)
-    };
+      setUserEmploymentNumber(values.UserEmploymentNumber);
+    }
 
     setSuccessMsg(null);
     setErrorMsg(null);
 
-    dispatch(ForgotPasswordService(payload, (response) => {
-      if (response?.status) {
-        setSuccessMsg(response?.message);
-        setErrorMsg(null);
-        setFlag(false);
-      } else {
-        setErrorMsg(response?.message);
-        setSuccessMsg(null);
-        setFlag(true);
-      }
-    }))
+    dispatch(
+      ForgotPasswordService(payload, (response) => {
+        if (response?.status) {
+          setSuccessMsg(response?.message);
+          setErrorMsg(null);
+          setFlag(false);
+        } else {
+          setErrorMsg(response?.message);
+          setSuccessMsg(null);
+          setFlag(true);
+        }
+      })
+    );
   };
 
   const handleSubmitUpdateAction = (values) => {
     const payload = {
-      "OptNum": values.OptNum,
-      "UserPassword": values.UserPassword,
-    }
+      OptNum: values.OptNum,
+      UserPassword: values.UserPassword,
+    };
     if (userEmail) {
       payload.UserEmail = userEmail;
-    };
+    }
 
     if (userEmploymentNumber) {
       payload.UserEmploymentNumber = userEmploymentNumber;
-    };
+    }
     setSuccessMsg(null);
     setErrorMsg(null);
 
-    dispatch(OTPPasswordService(payload, (response) => {
-      if (response?.status) {
-        setSuccessMsg(response?.message);
-        setErrorMsg(null);
-        router.push('/login');
-        // setFlag(false);
-      } else {
-        setErrorMsg(response?.message);
-        setSuccessMsg(null);
-        // setFlag(true);
-      }
-    }))
+    dispatch(
+      OTPPasswordService(payload, (response) => {
+        if (response?.status) {
+          setSuccessMsg(response?.message);
+          setErrorMsg(null);
+          router.push('/login');
+          // setFlag(false);
+        } else {
+          setErrorMsg(response?.message);
+          setSuccessMsg(null);
+          // setFlag(true);
+        }
+      })
+    );
   };
-
 
   return (
     <Box
@@ -128,7 +128,6 @@ export default function LoginView() {
         }}
       />
 
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{
@@ -137,7 +136,6 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-
           <Typography variant="h4">Forgot Password</Typography>
 
           <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
@@ -148,113 +146,94 @@ export default function LoginView() {
           </Typography>
 
           <Box sx={{ my: 2 }}>
-            {
-              errorMsg && <Alert message={errorMsg} type="error" showIcon />
-            }
+            {errorMsg && <Alert message={errorMsg} type="error" showIcon />}
 
-            {
-              successMsg && <Alert message={successMsg} type="success" showIcon />
-            }
+            {successMsg && <Alert message={successMsg} type="success" showIcon />}
           </Box>
 
-          {
-            flag &&
+          {flag && (
             <Formik
               enableReinitialize
               initialValues={{
-                UserEmail: "",
-                UserEmploymentNumber: "",
+                UserEmail: '',
+                UserEmploymentNumber: '',
               }}
-              validationSchema={
-                Yup.object().shape({
-
-                  UserEmail: Yup.string()
-                    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please enter a valid email')
-                    .nullable()
-                    .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
+              validationSchema={Yup.object().shape({
+                UserEmail: Yup.string()
+                  .matches(
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    'Please enter a valid email'
+                  )
+                  .nullable()
+                  .test(
+                    'either-email-or-employment',
+                    'Either Email or Employment Number is required',
+                    (value, context) => {
                       const { UserEmploymentNumber } = context.parent;
                       return Boolean(value || UserEmploymentNumber);
-                    }),
-                  UserEmploymentNumber: Yup.string()
-                    .nullable()
-                    .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
+                    }
+                  ),
+                UserEmploymentNumber: Yup.string()
+                  .nullable()
+                  .test(
+                    'either-email-or-employment',
+                    'Either Email or Employment Number is required',
+                    (value, context) => {
                       const { UserEmail } = context.parent;
                       return Boolean(value || UserEmail);
-                    })
-                })
-              }
+                    }
+                  ),
+              })}
               onSubmit={handleSubmitAction}
             >
               {(props) => (
-                <Form autoComplete="off" noValidate >
-                  <Stack spacing={3}  >
-                    <TextFieldForm
-                      formik={props}
-                      label='Email'
-                      field='UserEmail'
-                    />
-
-                    <Divider sx={{ my: 3 }}>
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        OR
-                      </Typography>
-                    </Divider>
-
-                    <TextFieldForm
-                      type="number"
-                      formik={props}
-                      label='Employment Number'
-                      field='UserEmploymentNumber'
-                    />
-
-
+                <Form autoComplete="off" noValidate>
+                  <Stack spacing={3}>
+                    <TextFieldForm formik={props} label="Email" field="UserEmail" />
                     <Button
                       fullWidth
                       size="large"
                       type="submit"
                       variant="contained"
-                      color="success" > Forgot Password
+                      color="success"
+                    >
+                      Forgot Password
                     </Button>
                   </Stack>
                 </Form>
               )}
-            </Formik >
-          }
+            </Formik>
+          )}
 
-          {
-            !flag &&
+          {!flag && (
             <Formik
               enableReinitialize
               initialValues={{
-                OptNum: "",
-                UserPassword: "",
+                OptNum: '',
+                UserPassword: '',
               }}
-              validationSchema={
-                Yup.object().shape({
-                  OptNum: Yup.string()
-                    .matches(/^[0-9]+$/, "Must be a valid number.")
-                    .required("Opt Number is required."),
-                  UserPassword: Yup.string()
-                    .required('Password is required')
-                    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?=\S+$).{8,}$/, "Passwords should have at least 8 characters, 1 uppercase, 1 lowercase, 1 digit, and 1 valid special character. Avoid spaces."),
-                })
-              }
+              validationSchema={Yup.object().shape({
+                OptNum: Yup.string()
+                  .matches(/^[0-9]+$/, 'Must be a valid number.')
+                  .required('Opt Number is required.'),
+                UserPassword: Yup.string()
+                  .required('Password is required')
+                  .matches(
+                    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?=\S+$).{8,}$/,
+                    'Passwords should have at least 8 characters, 1 uppercase, 1 lowercase, 1 digit, and 1 valid special character. Avoid spaces.'
+                  ),
+              })}
               onSubmit={handleSubmitUpdateAction}
             >
               {(props) => (
-                <Form autoComplete="off" noValidate >
-                  <Stack spacing={3}  >
-                    <TextFieldForm
-                      type="number"
-                      formik={props}
-                      label='Opt'
-                      field='OptNum'
-                    />
+                <Form autoComplete="off" noValidate>
+                  <Stack spacing={3}>
+                    <TextFieldForm type="number" formik={props} label="Opt" field="OptNum" />
 
                     <TextFieldForm
                       formik={props}
-                      label='Password'
-                      field='UserPassword'
+                      label="Password"
+                      field="UserPassword"
                       type={!showPassword ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (
@@ -265,10 +244,14 @@ export default function LoginView() {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                             >
-                              {showPassword ? <VisibilityOutlinedIcon fontSize="small" /> : <VisibilityOffOutlinedIcon fontSize="small" />}
+                              {showPassword ? (
+                                <VisibilityOutlinedIcon fontSize="small" />
+                              ) : (
+                                <VisibilityOffOutlinedIcon fontSize="small" />
+                              )}
                             </IconButton>
                           </InputAdornment>
-                        )
+                        ),
                       }}
                     />
 
@@ -277,14 +260,16 @@ export default function LoginView() {
                       size="large"
                       type="submit"
                       variant="contained"
-                      color="success" > Change Password
+                      color="success"
+                    >
+                      {' '}
+                      Change Password
                     </Button>
                   </Stack>
                 </Form>
               )}
-            </Formik >
-          }
-
+            </Formik>
+          )}
         </Card>
       </Stack>
     </Box>

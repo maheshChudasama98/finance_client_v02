@@ -25,8 +25,7 @@ export const PartiesPage = lazy(() => import('src/pages/parties'));
 export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const RecordsPage = lazy(() => import('src/pages/records'));
 export const SettingPage = lazy(() => import('src/pages/setting'));
-
-
+export const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 export const UsersPage = lazy(() => import('src/pages/user'));
 
 export default function Router({ permissionList }) {
@@ -50,6 +49,7 @@ export default function Router({ permissionList }) {
     { path: '/records', element: <RecordsPage />, title: 'Record' },
     { path: '/users', element: <UsersPage />, title: 'Users' },
     { path: '/setting', element: <SettingPage />, title: 'Setting' },
+    { path: '/analytics', element: <AnalyticsPage />, title: 'Analytics' },
   ];
 
   const filterData = OrgRouters.filter((item) => {

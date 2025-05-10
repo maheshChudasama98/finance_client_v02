@@ -7,42 +7,65 @@ import CardHeader from '@mui/material/CardHeader';
 
 import { AnalystService } from 'src/Services/AnalystData.Services';
 
-import Scrollbar from 'src/components/scrollbar';
-import { CustomFlowChart, CustomTransactions } from 'src/components/CustomComponents';
+import Loader from 'src/components/Loaders/Loader';
+import {
+  CustomFlowChart,
+  CustomButtonGroup,
+  CustomTransactions,
+} from 'src/components/CustomComponents';
 
 export default function Analyst({ PartyId }) {
   const dispatch = useDispatch();
 
   const [list, setList] = useState([]);
   const [graphList, setGraphList] = useState([]);
+  const [loadingLoader, setLoadingLoader] = useState(false);
+  const [duration, setDuration] = useState('Last_Thirty_Days');
 
   useEffect(() => {
+    setLoadingLoader(true);
     dispatch(
-      AnalystService({ PartyId }, (res) => {
+      AnalystService({ PartyId, Duration: duration }, (res) => {
         if (res.status) {
+          setLoadingLoader(false);
           setList(res?.data?.list);
           setGraphList(res?.data?.graphList);
         }
       })
     );
-  }, [PartyId]);
+  }, [PartyId, duration]);
 
   return (
     <Box>
+      <Box sx={{ marginY: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <CustomButtonGroup
+          defaultValue={duration}
+          onSelect={(value) => {
+            setDuration(value);
+          }}
+        />
+      </Box>
+
       <Card sx={{ marginY: 2 }}>
         <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
-        <CustomFlowChart graphList={graphList} />
+        {loadingLoader ? (
+          <Box sx={{ display: 'flex', height: '50vh' }}>
+            <Loader />
+          </Box>
+        ) : (
+          <CustomFlowChart graphList={graphList} />
+        )}
       </Card>
 
       <Card>
         <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
-        <Scrollbar
-          sx={{
-            maxHeight: 500,
-          }}
-        >
+        {loadingLoader ? (
+          <Box sx={{ display: 'flex', height: '50vh' }}>
+            <Loader />
+          </Box>
+        ) : (
           <CustomTransactions list={list} />
-        </Scrollbar>
+        )}
       </Card>
     </Box>
   );

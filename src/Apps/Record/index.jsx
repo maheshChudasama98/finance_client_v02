@@ -19,7 +19,7 @@ import {
 
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomSearchInput } from 'src/components/CustomComponents';
+import { CustomSearchInput, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import Form from './Form';
 import RecordList from './RecordList';
@@ -35,6 +35,7 @@ export default function Index() {
   const [editObject, setEditObject] = useState({});
   const [arrayObject, setArrayObject] = useState([]);
   const [FilterBy, setFilterBy] = useState({});
+  const [Duration, setDuration] = useState('Last_Thirty_Days');
 
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
@@ -46,6 +47,7 @@ export default function Index() {
       const payLoad = {
         SearchKey: searchValue,
         FilterBy,
+        Duration,
       };
       setLoadingLoader(true);
       dispatch(
@@ -57,12 +59,13 @@ export default function Index() {
         })
       );
     }
-  }, [displayFlag, FilterBy]);
+  }, [displayFlag, FilterBy, Duration]);
 
   useEffect(() => {
     const payLoad = {
       SearchKey: searchValue,
       FilterBy,
+      Duration,
     };
     dispatch(
       TransactionFetchListService(payLoad, (res) => {
@@ -114,6 +117,7 @@ export default function Index() {
         if (res?.status) {
           const payLoad = {
             SearchKey: searchValue,
+            Duration,
           };
           setDisplayFlag(false);
           setLoadingLoader(true);
@@ -197,24 +201,47 @@ export default function Index() {
               sx={{
                 marginX: 2,
                 marginY: 2,
-                display: 'flex',
+                display: { xs: 'block', md: 'flex' },
                 justifyContent: 'space-between',
               }}
             >
               <CustomSearchInput callBack={setSearchValue} />
               <Box />
-              <Badge badgeContent={count > 0 ? count : null} color="error">
-                <Button
-                  ref={anchorRef}
-                  size="small"
-                  color="success"
-                  variant="outlined"
-                  onClick={handleToggle}
-                  startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  marginY: { xs: 2, md: 0 },
+                }}
+              >
+                <Box
+                  sx={{
+                    marginY: { xs: 2, md: 0 },
+                  }}
                 >
-                  Filter
-                </Button>
-              </Badge>
+                  <CustomButtonGroup
+                    defaultValue={Duration}
+                    onSelect={(value) => {
+                      setDuration(value);
+                    }}
+                  />
+                </Box>
+
+                <Badge badgeContent={count > 0 ? count : null} color="error">
+                  <Button
+                    ref={anchorRef}
+                    size="small"
+                    color="success"
+                    variant="outlined"
+                    onClick={handleToggle}
+                    sx={{ ml: 1 }}
+                    startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+                  >
+                    Filter
+                  </Button>
+                </Badge>
+              </Box>
               <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <Box

@@ -8,6 +8,7 @@ export { CustomTabLabel } from './CustomTabLabel';
 export { CustomFlowChart } from './CustomFlowChart';
 export { CustomIconPicker } from './CustomIconPicker';
 export { CustomPageHeader } from './CustomPageHeader';
+export { CustomButtonGroup } from './CustomButtonGroup';
 export { CustomColorPicker } from './CustomColorPicker';
 export { CustomSearchInput } from './CustomSearchInput';
 export { CustomTransactions } from './CustomTransactions';

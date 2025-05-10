@@ -177,7 +177,7 @@ export default function Index() {
       <Box sx={{ marginTop: 3 }}>
         <Grid container spacing={2}>
           {/*  Total Income  */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <InfoBox
               title="Total Income"
               amount={currentYearBaseData?.totalIn || 0}
@@ -189,7 +189,7 @@ export default function Index() {
           </Grid>
 
           {/*  Total Expense  */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <InfoBox
               flag={false}
               title="Total Expense"
@@ -202,7 +202,7 @@ export default function Index() {
           </Grid>
 
           {/*  Total Investment  */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={6} sm={6}  md={3}>
             <InfoBox
               title="Total Investment"
               amount={currentYearBaseData?.totalInvestment || 0}
@@ -217,7 +217,7 @@ export default function Index() {
           </Grid>
 
           {/*  Total Debit  */}
-          <Grid item xs={12} md={3}>
+          <Grid item xs={6} sm={6}  md={3}>
             <InfoBox
               title="Total Debit"
               amount={currentYearBaseData?.totalDebit || 0}
