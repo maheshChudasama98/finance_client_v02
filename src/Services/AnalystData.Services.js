@@ -1,10 +1,10 @@
 import jwtAuthAxios, { errorHandler } from "./auth/jwtAuth";
 
-export function FinanceYearService(payload, cb) {
+export function DashboardService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        jwtAuthAxios.post('finance/year', payload).then((res) => {
+        jwtAuthAxios.post('dashboard', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 if (cb) cb(res.data)
@@ -19,11 +19,29 @@ export function FinanceYearService(payload, cb) {
 };
 
 
-export function DataFollService(payload, cb) {
+export function BalanceOverviewService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        jwtAuthAxios.post('data/foll', payload).then((res) => {
+        jwtAuthAxios.post('balance/overview', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+export function BalanceFollService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('balance/foll', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 if (cb) cb(res.data)
@@ -91,11 +109,11 @@ export function TopSubCategoriesService(payload, cb) {
     }
 };
 
-export function AnalystService(payload, cb) {
+export function RecodeListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        jwtAuthAxios.post('analyst', payload).then((res) => {
+        jwtAuthAxios.post('recode/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 if (cb) cb(res.data)

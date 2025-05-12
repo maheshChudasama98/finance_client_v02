@@ -11,16 +11,17 @@ import Typography from '@mui/material/Typography';
 import { formatToINR } from 'src/utils/format-number';
 import { calculatePercentageChange } from 'src/utils/utils';
 
-import { DurationList, TimeDurationList } from 'src/constance';
+import { TimeDurationList } from 'src/constance';
 import {
-  AccountService,
-  DataFollService,
-  FinanceYearService,
+  DashboardService,
+  BalanceFollService,
   TopCategoriesService,
+  BalanceOverviewService,
   TopSubCategoriesService,
 } from 'src/Services/AnalystData.Services';
 
 import Scrollbar from 'src/components/scrollbar';
+import { DateRangePicker } from 'src/components/inputs';
 import { DataNotFound } from 'src/components/DataNotFound';
 import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
 
@@ -32,6 +33,7 @@ import AppCurrentVisits from './app-current-visits';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const [selectedYear, setSelectedYear] = useState(new Date());
   const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
   const [currentYearBaseData, setCurrentYearBaseData] = useState({});
   const [lastYearBaseData, setLastYearBaseData] = useState({});
@@ -45,12 +47,13 @@ export default function Index() {
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  const [cashFlowDuration, setCashFlowDuration] = useState('Last_Seven_Days');
+  // const [cashFlowDuration, setCashFlowDuration] = useState('Last_Seven_Days');
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
+
     dispatch(
-      FinanceYearService({}, (res) => {
+      DashboardService({ SelectedYear: new Date(selectedYear).getFullYear() }, (res) => {
         setCurrentYearBaseLoader(false);
         if (res.status) {
           setCurrentYearBaseData(res?.data?.currentYear || {});
@@ -59,18 +62,23 @@ export default function Index() {
           setLastMonth(res?.data?.lastMonthData || []);
           setCurrentMonth(res?.data?.currentMonth || []);
         }
+        setCurrentYearBaseLoader(false);
       })
     );
+  }, [selectedYear]);
+
+  useEffect(() => {
     dispatch(
-      TopCategoriesService({ TimeDuration: 'MONTH' }, (res) => {
+      TopCategoriesService({ Duration: 'MONTH' }, (res) => {
         setCurrentYearBaseLoader(false);
         if (res.status) {
           setTopTen(res?.data?.list?.[0]?.topTenOut || []);
         }
       })
     );
+
     dispatch(
-      TopSubCategoriesService({ TimeDuration: 'MONTH' }, (res) => {
+      TopSubCategoriesService({ Duration: 'MONTH' }, (res) => {
         setCurrentYearBaseLoader(false);
         if (res.status) {
           setTopTenSubCategories(res?.data?.list?.[0]?.topTenOut || []);
@@ -81,7 +89,7 @@ export default function Index() {
 
   useEffect(() => {
     dispatch(
-      DataFollService({ TimeDuration: dataFlowTimeDuration }, (res) => {
+      BalanceOverviewService({ Duration: dataFlowTimeDuration }, (res) => {
         if (res.status) {
           setDataFlowIncrement(res?.data?.increment);
           // setDataFlowList(res?.data?.list);
@@ -92,19 +100,13 @@ export default function Index() {
 
   useEffect(() => {
     dispatch(
-      AccountService(
-        {
-          Duration: cashFlowDuration,
-          // AccountId: 1,
-        },
-        (res) => {
-          if (res.status) {
-            setCashFlowData(res?.data?.graphList);
-          }
+      BalanceFollService((res) => {
+        if (res.status) {
+          setCashFlowData(res?.data);
         }
-      )
+      })
     );
-  }, [cashFlowDuration]);
+  }, []);
 
   const columns = [
     {
@@ -172,6 +174,18 @@ export default function Index() {
         <Typography variant="h4" sx={{ ml: 2 }} color="text.secondary">
           Hi, Welcome back 👋
         </Typography>
+
+        <DateRangePicker
+          label="Select Year"
+          disableFuture
+          views={['year']}
+          openTo="year"
+          format="YYYY"
+          value={selectedYear}
+          onChange={(event) => {
+            setSelectedYear(event);
+          }}
+        />
       </Box>
 
       <Box sx={{ marginTop: 3 }}>
@@ -202,7 +216,7 @@ export default function Index() {
           </Grid>
 
           {/*  Total Investment  */}
-          <Grid item xs={6} sm={6}  md={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <InfoBox
               title="Total Investment"
               amount={currentYearBaseData?.totalInvestment || 0}
@@ -217,7 +231,7 @@ export default function Index() {
           </Grid>
 
           {/*  Total Debit  */}
-          <Grid item xs={6} sm={6}  md={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <InfoBox
               title="Total Debit"
               amount={currentYearBaseData?.totalDebit || 0}
@@ -343,7 +357,7 @@ export default function Index() {
                   }}
                 >
                   <Typography variant="big">Cash Flow</Typography>
-                  <Box>
+                  {/* <Box>
                     <CustomSelect
                       valueKey="Value"
                       labelKey="Key"
@@ -353,7 +367,7 @@ export default function Index() {
                       defaultValue={cashFlowDuration}
                       callBackAction={(value) => setCashFlowDuration(value)}
                     />
-                  </Box>
+                  </Box> */}
                 </Box>
               }
               chart={{

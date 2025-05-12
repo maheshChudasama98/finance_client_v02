@@ -17,7 +17,7 @@ export const DateRangePicker = ({
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <DatePicker
       label={label}
-      value={value}
+      value={dayjs(value)}
       onChange={onChange}
       minDate={minDate}
       maxDate={maxDate}

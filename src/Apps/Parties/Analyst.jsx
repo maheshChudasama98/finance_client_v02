@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
-import { AnalystService } from 'src/Services/AnalystData.Services';
+import { RecodeListService } from 'src/Services/AnalystData.Services';
 
 import Loader from 'src/components/Loaders/Loader';
 import {
@@ -25,7 +25,7 @@ export default function Analyst({ PartyId }) {
   useEffect(() => {
     setLoadingLoader(true);
     dispatch(
-      AnalystService({ PartyId, Duration: duration }, (res) => {
+      RecodeListService({ PartyId, Duration: duration }, (res) => {
         if (res.status) {
           setLoadingLoader(false);
           setList(res?.data?.list);
