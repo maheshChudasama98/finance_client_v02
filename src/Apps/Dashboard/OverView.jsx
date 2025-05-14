@@ -23,8 +23,7 @@ export default function OverView({ title, subheader, height, chart, ...other }) 
     },
     labels,
     xaxis: {
-      labels: {
-      },
+      labels: {},
     },
     tooltip: {
       shared: true,
@@ -39,12 +38,11 @@ export default function OverView({ title, subheader, height, chart, ...other }) 
       },
     },
     yaxis: {
-      // min: -10, // Set minimum value
-      // max: 10,  // Set maximum value
       labels: {
-        show: false, 
+        show: false,
       },
     },
+
     ...options,
   });
 

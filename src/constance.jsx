@@ -68,7 +68,8 @@ export const SettingDurationList = [
 ];
 
 export const ButtonGroupDurationList = [
-  { Key: '30 Days', Value: 'Last_Thirty_Days' },
+  { Key: '7D', Value: 'Last_Seven_Days' },
+  { Key: '30D', Value: 'Last_Thirty_Days' },
   { Key: '6M', Value: 'Six_Month' },
   { Key: '1Y', Value: 'This_Year' },
   { Key: '5Y', Value: 'Last_Five_Year' },

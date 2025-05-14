@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -23,7 +24,7 @@ import {
 import Scrollbar from 'src/components/scrollbar';
 import { DateRangePicker } from 'src/components/inputs';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
+import { CustomSelect, CustomAvatar, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import { Table } from 'antd';
 
@@ -47,7 +48,7 @@ export default function Index() {
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  // const [cashFlowDuration, setCashFlowDuration] = useState('Last_Seven_Days');
+  const [cashFlowDuration, setCashFlowDuration] = useState('Last_Thirty_Days');
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -92,7 +93,6 @@ export default function Index() {
       BalanceOverviewService({ Duration: dataFlowTimeDuration }, (res) => {
         if (res.status) {
           setDataFlowIncrement(res?.data?.increment);
-          // setDataFlowList(res?.data?.list);
         }
       })
     );
@@ -100,17 +100,17 @@ export default function Index() {
 
   useEffect(() => {
     dispatch(
-      BalanceFollService((res) => {
+      BalanceFollService({ Duration: cashFlowDuration }, (res) => {
         if (res.status) {
           setCashFlowData(res?.data);
         }
       })
     );
-  }, []);
+  }, [cashFlowDuration]);
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Category Name',
       dataIndex: 'CategoryName',
       key: 'CategoryName',
       width: '70%',
@@ -246,37 +246,44 @@ export default function Index() {
           </Grid>
 
           <Grid item xs={12} md={12}>
-            <OverView
-              title="Balance overview"
-              height={300}
-              chart={{
-                labels:
-                  currentYearMonthBaseData?.length > 0
-                    ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
-                    : [],
-                series: [
-                  {
-                    name: 'Income',
-                    type: 'column',
-                    fill: 'solid',
-                    color: '#00A76F',
-                    data:
-                      currentYearMonthBaseData?.length > 0
-                        ? currentYearMonthBaseData?.map((item, key) => item?.totalIn || 0)
-                        : [],
-                  },
-                  {
-                    name: 'Expense',
-                    type: 'column',
-                    fill: 'solid',
-                    data:
-                      currentYearMonthBaseData?.length > 0
-                        ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
-                        : [],
-                  },
-                ],
-              }}
-            />
+            {!currentYearBaseLoader ? (
+              <OverView
+                title="Balance overview"
+                height={300}
+                chart={{
+                  labels:
+                    currentYearMonthBaseData?.length > 0
+                      ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
+                      : [],
+                  series: [
+                    {
+                      name: 'Income',
+                      type: 'column',
+                      fill: 'solid',
+                      color: '#00A76F',
+                      data:
+                        currentYearMonthBaseData?.length > 0
+                          ? currentYearMonthBaseData?.map((item, key) => item?.totalIn || 0)
+                          : [],
+                    },
+                    {
+                      name: 'Expense',
+                      type: 'column',
+                      fill: 'solid',
+                      data:
+                        currentYearMonthBaseData?.length > 0
+                          ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
+                          : [],
+                    },
+                  ],
+                }}
+              />
+            ) : (
+              <Card sx={{ p: 2 }}>
+                <Skeleton variant="text" sx={{ fontSize: 20 }} width={250} />
+                <Skeleton variant="rounded" height={330} animation="wave" />
+              </Card>
+            )}
           </Grid>
 
           <Grid item xs={12} md={4}>
@@ -348,7 +355,7 @@ export default function Index() {
 
           <Grid item xs={12} md={6}>
             <OverView
-              height={250}
+              height={260}
               title={
                 <Box
                   sx={{
@@ -357,17 +364,14 @@ export default function Index() {
                   }}
                 >
                   <Typography variant="big">Cash Flow</Typography>
-                  {/* <Box>
-                    <CustomSelect
-                      valueKey="Value"
-                      labelKey="Key"
-                      size="small"
-                      sx={{ width: 200 }}
-                      menuList={DurationList}
+                  <Box>
+                    <CustomButtonGroup
                       defaultValue={cashFlowDuration}
-                      callBackAction={(value) => setCashFlowDuration(value)}
+                      onSelect={(value) => {
+                        setCashFlowDuration(value);
+                      }}
                     />
-                  </Box> */}
+                  </Box>
                 </Box>
               }
               chart={{
@@ -375,7 +379,7 @@ export default function Index() {
                   cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
                 series: [
                   {
-                    name: 'Income',
+                    name: ' ',
                     type: 'line',
                     color: '#00A76F',
                     data:
@@ -384,6 +388,21 @@ export default function Index() {
                         : [],
                   },
                 ],
+                options: {
+                  xaxis: {
+                    labels: {
+                      show: false,
+                    },
+                  },
+                  yaxis: {
+                    labels: {
+                      show: false,
+                    },
+                  },
+                  chart: {
+                    zoom: { enabled: true },
+                  },
+                },
               }}
             />
           </Grid>
@@ -412,6 +431,7 @@ export default function Index() {
               }}
             />
           </Grid>
+
           <Grid item xs={12} md={6}>
             <Card>
               <CardHeader title="Top Ten Category" />
@@ -439,6 +459,7 @@ export default function Index() {
               </Scrollbar>
             </Card>
           </Grid>
+
           <Grid item xs={12} md={6}>
             <Card>
               <CardHeader title="Top ten sub category" />
