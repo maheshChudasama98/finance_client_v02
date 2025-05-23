@@ -105,7 +105,7 @@ export default function Index() {
       TopCategoriesService(
         {
           Duration: 'MONTH',
-          SelectedDate: new Date(categorySelectedDate).toLocaleDateString(),
+          SelectedDate: new Date(categorySelectedDate),
         },
         (res) => {
           setCategoriesBaseLoader(false);
@@ -120,7 +120,7 @@ export default function Index() {
       TopSubCategoriesService(
         {
           Duration: 'MONTH',
-          SelectedDate: new Date(categorySelectedDate).toLocaleDateString(''),
+          SelectedDate: new Date(categorySelectedDate),
         },
         (res) => {
           setCategoriesBaseLoader(false);
@@ -134,7 +134,7 @@ export default function Index() {
     // setCurrentYearBaseLoader(true);
 
     dispatch(
-      DashboardService({ SelectedYear: new Date(categorySelectedDate).getFullYear() }, (res) => {
+      DashboardService({ SelectedYear: new Date(categorySelectedDate).getFullYear()}, (res) => {
         // setCurrentYearBaseLoader(false);
         if (res.status) {
           // setCurrentYearBaseData(res?.data?.currentYear || {});
