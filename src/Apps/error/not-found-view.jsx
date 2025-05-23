@@ -44,7 +44,7 @@ export default function NotFoundView() {
             justifyContent: 'center',
           }}
         >
-          <Typography variant="h3" sx={{ mb: 3 }}>
+          <Typography variant="h3" sx={{ mb: 3 }} color='text.success'>
             Sorry, page not found!
           </Typography>
 
@@ -55,7 +55,7 @@ export default function NotFoundView() {
 
           <Box
             component="img"
-            src="/assets/illustrations/illustration_404.svg"
+            src="/assets/illustrations/illustration_404_updated.svg"
             sx={{
               mx: 'auto',
               height: 260,
@@ -63,7 +63,7 @@ export default function NotFoundView() {
             }}
           />
 
-          <Button href="/dashboard" size="large" variant="contained" component={RouterLink}>
+          <Button href="/dashboard" size="large" color='success' variant="contained" component={RouterLink}>
             Go to Home
           </Button>
         </Box>

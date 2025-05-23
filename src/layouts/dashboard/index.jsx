@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import { useSelector } from 'react-redux';
 
 import Box from '@mui/material/Box';
 
@@ -15,17 +14,20 @@ import NavBottom from './navBottom';
 
 export default function DashboardLayout({ children }) {
   const upLg = useResponsive('up', 'lg');
-  // const { error, message, } = useSelector((state) => state.common);
 
   const [openNav, setOpenNav] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
   return (
     <>
-      <div style={{ position: "relative" }}>
-        <Header onOpenNav={() => setOpenNav(true)} isActive={isActive} upLg={upLg} setIsActive={setIsActive} />
+      <div style={{ position: 'relative' }}>
+        <Header
+          onOpenNav={() => setOpenNav(true)}
+          isActive={isActive}
+          upLg={upLg}
+          setIsActive={setIsActive}
+        />
       </div>
-
 
       <Box
         sx={{
@@ -40,9 +42,7 @@ export default function DashboardLayout({ children }) {
 
       <Box
         sx={{
-          // minHeight: 1,
           display: { xs: 'flex', md: 'none' },
-          // flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
         <NavBottom isActive={isActive} upLg={upLg} setIsActive={setIsActive} />

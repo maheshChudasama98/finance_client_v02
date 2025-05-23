@@ -16,7 +16,6 @@ import {
   TopSubCategoriesService,
 } from 'src/Services/AnalystData.Services';
 
-import Scrollbar from 'src/components/scrollbar';
 import Loader from 'src/components/Loaders/Loader';
 import { DateRangePicker } from 'src/components/inputs';
 import { DataNotFound } from 'src/components/DataNotFound';
@@ -76,7 +75,6 @@ const columns2 = [
     align: 'right',
     width: '10%',
   },
-
   {
     title: 'Debit',
     dataIndex: 'totalDebit',
@@ -249,55 +247,34 @@ export default function Index() {
           <Grid item xs={12} md={12}>
             <Card>
               <CardHeader title="Category" sx={{ mb: 2 }} />
-              <Scrollbar
-                sx={{
-                  height: 400,
-                  '& .simplebar-content': {
-                    height: 400,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                }}
-              >
-                {tableSetData && tableSetData.length > 0 ? (
-                  <Table
-                    dataSource={tableSetData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
+
+              {tableSetData && tableSetData.length > 0 ? (
+                <Table
+                  dataSource={tableSetData}
+                  showHeader={false}
+                  columns={columns}
+                  pagination={false}
+                  rowKey="CategoryName"
+                />
+              ) : (
+                <DataNotFound />
+              )}
             </Card>
           </Grid>
           <Grid item xs={12} md={12}>
             <Card>
-              <CardHeader title="Sub Category" sx={{mb:2}} />
-              <Scrollbar
-                sx={{
-                  height: 400,
-                  '& .simplebar-content': {
-                    height: 400,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                }}
-              >
-                {subCategoriesData && subCategoriesData.length > 0 ? (
-                  <Table
-                    dataSource={subCategoriesData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
+              <CardHeader title="Sub Category" sx={{ mb: 2 }} />
+              {subCategoriesData && subCategoriesData.length > 0 ? (
+                <Table
+                  dataSource={subCategoriesData}
+                  showHeader={false}
+                  columns={columns}
+                  pagination={false}
+                  rowKey="CategoryName"
+                />
+              ) : (
+                <DataNotFound />
+              )}
             </Card>
           </Grid>
 

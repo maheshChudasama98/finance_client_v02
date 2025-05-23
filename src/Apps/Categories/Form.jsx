@@ -15,7 +15,7 @@ import { Form, Formik } from 'formik';
 
 import * as Yup from 'yup';
 
-export default function Index({ backAction, editObject, position }) {
+export default function Index({ backAction, editObject, deleteAction }) {
   const dispatch = useDispatch();
 
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
@@ -96,6 +96,50 @@ export default function Index({ backAction, editObject, position }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
+                  {editObject?.CategoryId && (
+                    <Button
+                      variant="contained"
+                      sx={{ marginX: 1 }}
+                      onClick={() => {
+                        deleteAction(editObject);
+                      }}
+                      color="error"
+                    >
+                      Deleted
+                    </Button>
+                  )}
+                  {dirty && (
+                    <Button
+                      variant="outlined"
+                      sx={{ marginX: 1 }}
+                      // disabled={!dirty}
+                      onClick={() => {
+                        resetForm();
+                      }}
+                      color="CancelButton"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+
+                  {!formSubmitLoader ? (
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={!dirty}
+                      onClick={handleSubmit}
+                      color="success"
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <ButtonLoader />
+                  )}
+                </Box>
+              </Grid>
+
+              {/* <Grid xs={12}>
+                <Box sx={{ float: 'right', display: 'flex' }}>
                   {dirty && (
                     <Button
                       variant="outlined"
@@ -125,7 +169,7 @@ export default function Index({ backAction, editObject, position }) {
                     <ButtonLoader />
                   )}
                 </Box>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Form>
         );

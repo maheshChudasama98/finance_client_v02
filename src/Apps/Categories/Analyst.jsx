@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-// import Card from '@mui/material/Card';
+import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
 import { RecodeListService } from 'src/Services/AnalystData.Services';
@@ -46,7 +46,7 @@ export default function Analyst({ CategoryId }) {
         />
       </Box>
 
-      <Box sx={{ marginY: 2 }}>
+      <Card sx={{ marginY: 2 }}>
         <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
         {loadingLoader ? (
           <Box sx={{ display: 'flex', height: '50vh' }}>
@@ -55,9 +55,9 @@ export default function Analyst({ CategoryId }) {
         ) : (
           <CustomFlowChart graphList={graphList} />
         )}
-      </Box>
+      </Card>
 
-      <Box sx={{ marginBottom: 2 }}>
+      <Card>
         <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
         {loadingLoader ? (
           <Box sx={{ display: 'flex', height: '50vh' }}>
@@ -66,7 +66,7 @@ export default function Analyst({ CategoryId }) {
         ) : (
           <CustomTransactions list={list} />
         )}
-      </Box>
+      </Card>
     </Box>
   );
 }

@@ -101,12 +101,7 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    {
-      title: '#',
-      dataIndex: 'Index',
-      key: 'Index',
-      width: '5%',
-    },
+   
     {
       title: 'Role Name',
       dataIndex: 'RoleName',

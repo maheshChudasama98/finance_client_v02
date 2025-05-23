@@ -101,12 +101,6 @@ export default function Index() {
 
   const columns = [
     {
-      title: '#',
-      dataIndex: 'Index',
-      key: 'Index',
-      width: '5%',
-    },
-    {
       title: 'Module',
       dataIndex: 'ModulesName',
       key: 'ModulesName',

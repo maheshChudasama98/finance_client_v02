@@ -102,7 +102,6 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
     { Header: 'Branch Name', keyLabel: 'BranchName', xs: 2.5 },
     { Header: 'Org Name', keyLabel: 'OrgName', xs: 2.5 },
     { Header: 'Registration', keyLabel: 'CreateAt', xs: 2.5 },
@@ -257,6 +256,7 @@ export default function Index() {
       </>
     ),
   }));
+  
 
   const titleAction = (display) => {
     if (display) {
