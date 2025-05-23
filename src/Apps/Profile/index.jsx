@@ -1,5 +1,5 @@
-import { useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -8,11 +8,11 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import { ImgUrl } from 'src/constance';
 import { UserModifyService } from 'src/Services/User.Services';
-import { RoleListService } from 'src/Services/org/Org.Services';
 
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import { ImagePicker, TextFieldForm, AutoCompleteSelectMenu } from 'src/components/inputs';
+import { ImagePicker, TextFieldForm } from 'src/components/inputs';
 
 import { Form, Formik } from 'formik';
 
@@ -22,7 +22,8 @@ export default function Index({ backAction, editObject }) {
   const dispatch = useDispatch();
   const [imgUrl, setImgUrl] = useState(null);
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
-  const [rolesList, setRolesList] = useState([]);
+
+  const { userDetails = {} } = useSelector((state) => state?.auth);
 
   const ActionSubmit = (values) => {
     setFormSubmitLoader(true);
@@ -51,16 +52,6 @@ export default function Index({ backAction, editObject }) {
     );
   };
 
-  useEffect(() => {
-    dispatch(
-      RoleListService({}, (res) => {
-        if (res?.status) {
-          setRolesList(res?.data?.list);
-        }
-      })
-    );
-  }, []);
-
   return (
     <Stack alignItems="center" justifyContent="center">
       <Box sx={{ width: 1, maxWidth: 1100 }}>
@@ -71,14 +62,13 @@ export default function Index({ backAction, editObject }) {
         <Formik
           enableReinitialize
           initialValues={{
-            ImgPath:
-              'http://localhost:8200/public/users/c0b6e03f-c122-4335-abba-1f3c9ba3f4f1/1abf0c41-125c-47a3-8b33-7f36e80edfe6.jpeg',
-            FirstName: editObject?.FirstName || '',
-            LastName: editObject?.LastName || '',
-            UserEmail: editObject?.Email || '',
-            UserNumber: editObject?.Mobile || '',
-            Language: editObject?.Language || 'EN',
-            RoleId: editObject?.RoleId || '',
+            ImgPath: userDetails?.ImgPath ? `${ImgUrl || ''}${userDetails.ImgPath}` : '' || '',
+            FirstName: userDetails?.FirstName || '',
+            LastName: userDetails?.LastName || '',
+            UserEmail: userDetails?.Email || '',
+            UserNumber: userDetails?.Mobile || '',
+            Language: userDetails?.Language || 'EN',
+            RoleId: userDetails?.RoleId || '',
           }}
           validationSchema={Yup.object().shape({
             FirstName: Yup.string().required('First Name is required.'),
@@ -142,23 +132,12 @@ export default function Index({ backAction, editObject }) {
 
                         <Grid xs={12} md={6}>
                           <TextFieldForm
+                            disabled
                             required={false}
                             formik={props}
                             type="number"
                             label="Mobile Number"
                             field="UserNumber"
-                          />
-                        </Grid>
-
-                        <Grid xs={12} md={6}>
-                          <AutoCompleteSelectMenu
-                            disabled
-                            formik={props}
-                            label="Role"
-                            field="RoleId"
-                            menuList={rolesList}
-                            valueKey="RoleId"
-                            labelKey="RoleName"
                           />
                         </Grid>
 

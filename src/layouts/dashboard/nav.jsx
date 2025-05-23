@@ -21,7 +21,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { CustomTooltip } from 'src/components/CustomComponents';
 
 import { NAV } from './config-layout';
-// import navConfig from './config-navigation';
+import BranchPopover from './common/branch-popover';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +54,9 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: isActive ? 1 : 2 }}>
       <>
+        <Box sx={{ display: { xs: 'block', md: 'none' }, paddingBottom: 2 }}>
+          <BranchPopover />
+        </Box>
         {isActive && upLg ? (
           <>
             {filterNavItems.map((item) => (

@@ -47,7 +47,7 @@ export default function TransactionsPopover() {
     <>
       <Button
         type="submit"
-        variant="outlined"
+        variant="contained"
         color="success"
         onClick={() => setShow(true)}
       >

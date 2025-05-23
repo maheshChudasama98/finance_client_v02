@@ -35,8 +35,8 @@ import {
 import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
-import SubForm from './SubForm';
-import Analyst from './Analyst';
+import AnalystComponent from './Analyst';
+import SubCategoriesForm from './SubForm';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -46,14 +46,14 @@ export default function Index() {
   const [loadingLoader, setLoadingLoader] = useState(false);
   const [loadingSwitch, setLoadingSwitch] = useState({});
   const [subLoadingSwitch, setSubLoadingSwitch] = useState({});
-  const [accountsList, setAccountsList] = useState([]);
+  const [recodeList, setRecodesList] = useState([]);
   const [editObject, setEditObject] = useState({});
-  const [subEditObject, setSubEditObject] = useState({});
-  const [formaModal, setFormaModal] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [childExpandedRowKeys, setChildExpandedRowKeys] = useState({});
+  // const [subEditObject, setSubEditObject] = useState({});
+  // const [formaModal, setFormaModal] = useState({});
+  // const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  // const [childExpandedRowKeys, setChildExpandedRowKeys] = useState({});
 
   useEffect(() => {
     if (!displayFlag) {
@@ -65,7 +65,7 @@ export default function Index() {
         CategoriesFetchListService(payLoad, (res) => {
           if (res?.status) {
             setLoadingLoader(false);
-            setAccountsList(res?.data?.list);
+            setRecodesList(res?.data?.list);
           }
         })
       );
@@ -82,7 +82,7 @@ export default function Index() {
         CategoriesFetchListService(payLoad, (res) => {
           if (res?.status) {
             setLoadingSearchLoader(false);
-            setAccountsList(res?.data?.list);
+            setRecodesList(res?.data?.list);
             setLoadingSwitch({});
             setSubLoadingSwitch({});
           }
@@ -95,7 +95,7 @@ export default function Index() {
     if (display) {
       return 'Categories';
     }
-    if (editObject?.AccountId) {
+    if (editObject?.CategoryId) {
       return 'Edit Category';
     }
     return 'New Category';
@@ -128,52 +128,52 @@ export default function Index() {
       align: 'right',
       width: '10%',
     },
-    {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
-      align: 'right',
-      width: '10%',
-    },
+    // {
+    //   title: 'Action',
+    //   dataIndex: 'Action',
+    //   key: 'Action',
+    //   align: 'right',
+    //   width: '10%',
+    // },
   ];
 
-  const subColumns = [
-    {
-      title: 'Sub Category',
-      dataIndex: 'SubCategoriesName',
-      key: 'SubCategoriesName',
-    },
-    {
-      title: 'Income',
-      dataIndex: 'Income',
-      key: 'Income',
-      align: 'right',
-      width: '15%',
-    },
-    {
-      title: 'Expense',
-      dataIndex: 'Expense',
-      key: 'Expense',
-      align: 'right',
-      width: '15%',
-    },
-    {
-      title: 'Active',
-      dataIndex: 'Active',
-      key: 'Active',
-      align: 'right',
-      width: '10%',
-    },
-    {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
-      align: 'right',
-      width: '10%',
-    },
-  ];
+  // const subColumns = [
+  //   {
+  //     title: 'Sub Category',
+  //     dataIndex: 'SubCategoriesName',
+  //     key: 'SubCategoriesName',
+  //   },
+  //   {
+  //     title: 'Income',
+  //     dataIndex: 'Income',
+  //     key: 'Income',
+  //     align: 'right',
+  //     width: '15%',
+  //   },
+  //   {
+  //     title: 'Expense',
+  //     dataIndex: 'Expense',
+  //     key: 'Expense',
+  //     align: 'right',
+  //     width: '15%',
+  //   },
+  //   {
+  //     title: 'Active',
+  //     dataIndex: 'Active',
+  //     key: 'Active',
+  //     align: 'right',
+  //     width: '10%',
+  //   },
+  //   {
+  //     title: 'Action',
+  //     dataIndex: 'Action',
+  //     key: 'Action',
+  //     align: 'right',
+  //     width: '10%',
+  //   },
+  // ];
 
-  const tableSetData = accountsList.map((item, index) => ({
+  const tableSetData = recodeList.map((item, index) => ({
     item,
     key: index,
     CategoryName: (
@@ -366,8 +366,8 @@ export default function Index() {
                         <Typography
                           variant="light"
                           onClick={() => {
-                            setSubEditObject(subItem);
-                            setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
+                            // setSubEditObject(subItem);
+                            // setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
                           }}
                         >
                           <Box display="flex" alignItems="center">
@@ -439,9 +439,27 @@ export default function Index() {
     );
   };
 
+  const deleteAction = (item) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          StatusChange('isDeleted', true, item?.CategoryId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
     setEditObject({});
+  };
+
+  const selectItemAction = (item) => {
+    // const account = recodeList?.find((e) => e?.CategoryId === key);
+    setDisplayFlag(true);
+    setEditObject(item);
   };
 
   return (
@@ -464,30 +482,13 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form backAction={showDisplayAction} editObject={editObject} />
+          <Form
+            backAction={showDisplayAction}
+            editObject={editObject}
+            deleteAction={deleteAction}
+          />
         ) : (
-          <Box
-            sx={{
-              borderRadius: 1.3,
-            }}
-          >
-            <Box
-              sx={{
-                marginX: 2,
-                marginY: 2,
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box />
-
-              <CustomSearchInput
-                loading={loadingSearchLoader}
-                searchValue={searchValue}
-                callBack={setSearchValue}
-              />
-            </Box>
-
+          <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
               <Box sx={{ display: 'flex', height: '50vh' }}>
                 <Loader />
@@ -498,131 +499,26 @@ export default function Index() {
                   overflow: 'auto',
                 }}
               >
-                {accountsList && accountsList?.length > 0 ? (
-                  <Box
-                    sx={{
-                      // marginX: 2,
-                      // minWidth: '1000px',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <Table
-                      className="custom-ant-table"
-                      columns={columns}
-                      dataSource={tableSetData}
-                      expandable={{
-                        expandedRowRender: (record) => (
-                          <Box sx={{ backgroundColor: '#eee', padding: 2 }}>
-                            <Card>
-                              <Form
-                                backAction={showDisplayAction}
-                                editObject={record?.item}
-                                apiCallAction={() => {
-                                  setApiFlag(!apiFlag);
-                                }}
-                              />
-                              <Analyst CategoryId={record?.item?.CategoryId} />
-                              <Table
-                                className="custom-ant-table"
-                                columns={subColumns}
-                                dataSource={record.child}
-                                pagination={false}
-                                expandable={{
-                                  expandedRowKeys: childExpandedRowKeys[record.key] || [],
-                                  onExpand: (expanded, subRecord) => {
-                                    setChildExpandedRowKeys((prev) => {
-                                      const updatedKeys = { ...prev };
-                                      if (expanded) {
-                                        updatedKeys[record.key] = [
-                                          ...(updatedKeys[record.key] || []),
-                                          subRecord.i,
-                                        ];
-                                      } else {
-                                        updatedKeys[record.key] = (
-                                          updatedKeys[record.key] || []
-                                        ).filter((key) => key !== subRecord.i);
-                                      }
-                                      return updatedKeys;
-                                    });
-                                  },
-                                }}
-                                onRow={(subItem) => ({
-                                  onClick: () => {
-                                    setSubEditObject(subItem.item);
-                                    setFormaModal((prev) => ({
-                                      ...prev,
-                                      [record?.item?.CategoryId]: true,
-                                    }));
-                                  },
-                                })}
-                              />
-                              <Box
-                                sx={{
-                                  border: (theme) => `dashed 1px ${theme?.palette?.grey?.[400]}`,
-                                  p: 2,
-                                  m: 2,
-                                  borderRadius: 1.5,
-                                }}
-                              >
-                                {formaModal[record?.item?.CategoryId] ? (
-                                  <SubForm
-                                    backAction={() => {
-                                      setApiFlag(!apiFlag);
-                                      setFormaModal((prev) => ({
-                                        ...prev,
-                                        [record?.item?.CategoryId]: false,
-                                      }));
-                                    }}
-                                    editObject={subEditObject}
-                                    CategoryId={record?.item?.CategoryId}
-                                    Color={record?.item?.Color}
-                                  />
-                                ) : (
-                                  <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                                    <Button
-                                      onClick={() => {
-                                        setSubEditObject({});
-                                        setFormaModal((prev) => ({
-                                          ...prev,
-                                          [record?.item?.CategoryId]: true,
-                                        }));
-                                      }}
-                                      variant="contained"
-                                      color="success"
-                                    >
-                                      Add Sub Category
-                                    </Button>
-                                  </Box>
-                                )}
-                              </Box>
-                            </Card>
-                          </Box>
-                        ),
-                        rowExpandable: (record) => true,
-                        expandIcon: () => null,
-                        indentSize: 0,
-                        expandIconColumnIndex: -1,
-                      }}
-                      expandedRowKeys={expandedRowKeys}
-                      onExpand={(expanded, record) => {
-                        setExpandedRowKeys((prev) =>
-                          expanded
-                            ? [...prev, record.key]
-                            : prev.filter((key) => key !== record.key)
-                        );
-                      }}
-                      onRow={(record) => ({
-                        onClick: () => {
-                          if (expandedRowKeys.includes(record.key)) {
-                            setExpandedRowKeys((prev) => prev.filter((key) => key !== record.key));
-                          } else {
-                            setExpandedRowKeys((prev) => [...prev, record.key]);
-                          }
-                        },
-                      })}
-                      pagination={false}
-                    />
-                  </Box>
+                <Box sx={{ m: 2 }}>
+                  <CustomSearchInput
+                    loading={loadingSearchLoader}
+                    searchValue={searchValue}
+                    callBack={setSearchValue}
+                  />
+                </Box>
+
+                {recodeList && recodeList?.length > 0 ? (
+                  <Table
+                    className="custom-ant-table"
+                    columns={columns}
+                    dataSource={tableSetData}
+                    pagination={false}
+                    onRow={(record) => ({
+                      onClick: () => {
+                        selectItemAction(record.item);
+                      },
+                    })}
+                  />
                 ) : (
                   <DataNotFound />
                 )}
@@ -631,6 +527,9 @@ export default function Index() {
           </Box>
         )}
       </Card>
+
+      {editObject.CategoryId && <SubCategoriesForm editObject={{}} CategoryId={editObject.CategoryId} Color={editObject.Color} />}
+      {editObject.CategoryId && <AnalystComponent CategoryId={editObject.CategoryId} />}
     </Box>
   );
 }

@@ -103,7 +103,6 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
     { Header: 'Org Name', keyLabel: 'OrgName', xs: 2.5 },
     { Header: 'Branches', keyLabel: 'Branches', xs: 2.5 },
     { Header: 'Users', keyLabel: 'TotalUser', xs: 2.5 },

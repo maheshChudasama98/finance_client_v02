@@ -26,19 +26,19 @@ import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import {
-  CustomTable,
   CustomAvatar,
+  CustomTooltip,
   CustomCheckbox,
   CustomSearchInput,
 } from 'src/components/CustomComponents';
 
-import { Dropdown } from 'antd';
+import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
 import SubForm from './SubForm';
+import Analyst from './Analyst';
 
 export default function Index() {
-  const filterValue = 'All';
   const dispatch = useDispatch();
 
   const [apiFlag, setApiFlag] = useState(false);
@@ -52,29 +52,8 @@ export default function Index() {
   const [formaModal, setFormaModal] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
-
-  const StatusChange = (action, value, id) => {
-    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      CategoryActionService({ [action]: value, CategoryId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const SubStatusChange = (action, value, id) => {
-    setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
-    dispatch(
-      SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
-        setApiFlag(!apiFlag);
-      })
-    );
-  };
-
-  const showDisplayAction = () => {
-    setDisplayFlag(!displayFlag);
-    setEditObject({});
-  };
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [childExpandedRowKeys, setChildExpandedRowKeys] = useState({});
 
   useEffect(() => {
     if (!displayFlag) {
@@ -91,7 +70,7 @@ export default function Index() {
         })
       );
     }
-  }, [displayFlag, filterValue]);
+  }, [displayFlag]);
 
   useEffect(() => {
     if (!displayFlag) {
@@ -112,36 +91,102 @@ export default function Index() {
     }
   }, [searchValue, apiFlag]);
 
+  const titleAction = (display) => {
+    if (display) {
+      return 'Categories';
+    }
+    if (editObject?.AccountId) {
+      return 'Edit Category';
+    }
+    return 'New Category';
+  };
+
   const columns = [
-    { Header: '#', keyLabel: 'Index', xs: 0.5 },
-    { Header: 'Category', keyLabel: 'CategoryName', xs: 5 },
-    { Header: 'Income', keyLabel: 'In', xs: 2.5 },
-    { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
-    // { Header: 'Used', keyLabel: 'Used', xs: 1 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    {
+      title: 'Category Name',
+      dataIndex: 'CategoryName',
+      key: 'CategoryName',
+    },
+    {
+      title: 'Income',
+      dataIndex: 'Income',
+      key: 'Income',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Expense',
+      dataIndex: 'Expense',
+      key: 'Expense',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      align: 'right',
+      width: '10%',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      align: 'right',
+      width: '10%',
+    },
   ];
 
   const subColumns = [
-    { Header: 'Sub Category', keyLabel: 'SubCategoriesName', xs: 5.5 },
-    // { Header: 'Used', keyLabel: 'Used', xs: 1 },
-    { Header: 'Income', keyLabel: 'In', xs: 2.5 },
-    { Header: 'Expense', keyLabel: 'Out', xs: 2.5 },
-    { Header: 'Active', keyLabel: 'Active', xs: 1 },
-    { Header: 'Action', keyLabel: 'Action', xs: 0.5 },
+    {
+      title: 'Sub Category',
+      dataIndex: 'SubCategoriesName',
+      key: 'SubCategoriesName',
+    },
+    {
+      title: 'Income',
+      dataIndex: 'Income',
+      key: 'Income',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Expense',
+      dataIndex: 'Expense',
+      key: 'Expense',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      align: 'right',
+      width: '10%',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      align: 'right',
+      width: '10%',
+    },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
-    Index: <Typography variant="light">{index + 1 || ''}</Typography>,
+    item,
+    key: index,
     CategoryName: (
       <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar
-          width={45}
-          height={45}
-          iconSize={15}
-          icon={item?.Icon || ''}
-          bgColor={item?.Color || ''}
-        />
+        <CustomTooltip label={item.Description || ''} Placement="right">
+          <CustomAvatar
+            width={45}
+            height={45}
+            iconSize={15}
+            icon={item?.Icon || ''}
+            bgColor={item?.Color || ''}
+          />
+        </CustomTooltip>
         <Typography variant="light">
           {item?.CategoryName}
           <Typography
@@ -153,21 +198,20 @@ export default function Index() {
         </Typography>
       </Stack>
     ),
-    In: (
+    Income: (
       <Typography variant="light">
         {item?.TransactionSummary?.TotalInCome
           ? formatToINR(item?.TransactionSummary?.TotalInCome)
           : '' || ''}
       </Typography>
     ),
-    Out: (
+    Expense: (
       <Typography variant="light">
         {item?.TransactionSummary?.TotalExpense
           ? formatToINR(item?.TransactionSummary?.TotalExpense)
           : '' || ''}
       </Typography>
     ),
-
     Used: (
       <CustomCheckbox
         checked={item?.isUsing}
@@ -188,7 +232,6 @@ export default function Index() {
         }}
       />
     ),
-
     Action: (
       <Dropdown
         trigger={['click']}
@@ -250,199 +293,155 @@ export default function Index() {
         </IconButton>
       </Dropdown>
     ),
-    child: (
-      <>
-        <CustomTable
-          columns={subColumns}
-          data={
-            item?.SubCategories?.length > 0
-              ? item?.SubCategories?.map((subItem, i) => ({
-                  SubCategoriesName: (
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <CustomAvatar
-                        width={45}
-                        height={45}
-                        iconSize={15}
-                        icon={subItem?.Icon || ''}
-                        bgColor={item?.Color || ''}
-                      />
-                      <Typography variant="light">
-                        {subItem?.SubCategoriesName}
+    child:
+      item?.SubCategories?.length > 0
+        ? item?.SubCategories?.map((subItem, i) => ({
+            i,
+            item: subItem,
+            SubCategoriesName: (
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <CustomTooltip label={subItem.Description || ''} Placement="right">
+                  <CustomAvatar
+                    width={{ xs: 35, md: 35, lg: 38 }}
+                    height={{ xs: 35, md: 35, lg: 38 }}
+                    iconSize={14}
+                    icon={subItem?.Icon || ''}
+                    bgColor={item?.Color || ''}
+                  />
+                </CustomTooltip>
+                <Typography variant="light">
+                  {subItem?.SubCategoriesName}
+                  <Typography
+                    variant="light"
+                    color="text.secondary"
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    {fDate(subItem?.createdAt)}
+                  </Typography>
+                </Typography>
+              </Stack>
+            ),
+            Income: (
+              <Typography variant="light">
+                {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
+              </Typography>
+            ),
+            Expense: (
+              <Typography variant="light">
+                {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
+              </Typography>
+            ),
+            // Used: (
+            //   <CustomCheckbox
+            //     checked={subItem?.isUsing}
+            //     loading={
+            //       subLoadingSwitch[subItem?.SubCategoryId] && subLoadingSwitch?.action === 'isUsing'
+            //     }
+            //     onClick={(e) => {
+            //       SubStatusChange('isUsing', !subItem?.isUsing, subItem?.SubCategoryId);
+            //       e.stopPropagation();
+            //     }}
+            //   />
+            // ),
+            Active: (
+              <CustomCheckbox
+                checked={subItem?.isActive}
+                loading={
+                  subLoadingSwitch[subItem?.SubCategoryId] &&
+                  subLoadingSwitch?.action === 'isActive'
+                }
+                onClick={(e) => {
+                  SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
+                  e.stopPropagation();
+                }}
+              />
+            ),
+            Action: (
+              <Dropdown
+                trigger={['click']}
+                menu={{
+                  items: [
+                    {
+                      label: (
                         <Typography
                           variant="light"
-                          color="text.secondary"
-                          sx={{ display: 'flex', alignItems: 'center' }}
+                          onClick={() => {
+                            setSubEditObject(subItem);
+                            setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
+                          }}
                         >
-                          <SvgColor
-                            src="/assets/icons/general/calendar.svg"
-                            sx={{ width: 18, height: 18, mr: 0.5 }}
-                          />
-                          {fDate(subItem?.createdAt)}
+                          <Box display="flex" alignItems="center">
+                            <SvgColor
+                              src="/assets/icons/general/pen.svg"
+                              sx={{ width: 25, height: 25, mr: 2 }}
+                            />
+                            Edit
+                          </Box>
                         </Typography>
-                      </Typography>
-                    </Stack>
-                  ),
-                  CreateAt: (
-                    <Typography
-                      variant="light"
-                      color="text.secondary"
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <SvgColor
-                        src="/assets/icons/general/calendar.svg"
-                        sx={{ width: 18, height: 18, mr: 0.5 }}
-                      />
-                      {fDate(subItem?.createdAt)}
-                    </Typography>
-                  ),
-                  In: (
-                    <Typography variant="light">
-                      {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
-                    </Typography>
-                  ),
-                  Out: (
-                    <Typography variant="light">
-                      {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
-                    </Typography>
-                  ),
-                  Used: (
-                    <CustomCheckbox
-                      checked={subItem?.isUsing}
-                      loading={
-                        subLoadingSwitch[subItem?.SubCategoryId] &&
-                        subLoadingSwitch?.action === 'isUsing'
-                      }
-                      onClick={(e) => {
-                        SubStatusChange('isUsing', !subItem?.isUsing, subItem?.SubCategoryId);
-                        e.stopPropagation();
-                      }}
-                    />
-                  ),
-                  Active: (
-                    <CustomCheckbox
-                      checked={subItem?.isActive}
-                      loading={
-                        subLoadingSwitch[subItem?.SubCategoryId] &&
-                        subLoadingSwitch?.action === 'isActive'
-                      }
-                      onClick={(e) => {
-                        SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
-                        e.stopPropagation();
-                      }}
-                    />
-                  ),
-                  Action: (
-                    <Dropdown
-                      trigger={['click']}
-                      menu={{
-                        items: [
-                          {
-                            label: (
-                              <Typography
-                                variant="normal"
-                                onClick={() => {
-                                  setSubEditObject(subItem);
-                                  setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
-                                  // setDisplayFlag(true); setEditObject(item);
-                                }}
-                              >
-                                <Box display="flex" alignItems="center">
-                                  <SvgColor
-                                    src="/assets/icons/general/pen.svg"
-                                    sx={{ width: 25, height: 25, mr: 2 }}
-                                  />
-                                  Edit
-                                </Box>
-                              </Typography>
-                            ),
-                          },
-                          {
-                            label: (
-                              <Typography
-                                variant="normal"
-                                color="error"
-                                onClick={() => {
-                                  sweetAlertQuestion()
-                                    .then((result) => {
-                                      if (result === 'Yes') {
-                                        SubStatusChange('isDeleted', true, subItem?.SubCategoryId);
-                                      }
-                                    })
-                                    .catch((error) => {
-                                      console.error(error);
-                                    });
-                                }}
-                              >
-                                <Box display="flex" alignItems="center" justifyContent="center">
-                                  <SvgColor
-                                    src="/assets/icons/general/trash.svg"
-                                    sx={{ width: 25, height: 25, mr: 2 }}
-                                  />
-                                  Delete
-                                </Box>
-                              </Typography>
-                            ),
-                          },
-                        ],
-                      }}
-                      placement="bottomRight"
-                      arrow={{ pointAtCenter: true }}
-                    >
-                      <IconButton size="small" sx={{ pointerEvents: 'auto' }}>
-                        <MoreVertIcon fontSize="small" />
-                      </IconButton>
-                    </Dropdown>
-                  ),
-                }))
-              : []
-          }
-        />
-
-        <Box
-          sx={{
-            border: (theme) => `dashed 1px ${theme?.palette?.grey?.[400]}`,
-            p: 2,
-            my: 2,
-            borderRadius: 1.5,
-          }}
-        >
-          {formaModal[item?.CategoryId] ? (
-            <SubForm
-              backAction={() => {
-                setApiFlag(!apiFlag);
-                setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: false }));
-              }}
-              editObject={subEditObject}
-              CategoryId={item?.CategoryId}
-              Color={item?.Color}
-            />
-          ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-              <Button
-                onClick={() => {
-                  setSubEditObject({});
-                  setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
+                      ),
+                    },
+                    {
+                      label: (
+                        <Typography
+                          variant="light"
+                          color="error"
+                          onClick={() => {
+                            sweetAlertQuestion()
+                              .then((result) => {
+                                if (result === 'Yes') {
+                                  SubStatusChange('isDeleted', true, subItem?.SubCategoryId);
+                                }
+                              })
+                              .catch((error) => {
+                                console.error(error);
+                              });
+                          }}
+                        >
+                          <Box display="flex" alignItems="center" justifyContent="center">
+                            <SvgColor
+                              src="/assets/icons/general/trash.svg"
+                              sx={{ width: 25, height: 25, mr: 2 }}
+                            />
+                            Delete
+                          </Box>
+                        </Typography>
+                      ),
+                    },
+                  ],
                 }}
-                variant="contained"
-                color="success"
+                placement="bottomRight"
+                arrow={{ pointAtCenter: true }}
               >
-                Add
-              </Button>
-            </Box>
-          )}
-        </Box>
-      </>
-    ),
+                <IconButton size="small" sx={{ pointerEvents: 'auto' }}>
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+              </Dropdown>
+            ),
+          }))
+        : [],
   }));
 
-  const titleAction = (display) => {
-    if (display) {
-      return 'Categories';
-    }
-    if (editObject?.AccountId) {
-      return 'Edit Category';
-    }
-    return 'New Category';
+  const StatusChange = (action, value, id) => {
+    setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      CategoryActionService({ [action]: value, CategoryId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const SubStatusChange = (action, value, id) => {
+    setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
+    dispatch(
+      SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
+        setApiFlag(!apiFlag);
+      })
+    );
+  };
+
+  const showDisplayAction = () => {
+    setDisplayFlag(!displayFlag);
+    setEditObject({});
   };
 
   return (
@@ -503,11 +502,126 @@ export default function Index() {
                   <Box
                     sx={{
                       // marginX: 2,
-                      minWidth: '1000px',
+                      // minWidth: '1000px',
                       flexWrap: 'wrap',
                     }}
                   >
-                    <CustomTable expanded columns={columns} data={tableSetData} />
+                    <Table
+                      className="custom-ant-table"
+                      columns={columns}
+                      dataSource={tableSetData}
+                      expandable={{
+                        expandedRowRender: (record) => (
+                          <Box sx={{ backgroundColor: '#eee', padding: 2 }}>
+                            <Card>
+                              <Form
+                                backAction={showDisplayAction}
+                                editObject={record?.item}
+                                apiCallAction={() => {
+                                  setApiFlag(!apiFlag);
+                                }}
+                              />
+                              <Analyst CategoryId={record?.item?.CategoryId} />
+                              <Table
+                                className="custom-ant-table"
+                                columns={subColumns}
+                                dataSource={record.child}
+                                pagination={false}
+                                expandable={{
+                                  expandedRowKeys: childExpandedRowKeys[record.key] || [],
+                                  onExpand: (expanded, subRecord) => {
+                                    setChildExpandedRowKeys((prev) => {
+                                      const updatedKeys = { ...prev };
+                                      if (expanded) {
+                                        updatedKeys[record.key] = [
+                                          ...(updatedKeys[record.key] || []),
+                                          subRecord.i,
+                                        ];
+                                      } else {
+                                        updatedKeys[record.key] = (
+                                          updatedKeys[record.key] || []
+                                        ).filter((key) => key !== subRecord.i);
+                                      }
+                                      return updatedKeys;
+                                    });
+                                  },
+                                }}
+                                onRow={(subItem) => ({
+                                  onClick: () => {
+                                    setSubEditObject(subItem.item);
+                                    setFormaModal((prev) => ({
+                                      ...prev,
+                                      [record?.item?.CategoryId]: true,
+                                    }));
+                                  },
+                                })}
+                              />
+                              <Box
+                                sx={{
+                                  border: (theme) => `dashed 1px ${theme?.palette?.grey?.[400]}`,
+                                  p: 2,
+                                  m: 2,
+                                  borderRadius: 1.5,
+                                }}
+                              >
+                                {formaModal[record?.item?.CategoryId] ? (
+                                  <SubForm
+                                    backAction={() => {
+                                      setApiFlag(!apiFlag);
+                                      setFormaModal((prev) => ({
+                                        ...prev,
+                                        [record?.item?.CategoryId]: false,
+                                      }));
+                                    }}
+                                    editObject={subEditObject}
+                                    CategoryId={record?.item?.CategoryId}
+                                    Color={record?.item?.Color}
+                                  />
+                                ) : (
+                                  <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                                    <Button
+                                      onClick={() => {
+                                        setSubEditObject({});
+                                        setFormaModal((prev) => ({
+                                          ...prev,
+                                          [record?.item?.CategoryId]: true,
+                                        }));
+                                      }}
+                                      variant="contained"
+                                      color="success"
+                                    >
+                                      Add Sub Category
+                                    </Button>
+                                  </Box>
+                                )}
+                              </Box>
+                            </Card>
+                          </Box>
+                        ),
+                        rowExpandable: (record) => true,
+                        expandIcon: () => null,
+                        indentSize: 0,
+                        expandIconColumnIndex: -1,
+                      }}
+                      expandedRowKeys={expandedRowKeys}
+                      onExpand={(expanded, record) => {
+                        setExpandedRowKeys((prev) =>
+                          expanded
+                            ? [...prev, record.key]
+                            : prev.filter((key) => key !== record.key)
+                        );
+                      }}
+                      onRow={(record) => ({
+                        onClick: () => {
+                          if (expandedRowKeys.includes(record.key)) {
+                            setExpandedRowKeys((prev) => prev.filter((key) => key !== record.key));
+                          } else {
+                            setExpandedRowKeys((prev) => [...prev, record.key]);
+                          }
+                        },
+                      })}
+                      pagination={false}
+                    />
                   </Box>
                 ) : (
                   <DataNotFound />

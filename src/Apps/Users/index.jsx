@@ -20,7 +20,6 @@ import { FetchUserListController } from 'src/Services/User.Services';
 
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
-import { ModalDialog } from 'src/components/model/index';
 import { DataNotFound } from 'src/components/DataNotFound';
 import { CustomAvatar, CustomCheckbox } from 'src/components/CustomComponents';
 
@@ -34,7 +33,6 @@ export default function Index() {
   const [displayFlag, setDisplayFlag] = useState(false);
   const [userList, setUserList] = useState([]);
   const [editObject, setEditObject] = useState({});
-  const [open, setOpen] = useState(false);
   const [loadingLoader, setLoadingLoader] = React.useState(false);
   // const [loadingSwitch, setLoadingSwitch] = useState({});
   const loadingSwitch = {};
@@ -63,7 +61,7 @@ export default function Index() {
   const DeleteAction = () => {};
 
   const columns = [
-    { title: '#', dataIndex: 'Index', key: 'Index', width: '5%' },
+    // { title: '#', dataIndex: 'Index', key: 'Index', width: '5%' },
     { title: 'User Name', dataIndex: 'UserInfo', key: 'UserInfo', width: '40%' },
     { title: 'Role Name', dataIndex: 'RoleName', key: 'RoleName', width: '30%' },
     { title: 'Registration', dataIndex: 'CreateAt', key: 'CreateAt', width: '20%' },
@@ -197,7 +195,7 @@ export default function Index() {
         <Box
           sx={{
             borderRadius: 1.3,
-            paddingY: 2,
+            paddingTop: 2,
             paddingX: displayFlag ? 2 : 0,
           }}
         >
@@ -217,12 +215,22 @@ export default function Index() {
                 >
                   {userList && userList?.length > 0 ? (
                     <>
-                      <Table columns={columns} dataSource={tableSetData} pagination={false}
-                      onRow={(record) => ({
-                        onClick: () => {
-                          // setSelectedAccountId(record.key); // Update selectedAccountId on row click
-                        },
-                      })} />
+                      <Box
+                        sx={{
+                          display: { xs: 'none', md: 'block' },
+                        }}
+                      >
+                        <Table
+                          columns={columns}
+                          dataSource={tableSetData}
+                          pagination={false}
+                          onRow={(record) => ({
+                            onClick: () => {
+                              // setSelectedAccountId(record.key); // Update selectedAccountId on row click
+                            },
+                          })}
+                        />
+                      </Box>
                       <Box
                         sx={{
                           display: { xs: 'block', md: 'none' },
@@ -251,41 +259,6 @@ export default function Index() {
           )}
         </Box>
       </Card>
-
-      <ModalDialog
-        title="Delete"
-        open={open}
-        handleClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Box sx={{ minWidth: 500 }}>
-          <Typography variant="big">Are you sure want to delete?</Typography>
-
-          <Box
-            sx={{
-              mt: 2,
-              textAlign: 'end',
-              justifyContent: 'center',
-              display: 'flex',
-            }}
-          >
-            <Button onClick={DeleteAction} variant="contained" color="error">
-              Delete
-            </Button>
-            <Button
-              sx={{ marginX: 1 }}
-              onClick={() => {
-                setOpen(false);
-              }}
-              variant="outlined"
-              color="CancelButton"
-            >
-              Cancel
-            </Button>
-          </Box>
-        </Box>
-      </ModalDialog>
     </Box>
   );
 }

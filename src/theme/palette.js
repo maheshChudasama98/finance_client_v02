@@ -178,6 +178,7 @@ export function palette() {
     ...nav,
     mode: 'light',
     text: {
+      success: success?.main,
       primary: grey[800],
       secondary: grey[600],
       disabled: grey[500],

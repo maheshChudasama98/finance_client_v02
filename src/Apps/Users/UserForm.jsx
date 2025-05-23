@@ -10,7 +10,7 @@ import { UserModifyService } from 'src/Services/User.Services';
 import { RoleListService } from 'src/Services/org/Org.Services';
 
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
-import {ImagePicker,TextFieldForm, AutoCompleteSelectMenu,   } from 'src/components/inputs';
+import { ImagePicker, TextFieldForm, AutoCompleteSelectMenu } from 'src/components/inputs';
 
 import { Form, Formik } from 'formik';
 
@@ -33,29 +33,29 @@ export default function Index({ backAction, editObject }) {
     // setFormSubmitLoader(false);
 
     setFormSubmitLoader(true);
-        const formData = new FormData();
-        if (imgUrl) {
-          formData.append('ImgPath', imgUrl);
-        }
-        formData.append('FirstName', values.FirstName);
-        formData.append('LastName', values.LastName);
-        formData.append('UserEmail', values.UserEmail);
-        formData.append('UserNumber', values.UserNumber);
-        formData.append('Language', values.Language);
-        formData.append('RoleId', values.RoleId);
-    
-        if (editObject?.UserId) {
-          formData.append('EditUserId', editObject?.UserId);
-        }
+    const formData = new FormData();
+    if (imgUrl) {
+      formData.append('ImgPath', imgUrl);
+    }
+    formData.append('FirstName', values.FirstName);
+    formData.append('LastName', values.LastName);
+    formData.append('UserEmail', values.UserEmail);
+    formData.append('UserNumber', values.UserNumber);
+    formData.append('Language', values.Language);
+    formData.append('RoleId', values.RoleId);
 
-        dispatch(
-          UserModifyService(formData, (res) => {
-            setFormSubmitLoader(false);
-            if (res?.status) {
-              backAction();
-            }
-          })
-        );
+    if (editObject?.UserId) {
+      formData.append('EditUserId', editObject?.UserId);
+    }
+
+    dispatch(
+      UserModifyService(formData, (res) => {
+        setFormSubmitLoader(false);
+        if (res?.status) {
+          backAction();
+        }
+      })
+    );
   };
 
   useEffect(() => {
@@ -95,7 +95,14 @@ export default function Index({ backAction, editObject }) {
         const { handleSubmit, setFieldValue, dirty, resetForm } = props;
         return (
           <Form>
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                paddingY: 2,
+                // paddingX: 2,
+              }}
+            >
               <Grid item xs={12} md={12}>
                 <ImagePicker
                   //   defaultIcon="fa-solid fa-sitemap"

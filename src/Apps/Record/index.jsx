@@ -195,6 +195,7 @@ export default function Index() {
           <Box
             sx={{
               borderRadius: 1.3,
+              alignItems: 'baseline',
             }}
           >
             <Box
@@ -203,6 +204,7 @@ export default function Index() {
                 marginY: 2,
                 display: { xs: 'block', md: 'flex' },
                 justifyContent: 'space-between',
+                alignItems: 'baseline',
               }}
             >
               <CustomSearchInput callBack={setSearchValue} />
@@ -211,7 +213,8 @@ export default function Index() {
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'flex-end',
+                  alignItems: 'baseline',
+
                   marginY: { xs: 2, md: 0 },
                 }}
               >
@@ -261,7 +264,7 @@ export default function Index() {
                     />
                   </Box>
                 </ClickAwayListener>
-              </Popper>{' '}
+              </Popper>
             </Box>
 
             {loadingLoader ? (

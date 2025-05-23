@@ -43,9 +43,16 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       {/* <Searchbar /> */}
 
       <Box sx={{ flexGrow: 1 }} />
-
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Box sx={{ display: { xs: "none", md: "contents" } }}>
         <BranchPopover />
+      </Box>
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        spacing={1}
+      >
         {/* <TransactionsPopover /> */}
         {/* <NotificationsPopover /> */}
         <AccountPopover />
@@ -80,13 +87,12 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
         {renderContent}
       </Toolbar>
 
-      {
-        upLg &&
+      {upLg && (
         <IconButton
           size="small"
           onClick={() => setIsActive(!isActive)}
           sx={{
-            position: "absolute",
+            position: 'absolute',
             left: -16,
             top: 15,
             border: `dashed 1px ${theme.palette.divider}`,
@@ -94,15 +100,15 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
             background: grey[100],
             // background: "#f9fafb",
             // zIndex: 999999
-          }}>
-
-          {
-            isActive ?
-              <KeyboardArrowRightIcon fontSize="inherit" /> :
-              <KeyboardArrowLeftIcon fontSize="inherit" />
-          }
+          }}
+        >
+          {isActive ? (
+            <KeyboardArrowRightIcon fontSize="inherit" />
+          ) : (
+            <KeyboardArrowLeftIcon fontSize="inherit" />
+          )}
         </IconButton>
-      }
+      )}
     </AppBar>
   );
 }
