@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
 import { RecodeListService } from 'src/Services/AnalystData.Services';
@@ -37,7 +36,7 @@ export default function Analyst({ AccountId }) {
 
   return (
     <Box>
-      <Box sx={{ marginY: 2, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ margin: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <CustomButtonGroup
           defaultValue={duration}
           onSelect={(value) => {
@@ -46,27 +45,23 @@ export default function Analyst({ AccountId }) {
         />
       </Box>
 
-      <Card sx={{ marginY: 2 }}>
-        <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
-        {loadingLoader ? (
-          <Box sx={{ display: 'flex', height: '50vh' }}>
-            <Loader />
-          </Box>
-        ) : (
-          <CustomFlowChart graphList={graphList} />
-        )}
-      </Card>
+      <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
+      {loadingLoader ? (
+        <Box sx={{ display: 'flex', height: '50vh' }}>
+          <Loader />
+        </Box>
+      ) : (
+        <CustomFlowChart graphList={graphList} />
+      )}
 
-      <Card>
-        <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
-        {loadingLoader ? (
-          <Box sx={{ display: 'flex', height: '50vh' }}>
-            <Loader />
-          </Box>
-        ) : (
-          <CustomTransactions list={list} />
-        )}
-      </Card>
+      <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
+      {loadingLoader ? (
+        <Box sx={{ display: 'flex', height: '50vh' }}>
+          <Loader />
+        </Box>
+      ) : (
+        <CustomTransactions list={list} />
+      )}
     </Box>
   );
 }

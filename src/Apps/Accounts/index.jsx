@@ -2,7 +2,9 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
+import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -22,7 +24,12 @@ import { AccountActionService, AccountsFetchListService } from 'src/Services/Met
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
+import {
+  CustomAvatar,
+  CustomTabLabel,
+  CustomCheckbox,
+  CustomSearchInput,
+} from 'src/components/CustomComponents';
 
 import { Table, Dropdown } from 'antd';
 
@@ -40,6 +47,8 @@ export default function Index() {
   const [accountsList, setAccountsList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
+
+  const [tabValue, setTabValue] = useState('2');
 
   useEffect(() => {
     if (!displayFlag) {
@@ -308,6 +317,10 @@ export default function Index() {
     setEditObject({});
   };
 
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -328,11 +341,44 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form
-            backAction={showDisplayAction}
-            editObject={editObject}
-            deleteAction={deleteAction}
-          />
+          <>
+            {editObject.AccountId && (
+              <Box sx={{ borderColor: 'divider', marginX: 2 }}>
+                <Tabs
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  disableRipple
+                  value={tabValue}
+                  onChange={handleChange}
+                >
+                  <Tab
+                    label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
+                    value="1"
+                  />
+                  <Tab
+                    label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
+                    value="2"
+                  />
+                  <Tab
+                    label={<CustomTabLabel selectValue={tabValue} label="Performance" value="3" />}
+                    value="3"
+                  />
+                </Tabs>
+              </Box>
+            )}
+
+            {(tabValue === '1' || !editObject.AccountId) && (
+              <Form
+                backAction={showDisplayAction}
+                editObject={editObject}
+                deleteAction={deleteAction}
+              />
+            )}
+
+            {tabValue === '2' && editObject.AccountId && (
+              <AnalystComponent AccountId={editObject.AccountId} />
+            )}
+          </>
         ) : (
           <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
@@ -373,7 +419,6 @@ export default function Index() {
           </Box>
         )}
       </Card>
-      {editObject.AccountId && <AnalystComponent AccountId={editObject.AccountId} />}
     </Box>
   );
 }
