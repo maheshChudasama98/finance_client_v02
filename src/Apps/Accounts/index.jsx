@@ -8,6 +8,7 @@ import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -26,6 +27,7 @@ import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomAvatar,
+  CustomSelect,
   CustomTabLabel,
   CustomCheckbox,
   CustomSearchInput,
@@ -35,6 +37,7 @@ import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
 import AnalystComponent from './Analyst';
+import PerformanceComponent from './Performance';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -119,13 +122,6 @@ export default function Index() {
       align: 'center',
       width: '10%',
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'DeleteAction',
-    //   key: 'DeleteAction',
-    //   align: 'right',
-    //   width: '10%',
-    // },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
@@ -315,11 +311,29 @@ export default function Index() {
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
     setEditObject({});
+    setTabValue('2');
   };
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  const ListCustomList = accountsList.map((item) => (
+    <MenuItem key={item?.AccountId} value={item?.AccountId}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <CustomAvatar
+          iconSize={10}
+          icon={item?.Icon || ''}
+          width={{ xs: 25, md: 25, lg: 25 }}
+          height={{ xs: 25, md: 25, lg: 25 }}
+          bgColor={item?.Color || ''}
+        />
+        <Typography variant="body2" sx={{ mx: 1 }}>
+          {item?.AccountName}
+        </Typography>
+      </Box>
+    </MenuItem>
+  ));
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
@@ -343,27 +357,59 @@ export default function Index() {
         {displayFlag ? (
           <>
             {editObject.AccountId && (
-              <Box sx={{ borderColor: 'divider', marginX: 2 }}>
-                <Tabs
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  disableRipple
-                  value={tabValue}
-                  onChange={handleChange}
+              <Box
+                sx={{
+                  margin: 2,
+                  display: { sm: 'flex', xs: 'inline-block' },
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
                 >
-                  <Tab
-                    label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
-                    value="1"
+                  <Tabs
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    disableRipple
+                    value={tabValue}
+                    onChange={handleChange}
+                  >
+                    <Tab
+                      value="1"
+                      label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
+                    />
+                    <Tab
+                      value="2"
+                      label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
+                    />
+                    <Tab
+                      value="3"
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Performance" value="3" />
+                      }
+                    />
+                  </Tabs>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
+                >
+                  <CustomSelect
+                    valueKey="AccountId"
+                    labelKey="AccountName"
+                    size="small"
+                    menuList={accountsList}
+                    defaultValue={editObject?.AccountId}
+                    callBackAction={selectItemAction}
+                    customMenuList={ListCustomList}
+                    sx={{ width: { xs: 230, md: 230, lg: 230 } }}
                   />
-                  <Tab
-                    label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
-                    value="2"
-                  />
-                  <Tab
-                    label={<CustomTabLabel selectValue={tabValue} label="Performance" value="3" />}
-                    value="3"
-                  />
-                </Tabs>
+                </Box>
               </Box>
             )}
 
@@ -377,6 +423,10 @@ export default function Index() {
 
             {tabValue === '2' && editObject.AccountId && (
               <AnalystComponent AccountId={editObject.AccountId} />
+            )}
+
+            {tabValue === '3' && editObject.AccountId && (
+              <PerformanceComponent AccountId={editObject.AccountId} />
             )}
           </>
         ) : (

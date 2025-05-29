@@ -62,10 +62,10 @@ export default function SubForm({ backAction, editObject, CategoryId , Color }) 
                             spacing={2}
                             sx={{
                                 paddingY: 2,
-                                // paddingX: 2,
+                                paddingX: 2,
                             }}
                         >
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={6}>
                                 <TextFieldForm
                                     formik={props}
                                     label='Category'
@@ -84,7 +84,7 @@ export default function SubForm({ backAction, editObject, CategoryId , Color }) 
                                 />
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={12}>
                                 <TextFieldForm
                                     required={false}
                                     formik={props}

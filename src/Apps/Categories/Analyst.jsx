@@ -2,12 +2,12 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
 import { RecodeListService } from 'src/Services/AnalystData.Services';
 
 import Loader from 'src/components/Loaders/Loader';
+import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomFlowChart,
   CustomButtonGroup,
@@ -37,7 +37,7 @@ export default function Analyst({ CategoryId }) {
 
   return (
     <Box>
-      <Box sx={{ marginY: 2,marginX: 2, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ margin: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <CustomButtonGroup
           defaultValue={duration}
           onSelect={(value) => {
@@ -46,27 +46,25 @@ export default function Analyst({ CategoryId }) {
         />
       </Box>
 
-      <Card sx={{ marginY: 2 }}>
-        <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
-        {loadingLoader ? (
-          <Box sx={{ display: 'flex', height: '50vh' }}>
-            <Loader />
-          </Box>
-        ) : (
-          <CustomFlowChart graphList={graphList} />
-        )}
-      </Card>
+      {loadingLoader ? (
+        <Box sx={{ display: 'flex', height: '50vh' }}>
+          <Loader />
+        </Box>
+      ) : (
+        <>
+          {list && list?.length > 0 ? (
+            <>
+              <CardHeader title="Over View" sx={{ marginBottom: 2 }} />
+              <CustomFlowChart graphList={graphList} />
 
-      <Card>
-        <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
-        {loadingLoader ? (
-          <Box sx={{ display: 'flex', height: '50vh' }}>
-            <Loader />
-          </Box>
-        ) : (
-          <CustomTransactions list={list} />
-        )}
-      </Card>
+              <CardHeader title="Transactions" sx={{ marginBottom: 2 }} />
+              <CustomTransactions list={list} />
+            </>
+          ) : (
+            <DataNotFound />
+          )}
+        </>
+      )}
     </Box>
   );
 }
