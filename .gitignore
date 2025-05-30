@@ -20,9 +20,6 @@ build
 .env
 .env.live
 .env.development
-.env.test.local
-.env.simple
-.env.production.local
 
 # misc
 .DS_Store

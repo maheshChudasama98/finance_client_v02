@@ -141,7 +141,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   {editObject?.AccountId && (
                     <Button
                       variant="contained"
-                      sx={{ marginX: 1 }}
+                      // sx={{ marginX: 1 }}
                       onClick={() => {
                         deleteAction(editObject);
                       }}
@@ -153,7 +153,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   {dirty && (
                     <Button
                       variant="outlined"
-                      sx={{ marginX: 1 }}
+                      sx={{ marginLeft: 1 }}
                       // disabled={!dirty}
                       onClick={() => {
                         resetForm();
@@ -172,6 +172,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       disabled={!dirty}
                       onClick={handleSubmit}
                       color="success"
+                      sx={{ marginLeft: 1 }}
                     >
                       Save
                     </Button>

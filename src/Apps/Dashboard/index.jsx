@@ -3,13 +3,10 @@ import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Unstable_Grid2';
-import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 
-import { formatToINR } from 'src/utils/format-number';
 import { calculatePercentageChange } from 'src/utils/utils';
 
 import { TimeDurationList } from 'src/constance';
@@ -18,15 +15,10 @@ import {
   BalanceFollService,
   TopCategoriesService,
   BalanceOverviewService,
-  TopSubCategoriesService,
 } from 'src/Services/AnalystData.Services';
 
-import Scrollbar from 'src/components/scrollbar';
 import { DateRangePicker } from 'src/components/inputs';
-import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomSelect, CustomAvatar, CustomButtonGroup } from 'src/components/CustomComponents';
-
-import { Table } from 'antd';
+import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import InfoBox from './InfoBox';
 import OverView from './OverView';
@@ -42,7 +34,6 @@ export default function Index() {
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
   const [topTen, setTopTen] = useState([]);
-  const [topTenSubCategories, setTopTenSubCategories] = useState([]);
 
   const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState('WEEK');
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
@@ -77,15 +68,6 @@ export default function Index() {
         }
       })
     );
-
-    dispatch(
-      TopSubCategoriesService({ Duration: 'MONTH' }, (res) => {
-        setCurrentYearBaseLoader(false);
-        if (res.status) {
-          setTopTenSubCategories(res?.data?.list?.[0]?.topTenOut || []);
-        }
-      })
-    );
   }, []);
 
   useEffect(() => {
@@ -108,65 +90,65 @@ export default function Index() {
     );
   }, [cashFlowDuration]);
 
-  const columns = [
-    {
-      title: 'Category Name',
-      dataIndex: 'CategoryName',
-      key: 'CategoryName',
-      width: '70%',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'totalOut',
-      key: 'totalOut',
-      align: 'right',
-      width: '30%',
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: 'Category Name',
+  //     dataIndex: 'CategoryName',
+  //     key: 'CategoryName',
+  //     width: '70%',
+  //   },
+  //   {
+  //     title: 'Amount',
+  //     dataIndex: 'totalOut',
+  //     key: 'totalOut',
+  //     align: 'right',
+  //     width: '30%',
+  //   },
+  // ];
 
-  const tableSetData = topTen.map((item, index) => ({
-    item,
-    key: index,
-    CategoryName: (
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar
-          width={{ xs: 40, md: 40, lg: 40 }}
-          height={{ xs: 40, md: 40, lg: 40 }}
-          iconSize={15}
-          icon={item?.Icon || ''}
-          bgColor={item?.Color || ''}
-        />
-        <Typography variant="light">{item?.CategoryName}</Typography>
-      </Stack>
-    ),
-    totalOut: (
-      <Typography variant="light" color="error">
-        {formatToINR(item?.totalOut) || ''}
-      </Typography>
-    ),
-  }));
+  // const tableSetData = topTen.map((item, index) => ({
+  //   item,
+  //   key: index,
+  //   CategoryName: (
+  //     <Stack direction="row" alignItems="center" spacing={2}>
+  //       <CustomAvatar
+  //         width={{ xs: 40, md: 40, lg: 40 }}
+  //         height={{ xs: 40, md: 40, lg: 40 }}
+  //         iconSize={15}
+  //         icon={item?.Icon || ''}
+  //         bgColor={item?.Color || ''}
+  //       />
+  //       <Typography variant="light">{item?.CategoryName}</Typography>
+  //     </Stack>
+  //   ),
+  //   totalOut: (
+  //     <Typography variant="light" color="error">
+  //       {formatToINR(item?.totalOut) || ''}
+  //     </Typography>
+  //   ),
+  // }));
 
-  const topTenSubCategoriesData = topTenSubCategories.map((item, index) => ({
-    item,
-    key: index,
-    CategoryName: (
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <CustomAvatar
-          width={{ xs: 40, md: 40, lg: 40 }}
-          height={{ xs: 40, md: 40, lg: 40 }}
-          iconSize={15}
-          icon={item?.Icon || ''}
-          bgColor={item?.Color || ''}
-        />
-        <Typography variant="light">{item?.SubCategoryName}</Typography>
-      </Stack>
-    ),
-    totalOut: (
-      <Typography variant="light" color="error">
-        {formatToINR(item?.totalOut) || ''}
-      </Typography>
-    ),
-  }));
+  // const topTenSubCategoriesData = topTenSubCategories.map((item, index) => ({
+  //   item,
+  //   key: index,
+  //   CategoryName: (
+  //     <Stack direction="row" alignItems="center" spacing={2}>
+  //       <CustomAvatar
+  //         width={{ xs: 40, md: 40, lg: 40 }}
+  //         height={{ xs: 40, md: 40, lg: 40 }}
+  //         iconSize={15}
+  //         icon={item?.Icon || ''}
+  //         bgColor={item?.Color || ''}
+  //       />
+  //       <Typography variant="light">{item?.SubCategoryName}</Typography>
+  //     </Stack>
+  //   ),
+  //   totalOut: (
+  //     <Typography variant="light" color="error">
+  //       {formatToINR(item?.totalOut) || ''}
+  //     </Typography>
+  //   ),
+  // }));
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
@@ -432,7 +414,7 @@ export default function Index() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card>
               <CardHeader title="Top Ten Category" />
               <Scrollbar
@@ -486,7 +468,7 @@ export default function Index() {
                 )}
               </Scrollbar>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
     </Box>

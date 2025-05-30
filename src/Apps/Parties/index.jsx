@@ -2,11 +2,12 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
+import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-// import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -22,12 +23,19 @@ import { PartyActionService, PartiesFetchListService } from 'src/Services/Meter.
 import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
-import { CustomAvatar, CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
+import {
+  CustomAvatar,
+  CustomSelect,
+  CustomTabLabel,
+  CustomCheckbox,
+  CustomSearchInput,
+} from 'src/components/CustomComponents';
 
 import { Table, Dropdown } from 'antd';
 
 import Form from './Form';
 import AnalystComponent from './Analyst';
+import PerformanceComponent from './Performance';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -40,6 +48,7 @@ export default function Index() {
   const [getList, setGetList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
+  const [tabValue, setTabValue] = useState('2');
 
   useEffect(() => {
     if (!displayFlag) {
@@ -104,13 +113,6 @@ export default function Index() {
       align: 'center',
       width: '10%',
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'DeleteAction',
-    //   key: 'DeleteAction',
-    //   align: 'right',
-    //   width: '10%',
-    // },
   ];
 
   const tableSetData = getList.map((item, index) => ({
@@ -274,6 +276,7 @@ export default function Index() {
   const showDisplayAction = () => {
     setDisplayFlag(!displayFlag);
     setEditObject({});
+    setTabValue('2');
   };
 
   const selectItemAction = (key) => {
@@ -294,6 +297,10 @@ export default function Index() {
       });
   };
 
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+  
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -314,11 +321,79 @@ export default function Index() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
         {displayFlag ? (
-          <Form
-            backAction={showDisplayAction}
-            editObject={editObject}
-            deleteAction={deleteAction}
-          />
+          <>
+            {editObject.PartyId && (
+              <Box
+                sx={{
+                  margin: 2,
+                  display: { sm: 'flex', xs: 'inline-block' },
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
+                >
+                  <Tabs
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    disableRipple
+                    value={tabValue}
+                    onChange={handleChange}
+                  >
+                    <Tab
+                      value="1"
+                      label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
+                    />
+                    <Tab
+                      value="2"
+                      label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
+                    />
+                    <Tab
+                      value="3"
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Performance" value="3" />
+                      }
+                    />
+                  </Tabs>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
+                >
+                  <CustomSelect
+                    valueKey="PartyId"
+                    labelKey="FullName"
+                    size="small"
+                    menuList={getList}
+                    defaultValue={editObject?.PartyId}
+                    callBackAction={selectItemAction}
+                    sx={{ width: { xs: 230, md: 230, lg: 230 } }}
+                  />
+                </Box>
+              </Box>
+            )}
+
+            {(tabValue === '1' || !editObject.PartyId) && (
+              <Form
+                backAction={showDisplayAction}
+                editObject={editObject}
+                deleteAction={deleteAction}
+              />
+            )}
+
+            {tabValue === '2' && editObject.PartyId && (
+              <AnalystComponent PartyId={editObject.PartyId} />
+            )}
+
+            {tabValue === '3' && editObject.PartyId && (
+              <PerformanceComponent PartyId={editObject.PartyId} />
+            )}
+          </>
         ) : (
           <Box sx={{ borderRadius: 1.3 }}>
             {loadingLoader ? (
@@ -360,8 +435,6 @@ export default function Index() {
           </Box>
         )}
       </Card>
-
-      {editObject.PartyId && <AnalystComponent PartyId={editObject.PartyId} />}
     </Box>
   );
 }

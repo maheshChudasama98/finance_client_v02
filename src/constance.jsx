@@ -101,8 +101,8 @@ export const DurationList = [
 export const CurrencyList = [
   { Key: 'US Dollar (USD)', Value: 'USD' },
   { Key: 'Euro (EUR)', Value: 'EUR' },
-  // { Key: 'British Pound (GBP)', Value: 'GBP' },
   { Key: 'Indian Rupee (INR)', Value: 'INR' },
+  // { Key: 'British Pound (GBP)', Value: 'GBP' },
   // { Key: 'Japanese Yen (JPY)', Value: 'JPY' },
   // { Key: 'Swiss Franc (CHF)', Value: 'CHF' },
   // { Key: 'Canadian Dollar (CAD)', Value: 'CAD' },
