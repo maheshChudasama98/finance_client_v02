@@ -650,6 +650,12 @@ export default function Index() {
                     onChange={handleChange}
                   >
                     <Tab
+                      value="0"
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Category list" value="0" />
+                      }
+                    />
+                    <Tab
                       value="1"
                       label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
                     />
@@ -687,6 +693,19 @@ export default function Index() {
               </Box>
             )}
 
+            {tabValue === '0' && editObject.CategoryId && (
+              <Table
+                className="custom-ant-table"
+                columns={columns}
+                dataSource={tableSetData}
+                pagination={false}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectItemAction(record?.item);
+                  },
+                })}
+              />
+            )}
             {(tabValue === '1' || !editObject.CategoryId) && (
               <Form
                 backAction={showDisplayAction}

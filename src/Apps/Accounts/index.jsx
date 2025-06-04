@@ -378,6 +378,12 @@ export default function Index() {
                     onChange={handleChange}
                   >
                     <Tab
+                      value="0"
+                      label={
+                        <CustomTabLabel selectValue={tabValue} label="Accounts list" value="0" />
+                      }
+                    />
+                    <Tab
                       value="1"
                       label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
                     />
@@ -421,6 +427,20 @@ export default function Index() {
               />
             )}
 
+            {tabValue === '0' && editObject.AccountId && (
+              <Table
+                className="custom-ant-table"
+                columns={columns}
+                dataSource={tableSetData}
+                pagination={false}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectItemAction(record.key);
+                    handleChange(null, '2');
+                  },
+                })}
+              />
+            )}
             {tabValue === '2' && editObject.AccountId && (
               <AnalystComponent AccountId={editObject.AccountId} />
             )}

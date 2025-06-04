@@ -300,7 +300,7 @@ export default function Index() {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
-  
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
@@ -344,6 +344,10 @@ export default function Index() {
                     onChange={handleChange}
                   >
                     <Tab
+                      value="0"
+                      label={<CustomTabLabel selectValue={tabValue} label="Party list" value="0" />}
+                    />
+                    <Tab
                       value="1"
                       label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
                     />
@@ -378,6 +382,21 @@ export default function Index() {
               </Box>
             )}
 
+            {tabValue === '0' && editObject.PartyId && (
+              <Table
+                className="custom-ant-table"
+                columns={columns}
+                dataSource={tableSetData}
+                pagination={false}
+                rowKey={(record) => record.PartyId}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectItemAction(record.key);
+                    handleChange(null, '2');
+                  },
+                })}
+              />
+            )}
             {(tabValue === '1' || !editObject.PartyId) && (
               <Form
                 backAction={showDisplayAction}
