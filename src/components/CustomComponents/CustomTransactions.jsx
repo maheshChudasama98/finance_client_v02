@@ -4,6 +4,7 @@ import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 
 import { fDate } from 'src/utils/format-time';
+import { lightenColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
 import { DataNotFound } from 'src/components/DataNotFound';
@@ -50,6 +51,12 @@ const columns2 = [
     title: 'Date',
     dataIndex: 'Date',
     key: 'Date',
+    width: '10%',
+  },
+  {
+    title: 'Account',
+    dataIndex: 'AccountName',
+    key: 'AccountName',
     width: '10%',
   },
   {
@@ -200,6 +207,19 @@ export const CustomTransactions = ({ list, flag }) => {
     key: item?.AccountId,
     Date: <Typography variant="light">{fDate(item?.Date)}</Typography>,
     Action: ChipFun(item?.Action),
+    AccountName: (
+      <Chip
+        size="small"
+        sx={{
+          fontSize: { xs: 11, md: 12 },
+          borderRadius: 1,
+          fontWeight: 700,
+          color: item?.AccountColor || '#1b925e',
+          backgroundColor: lightenColor(item?.AccountColor || '#00A76F', 0.92),
+        }}
+        label={item?.AccountName || ''}
+      />
+    ),
     Details: (
       <Typography variant="light" className="">
         {item?.Details}
