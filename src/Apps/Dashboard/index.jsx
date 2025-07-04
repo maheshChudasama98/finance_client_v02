@@ -2,12 +2,9 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Unstable_Grid2';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
-import { calculatePercentageChange } from 'src/utils/utils';
 
 import { TimeDurationList } from 'src/constance';
 import {
@@ -15,13 +12,17 @@ import {
   BalanceFollService,
   TopCategoriesService,
   BalanceOverviewService,
+  AccountOverviewService,
 } from 'src/Services/AnalystData.Services';
 
 import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
-import InfoBox from './InfoBox';
 import OverView from './OverView';
+import AccountCards from './AccountCards';
+import QuickInsights from './QuickInsights';
+import LoadingSkeleton from './LoadingSkeleton';
+import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
 
 export default function Index() {
@@ -40,6 +41,8 @@ export default function Index() {
 
   const [cashFlowData, setCashFlowData] = useState([]);
   const [cashFlowDuration, setCashFlowDuration] = useState('Last_Thirty_Days');
+
+  const [accountOverview, setAccountOverview] = useState({});
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -60,6 +63,14 @@ export default function Index() {
   }, [selectedYear]);
 
   useEffect(() => {
+    dispatch(
+      AccountOverviewService({}, (res) => {
+        if (res.status) {
+          setAccountOverview(res.data);
+        }
+      })
+    );
+
     dispatch(
       TopCategoriesService({ Duration: 'MONTH' }, (res) => {
         setCurrentYearBaseLoader(false);
@@ -90,147 +101,75 @@ export default function Index() {
     );
   }, [cashFlowDuration]);
 
-  // const columns = [
-  //   {
-  //     title: 'Category Name',
-  //     dataIndex: 'CategoryName',
-  //     key: 'CategoryName',
-  //     width: '70%',
-  //   },
-  //   {
-  //     title: 'Amount',
-  //     dataIndex: 'totalOut',
-  //     key: 'totalOut',
-  //     align: 'right',
-  //     width: '30%',
-  //   },
-  // ];
-
-  // const tableSetData = topTen.map((item, index) => ({
-  //   item,
-  //   key: index,
-  //   CategoryName: (
-  //     <Stack direction="row" alignItems="center" spacing={2}>
-  //       <CustomAvatar
-  //         width={{ xs: 40, md: 40, lg: 40 }}
-  //         height={{ xs: 40, md: 40, lg: 40 }}
-  //         iconSize={15}
-  //         icon={item?.Icon || ''}
-  //         bgColor={item?.Color || ''}
-  //       />
-  //       <Typography variant="light">{item?.CategoryName}</Typography>
-  //     </Stack>
-  //   ),
-  //   totalOut: (
-  //     <Typography variant="light" color="error">
-  //       {formatToINR(item?.totalOut) || ''}
-  //     </Typography>
-  //   ),
-  // }));
-
-  // const topTenSubCategoriesData = topTenSubCategories.map((item, index) => ({
-  //   item,
-  //   key: index,
-  //   CategoryName: (
-  //     <Stack direction="row" alignItems="center" spacing={2}>
-  //       <CustomAvatar
-  //         width={{ xs: 40, md: 40, lg: 40 }}
-  //         height={{ xs: 40, md: 40, lg: 40 }}
-  //         iconSize={15}
-  //         icon={item?.Icon || ''}
-  //         bgColor={item?.Color || ''}
-  //       />
-  //       <Typography variant="light">{item?.SubCategoryName}</Typography>
-  //     </Stack>
-  //   ),
-  //   totalOut: (
-  //     <Typography variant="light" color="error">
-  //       {formatToINR(item?.totalOut) || ''}
-  //     </Typography>
-  //   ),
-  // }));
-
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Box sx={{ justifyContent: 'space-between', display: 'flex' }}>
-        <Typography variant="h4" sx={{ ml: 2 }} color="text.secondary">
-          Hi, Welcome back 👋
-        </Typography>
-
-        <DateRangePicker
-          label="Select Year"
-          disableFuture
-          views={['year']}
-          openTo="year"
-          format="YYYY"
-          value={selectedYear}
-          onChange={(event) => {
-            setSelectedYear(event);
+    <Container maxWidth="xl" sx={{ py: 3 }}>
+      {/* Header Section */}
+      <Box sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+            mb: 3,
           }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                color: 'text.primary',
+                fontWeight: 600,
+                mb: 0.5,
+              }}
+              variant="h4"
+            >
+              Welcome back 👋
+            </Typography>
+            <Typography color="text.secondary" variant="body2">
+              Here&apos;s what&apos;s happening with your finances today
+            </Typography>
+          </Box>
+
+          <DateRangePicker
+            disableFuture
+            format="YYYY"
+            label="Select Year"
+            onChange={(event) => {
+              setSelectedYear(event);
+            }}
+            openTo="year"
+            value={selectedYear}
+            views={['year']}
+          />
+        </Box>
+
+        {/* Key Metrics Cards */}
+        <DashboardSummary
+          currentYearData={currentYearBaseData}
+          lastYearData={lastYearBaseData}
+          currentMonth={currentMonth}
+          lastMonth={lastMonth}
+          loading={currentYearBaseLoader}
         />
       </Box>
 
-      <Box sx={{ marginTop: 3 }}>
-        <Grid container spacing={2}>
-          {/*  Total Income  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Income"
-              amount={currentYearBaseData?.totalIn || 0}
-              previousValue={
-                calculatePercentageChange(currentMonth?.totalIn, lastMonth?.totalIn) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
+      {/* Quick Insights */}
+      <Box sx={{ mb: 2 }}>
+        <QuickInsights
+          currentMonth={currentMonth}
+          currentYearData={currentYearBaseData}
+          lastMonth={lastMonth}
+          topCategories={topTen}
+        />
+      </Box>
 
-          {/*  Total Expense  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              flag={false}
-              title="Total Expense"
-              amount={currentYearBaseData?.totalOut || 0}
-              previousValue={
-                calculatePercentageChange(currentMonth?.totalOut, lastMonth?.totalOut) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          {/*  Total Investment  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Investment"
-              amount={currentYearBaseData?.totalInvestment || 0}
-              previousValue={
-                calculatePercentageChange(
-                  currentMonth?.totalInvestment,
-                  lastMonth?.totalInvestment
-                ) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          {/*  Total Debit  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Debit"
-              amount={currentYearBaseData?.totalDebit || 0}
-              previousValue={
-                calculatePercentageChange(
-                  currentYearBaseData?.totalDebit,
-                  lastYearBaseData?.totalDebit
-                ) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={12}>
+      {/* Charts Section */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          {/* Balance Overview Chart */}
+          <Grid item xs={12} lg={8}>
             {!currentYearBaseLoader ? (
               <OverView
-                title="Balance overview"
+                title="Balance Overview"
                 height={300}
                 chart={{
                   labels:
@@ -252,6 +191,7 @@ export default function Index() {
                       name: 'Expense',
                       type: 'column',
                       fill: 'solid',
+                      color: '#FFAb00',
                       data:
                         currentYearMonthBaseData?.length > 0
                           ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
@@ -261,16 +201,14 @@ export default function Index() {
                 }}
               />
             ) : (
-              <Card sx={{ p: 2 }}>
-                <Skeleton variant="text" sx={{ fontSize: 20 }} width={250} />
-                <Skeleton variant="rounded" height={330} animation="wave" />
-              </Card>
+              <LoadingSkeleton type="chart" />
             )}
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* Top Categories Chart */}
+          <Grid item xs={12} lg={4}>
             <AppCurrentVisits
-              title="Top 5 Categories"
+              title="Top Categories"
               type="radialBar"
               chart={{
                 series: topTen?.slice(0, 5)?.map((item) => ({
@@ -280,27 +218,36 @@ export default function Index() {
               }}
             />
           </Grid>
+        </Grid>
+      </Box>
 
-          <Grid item xs={12} md={8}>
+      {/* Data Flow and Cash Flow Section */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          {/* Data Flow Chart */}
+          <Grid item xs={12} lg={6}>
             <OverView
-              height={300}
+              height={280}
               title={
                 <Box
                   sx={{
-                    justifyContent: 'space-between',
                     display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography variant="big">Data Flow</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Data Flow
+                  </Typography>
                   <Box>
                     <CustomSelect
-                      valueKey="Key"
+                      callBackAction={(value) => setDataFlowTimeDuration(value)}
+                      defaultValue={dataFlowTimeDuration}
                       labelKey="Value"
+                      menuList={TimeDurationList}
                       size="small"
                       sx={{ width: 120 }}
-                      menuList={TimeDurationList}
-                      defaultValue={dataFlowTimeDuration}
-                      callBackAction={(value) => setDataFlowTimeDuration(value)}
+                      valueKey="Key"
                     />
                   </Box>
                 </Box>
@@ -325,6 +272,7 @@ export default function Index() {
                     name: 'Expense',
                     type: 'area',
                     fill: 'gradient',
+                    color: '#FFAb00',
                     data:
                       dataFlowIncrement?.length > 0
                         ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
@@ -335,25 +283,27 @@ export default function Index() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          {/* Cash Flow Chart */}
+          <Grid item xs={12} lg={6}>
             <OverView
-              height={260}
+              height={280}
               title={
                 <Box
                   sx={{
-                    justifyContent: 'space-between',
                     display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  <Typography variant="big">Cash Flow</Typography>
-                  <Box>
-                    <CustomButtonGroup
-                      defaultValue={cashFlowDuration}
-                      onSelect={(value) => {
-                        setCashFlowDuration(value);
-                      }}
-                    />
-                  </Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Cash Flow
+                  </Typography>
+                  <CustomButtonGroup
+                    defaultValue={cashFlowDuration}
+                    onSelect={(value) => {
+                      setCashFlowDuration(value);
+                    }}
+                  />
                 </Box>
               }
               chart={{
@@ -361,7 +311,7 @@ export default function Index() {
                   cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
                 series: [
                   {
-                    name: ' ',
+                    name: 'Cash Flow',
                     type: 'line',
                     color: '#00A76F',
                     data:
@@ -388,11 +338,16 @@ export default function Index() {
               }}
             />
           </Grid>
+        </Grid>
+      </Box>
 
-          <Grid item xs={12} md={6}>
+      {/* Investment Chart */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={6}>
             <OverView
-              title="Investment"
-              height={260}
+              title="Investment Overview"
+              height={280}
               chart={{
                 labels:
                   currentYearMonthBaseData?.length > 0
@@ -400,10 +355,10 @@ export default function Index() {
                     : [],
                 series: [
                   {
-                    name: '',
+                    name: 'Investment',
                     type: 'column',
                     fill: 'solid',
-                    color: '#00b8d9',
+                    color: '#00B8D9',
                     data:
                       currentYearMonthBaseData?.length > 0
                         ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
@@ -413,65 +368,18 @@ export default function Index() {
               }}
             />
           </Grid>
-
-          {/* <Grid item xs={12} md={6}>
-            <Card>
-              <CardHeader title="Top Ten Category" />
-              <Scrollbar
-                sx={{
-                  height: 310,
-                  '& .simplebar-content': {
-                    height: 310,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                }}
-              >
-                {tableSetData && tableSetData.length > 0 ? (
-                  <Table
-                    dataSource={tableSetData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardHeader title="Top ten sub category" />
-              <Scrollbar
-                sx={{
-                  height: 310,
-                  '& .simplebar-content': {
-                    height: 310,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                }}
-              >
-                {topTenSubCategoriesData && topTenSubCategoriesData.length > 0 ? (
-                  <Table
-                    dataSource={topTenSubCategoriesData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
-            </Card>
-          </Grid> */}
         </Grid>
       </Box>
-    </Box>
+
+      {/* Account Section */}
+      <Box>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <AccountCards accounts={accountOverview.accountSummary} />
+          </Grid>
+        </Grid>
+      </Box>
+    </Container>
   );
 }
 

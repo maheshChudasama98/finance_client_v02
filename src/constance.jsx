@@ -29,12 +29,21 @@ export const AccountTypes = [
 ];
 
 export const TransactionActions = [
-  { key: 'In', value: 'Income' },
-  { key: 'Out', value: 'Expend' },
-  { key: 'From', value: 'Transfer' },
-  { key: 'Investment', value: 'Investment' },
-  { key: 'Credit', value: 'Credit' },
-  { key: 'Debit', value: 'Debit' },
+  { key: 'In', value: 'Income', textColor: '#3A8F2A' },
+  { key: 'Out', value: 'Expend', textColor: '#D92D20' },
+  { key: 'From', value: 'Transfer', textColor: '#FFB703' },
+
+  { key: 'Investment', value: 'Investment', textColor: '#8E44AD' },
+  { key: 'Installment', value: 'Installment', textColor: '#6D28D9' },
+
+  { key: 'Credit', value: 'Credit', textColor: '#0F766E' }, 
+  { key: 'Debit', value: 'Debit', textColor: '#1D4ED8' },
+
+  { key: 'Refund', value: 'Refund Received', textColor: '#15803D' }, 
+  { key: 'Return', value: 'Return Paid', textColor: '#B91C1C' },
+
+  { key: 'Payer', value: 'Paid for Someone', textColor: '#C2410C' }, 
+  { key: 'Buyer', value: 'Paid by Someone', textColor: '#2563EB' },
 ];
 
 // Weather Api

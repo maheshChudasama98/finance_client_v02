@@ -13,101 +13,36 @@ import { lightenColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
+import { TransactionActions } from 'src/constance';
+
 import { CustomAvatar, CustomTooltip } from 'src/components/CustomComponents';
 
 const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) => {
   const styes = {
     fontSize: { xs: 11, md: 12 },
     borderRadius: 1,
-    fontWeight: 700,
+    fontWeight: 600,
   };
 
-  const ChipFun = (status, bg = true) => {
-    switch (status) {
-      case 'In':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['In'])}
-            size="small"
-            sx={{
-              ...styes,
-              // color: bg ? '#1b925e' : (theme) => `${theme?.palette?.grey?.[600]}`,
-              color: '#1b925e',
-              backgroundColor: bg ? '#dbf6e5' : '#FFF',
-            }}
-            label="Income"
-          />
-        );
-      case 'Out':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['Out'])}
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ff5630',
-              backgroundColor: bg ? '#ffe4de' : '#FFF',
-            }}
-            label="Expense"
-          />
-        );
+  const ChipFun = (status) => {
+    const Action = TransactionActions?.find((i) => status === i.key);
 
-      case 'From':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['From'])}
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ba7308',
-              backgroundColor: bg ? '#fff1d6' : '#FFF',
-            }}
-            label="Transfer"
-          />
-        );
-      case 'Investment':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Investment'])}
-            sx={{
-              ...styes,
-              color: '#1877F2',
-              backgroundColor: bg ? '#D0ECFE' : '#FFF',
-            }}
-            label="Investment"
-          />
-        );
-      case 'Debit':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Debit'])}
-            sx={{
-              ...styes,
-              color: '#00B8D9',
-              backgroundColor: bg ? '#CAFDF5' : '#FFF',
-            }}
-            label="Debit"
-          />
-        );
-
-      case 'Credit':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Credit'])}
-            sx={{
-              ...styes,
-              color: '#5119b7',
-              backgroundColor: bg ? '#eddeff' : '#FFF',
-            }}
-            label="Credit"
-          />
-        );
-      default:
-        break;
-    }
+    return (
+      <Chip
+        onClick={() => filterHeader('Actions', Action?.key)}
+        size="small"
+        sx={{
+          ...styes,
+          color: Action?.textColor ? Action?.textColor : '#000',
+          backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.92),
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
+          },
+        }}
+        label={Action?.value || status}
+      />
+    );
   };
 
   const iconSet = (action, icon) => {
@@ -115,13 +50,12 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
       return 'fa-solid fa-right-left';
     }
     if (action === 'Investment') {
-      // return 'fa-solid fa-arrow-up-right-dots';
-      // return 'fa-solid fa-ranking-star';
       return 'fa-solid fa-chart-simple';
     }
-    if (action === 'Debit' || action === 'Credit') {
+    if (action === 'Debit' || action === 'Credit' || action === 'Refund' || action === 'Credit') {
       return 'fa-solid fa-people-arrows';
     }
+
     return icon;
   };
 
@@ -134,6 +68,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     }
     return record?.Action;
   };
+  
   const tooltipString = (record) => {
     const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
 
@@ -153,7 +88,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
             </small>
           </div>
         )}
-        
+
         {record?.Description && (
           <div>
             <small>
@@ -169,14 +104,14 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     <>
       <Box
         sx={{
-          py: { xs: 1.5, md: 2 },
-          px: { xs: 1.5, md: 2.5 },
+          py: { xs: 1.2, md: 2 },
+          px: { xs: 1.2, md: 2.5 },
           backgroundColor: (theme) => `${theme?.palette?.grey?.[100]}`,
         }}
       >
         <Grid container spacing={2} sx={{ alignItems: 'center' }}>
           <Grid xs={6}>
-            <Typography variant="normal" color="text.secondary">
+            <Typography variant="normal" color="text.secondary" sx={{ fontWeight: 500 }}>
               {fDate(item?.date)}
             </Typography>
           </Grid>
@@ -187,7 +122,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
               variant="normal"
               sx={{
                 textAlign: 'end',
-                fontWeight: 600,
+                fontWeight: 700,
                 color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
               }}
             >
@@ -197,12 +132,12 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
         </Grid>
       </Box>
       {item?.records?.map((record, key) => (
-        <Box sx={{ px: { xs: 1.5, md: 2 } }} key={key}>
+        <Box sx={{ px: { xs: 1.2, md: 2 } }} key={key}>
           <Box
             key={key}
             sx={{
               display: { xs: 'none', lg: 'block' },
-              py: isHeader ? 1.5 : 0.8,
+              py: isHeader ? 1.5 : 1,
               borderBottom:
                 item?.records?.length > key + 1
                   ? (theme) => `dashed 1px ${theme?.palette?.grey?.[300]}`
@@ -220,10 +155,10 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
-                  <Typography variant="normal">
+                  <Typography variant="normal" sx={{ fontWeight: 500 }}>
                     {getSubCategoryName(record)}
                     {record?.CategoryDetails?.CategoryName && (
-                      <Typography variant="light" color="text.secondary">
+                      <Typography variant="light" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                         {fText(`${record?.CategoryDetails?.CategoryName}`)}
                       </Typography>
                     )}
@@ -260,6 +195,13 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                           record?.AccountDetails?.Color || '#1b925e',
                           0.92
                         ),
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor: lightenColor(
+                            record?.AccountDetails?.Color || '#1b925e',
+                            0.85
+                          ),
+                        },
                       }}
                       label={record?.AccountDetails?.AccountName}
                     />
@@ -271,7 +213,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 {record?.TransferDetails?.AccountName && (
                   <Chip
                     size="small"
-                    avatar="M"
                     sx={{
                       ...styes,
                       color: record?.TransferDetails?.Color || '#1b925e',
@@ -294,7 +235,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                       iconSize={15}
                       displayName={record?.PartyDetails?.PartyAvatar}
                     />
-                    <Typography variant="light">
+                    <Typography variant="light" sx={{ fontSize: '0.875rem' }}>
                       {fText(`${record?.PartyDetails?.FullName}`)}
                     </Typography>
                   </Stack>
@@ -306,7 +247,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   variant="light"
                   sx={{
                     textAlign: 'end',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
                   }}
                 >
@@ -318,14 +259,19 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 <Stack
                   direction="row"
                   alignItems="end"
-                  spacing={0.5}
+                  spacing={1}
                   sx={{ alignItems: 'end', textAlign: 'end', justifyContent: 'end' }}
                 >
-                  {/* <Button size="small" color="success" onClick={() => editAction(record)}>
-                  <i className="fa-solid fa-info custom-info-icon-css" />
-                  </Button> */}
-
-                  <Button size="small" color="success" onClick={() => editAction(record)}>
+                  <Button 
+                    size="small" 
+                    color="success" 
+                    onClick={() => editAction(record)}
+                    sx={{ 
+                      minWidth: 'auto',
+                      px: 1.5,
+                      fontSize: '0.75rem'
+                    }}
+                  >
                     Edit
                   </Button>
 
@@ -343,6 +289,11 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                           console.error(error);
                         });
                     }}
+                    sx={{ 
+                      minWidth: 'auto',
+                      px: 1.5,
+                      fontSize: '0.75rem'
+                    }}
                   >
                     Delete
                   </Button>
@@ -355,9 +306,13 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
             key={key}
             sx={{
               display: { xs: 'block', lg: 'none' },
-              py: isHeader ? 1.5 : 0.8,
+              py: isHeader ? 1.5 : 1,
               borderBottom: isHeader ? '' : (theme) => `solid 1px ${theme?.palette?.grey?.[200]}`,
               backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: (theme) => `${theme?.palette?.grey?.[50]}`,
+              },
             }}
             onClick={() => editAction(record)}
           >
@@ -365,16 +320,16 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
               <Grid xs={6}>
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CustomAvatar
-                    width={45}
-                    height={45}
-                    iconSize={15}
+                    width={40}
+                    height={40}
+                    iconSize={14}
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
 
-                  <Typography variant="normal">
+                  <Typography variant="normal" sx={{ fontWeight: 500 }}>
                     {record?.SubCategoryDetails?.SubCategoriesName || ''}
-                    <Typography variant="light" color="text.secondary">
+                    <Typography variant="light" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                       {record?.AccountDetails?.AccountName}
                     </Typography>
                   </Typography>
@@ -386,13 +341,13 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   variant="light"
                   sx={{
                     textAlign: 'end',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
                   }}
                 >
                   {formatToINR(record?.AccountAmount)}
 
-                  <Typography fontSize={5} color="text.secondary">
+                  <Typography fontSize={5} color="text.secondary" sx={{ mt: 0.5 }}>
                     {ChipFun(record?.Action, false)}
                   </Typography>
                 </Typography>

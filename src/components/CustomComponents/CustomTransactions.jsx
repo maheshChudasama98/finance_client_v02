@@ -7,9 +7,13 @@ import { fDate } from 'src/utils/format-time';
 import { lightenColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
+import { TransactionActions } from 'src/constance';
+
 import { DataNotFound } from 'src/components/DataNotFound';
 
 import { Table } from 'antd';
+
+import { CustomTooltip } from './CustomTooltip';
 
 const columns = [
   {
@@ -87,97 +91,110 @@ const styes = {
 
 export const CustomTransactions = ({ list, flag }) => {
   const ChipFun = (status, bg = true) => {
-    switch (status) {
-      case 'In':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#1b925e',
-              backgroundColor: bg ? '#dbf6e5' : '#FFF',
-            }}
-            label="Income"
-          />
-        );
-      case 'Out':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ff5630',
-              backgroundColor: bg ? '#ffe4de' : '#FFF',
-            }}
-            label="Expense"
-          />
-        );
+    const Action = TransactionActions?.find((i) => status === i.key);
 
-      case 'From':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ba7308',
-              backgroundColor: bg ? '#fff1d6' : '#FFF',
-            }}
-            label="Transfer"
-          />
-        );
-      case 'Investment':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#1877F2',
-              backgroundColor: bg ? '#D0ECFE' : '#FFF',
-            }}
-            label="Investment"
-          />
-        );
-      case 'To':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ba7308',
-              backgroundColor: bg ? '#fff1d6' : '#FFF',
-            }}
-            label="Transfer"
-          />
-        );
+    return (
+      <Chip
+        size="small"
+        sx={{
+          ...styes,
+          color: Action?.textColor ? Action?.textColor : '#000',
+          backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.92),
+        }}
+        label={Action?.value}
+      />
+    );
+    // switch (status) {
+    //   case 'In':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#1b925e',
+    //           backgroundColor: bg ? '#dbf6e5' : '#FFF',
+    //         }}
+    //         label="Income"
+    //       />
+    //     );
+    //   case 'Out':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#ff5630',
+    //           backgroundColor: bg ? '#ffe4de' : '#FFF',
+    //         }}
+    //         label="Expense"
+    //       />
+    //     );
 
-      case 'Debit':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#00B8D9',
-              backgroundColor: bg ? '#CAFDF5' : '#FFF',
-            }}
-            label="Debit"
-          />
-        );
+    //   case 'From':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#ba7308',
+    //           backgroundColor: bg ? '#fff1d6' : '#FFF',
+    //         }}
+    //         label="Transfer"
+    //       />
+    //     );
+    //   case 'Investment':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#1877F2',
+    //           backgroundColor: bg ? '#D0ECFE' : '#FFF',
+    //         }}
+    //         label="Investment"
+    //       />
+    //     );
+    //   case 'To':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#ba7308',
+    //           backgroundColor: bg ? '#fff1d6' : '#FFF',
+    //         }}
+    //         label="Transfer"
+    //       />
+    //     );
 
-      case 'Credit':
-        return (
-          <Chip
-            size="small"
-            sx={{
-              ...styes,
-              color: '#5119b7',
-              backgroundColor: bg ? '#eddeff' : '#FFF',
-            }}
-            label="Credit"
-          />
-        );
-      default:
-        break;
-    }
+    //   case 'Debit':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#00B8D9',
+    //           backgroundColor: bg ? '#CAFDF5' : '#FFF',
+    //         }}
+    //         label="Debit"
+    //       />
+    //     );
+
+    //   case 'Credit':
+    //     return (
+    //       <Chip
+    //         size="small"
+    //         sx={{
+    //           ...styes,
+    //           color: '#5119b7',
+    //           backgroundColor: bg ? '#eddeff' : '#FFF',
+    //         }}
+    //         label="Credit"
+    //       />
+    //     );
+    //   default:
+    //     break;
+    // }
   };
 
   const tableSetData = list?.map((item, index) => ({
@@ -185,9 +202,11 @@ export const CustomTransactions = ({ list, flag }) => {
     value: item,
     Date: <Typography variant="light">{fDate(item?.Date)}</Typography>,
     Details: (
-      <Typography variant="light" className="">
-        {item?.Details}
-      </Typography>
+      <CustomTooltip label={item?.Description}>
+        <Typography variant="light" className="">
+          {item?.Details}
+        </Typography>
+      </CustomTooltip>
     ),
     Debits: item?.AccountAmount < 0 && (
       <Typography variant="light" sx={{ color: 'red' }}>
@@ -221,8 +240,16 @@ export const CustomTransactions = ({ list, flag }) => {
       />
     ),
     Details: (
-      <Typography variant="light" className="">
-        {item?.Details}
+      <Typography variant="body2" fontSize={13} >
+        <CustomTooltip  Placement="right" label={item?.Description}>
+          {item?.Details}
+          {item?.Description && (
+            <i
+              className="fa-solid fa-info custom-info-icon-css"
+              style={{ fontSize: 6, margin: '0px 8px', padding: '3px 5px' }}
+            />
+          )}
+        </CustomTooltip>
       </Typography>
     ),
     Amount: <Typography variant="light">{formatToINR(item?.Amount) || '-'}</Typography>,

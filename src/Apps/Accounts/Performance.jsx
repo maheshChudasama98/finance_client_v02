@@ -76,11 +76,11 @@ export default function Performance({ AccountId }) {
     key: index,
     value: item,
     child: <CustomTransactions list={item.child} flag />,
-    duration: <Typography variant="normal">{item?.duration}</Typography>,
-    totalIn: <Typography variant="light">{formatToINR(item?.totalIn) || '-'}</Typography>,
-    totalOut: <Typography variant="light">{formatToINR(item?.totalOut) || '-'}</Typography>,
-    totalDebit: <Typography variant="light">{formatToINR(item?.totalDebit) || '-'}</Typography>,
-    totalCredit: <Typography variant="light">{formatToINR(item?.totalCredit) || '-'}</Typography>,
+    duration: <Typography variant="body1" fontSize={15} fontWeight={700}>{item?.duration}</Typography>,
+    totalIn: <Typography variant="light" >{formatToINR(item?.totalIn) || '-'}</Typography>,
+    totalOut: <Typography variant="light" >{formatToINR(item?.totalOut) || '-'}</Typography>,
+    totalDebit: <Typography variant="light" >{formatToINR(item?.totalDebit) || '-'}</Typography>,
+    totalCredit: <Typography variant="light" >{formatToINR(item?.totalCredit) || '-'}</Typography>,
     totalInvestment: (
       <Typography variant="light">{formatToINR(item?.totalInvestment) || '-'}</Typography>
     ),

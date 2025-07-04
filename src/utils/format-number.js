@@ -38,7 +38,7 @@ function result(format, key = '.00') {
 
 export function formatToINR(value) {
   const number = Number(value);
-  if (Number.isNaN(number)) return 'Invalid input';
+  if (Number.isNaN(number)) return '00.00';
 
   const DefaultCurrency = localStorage.getItem('DefaultCurrency') || 'INR';
   const AmountHide = localStorage.getItem('AmountHide');

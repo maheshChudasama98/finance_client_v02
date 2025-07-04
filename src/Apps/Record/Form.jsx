@@ -118,6 +118,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
         } else if (
           values?.Action === 'From' ||
           values?.Action === 'Investment' ||
+          values?.Action === 'Refund' ||
+          values?.Action === 'Return' ||
           values?.Action === 'Credit' ||
           values?.Action === 'Debit'
         ) {
@@ -191,7 +193,9 @@ export default function Index({ backAction, editObject, deleteAction }) {
                 <AutoCompleteSelectMenu
                   formik={props}
                   label={
-                    values?.Action === 'From' || values?.Action === 'Investment'
+                    values?.Action === 'From' ||
+                    values?.Action === 'Investment' ||
+                    values?.Action === 'Installment'
                       ? 'From'
                       : 'Account'
                   }
@@ -273,7 +277,11 @@ export default function Index({ backAction, editObject, deleteAction }) {
                 />
               </Grid>
 
-              {(values?.Action === 'In' || values?.Action === 'Out') && (
+              {(values?.Action === 'In' ||
+                values?.Action === 'Out' ||
+                values?.Action === 'Installment' ||
+                values?.Action === 'Payer' ||
+                values?.Action === 'Buyer') && (
                 <>
                   <Grid item xs={12} md={6}>
                     <AutoCompleteSelectMenu
@@ -418,7 +426,9 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   </Grid>
                 </>
               )}
-              {(values?.Action === 'From' || values?.Action === 'Investment') && (
+              {(values?.Action === 'From' ||
+                values?.Action === 'Investment' ||
+                values?.Action === 'Installment') && (
                 <Grid item xs={12} md={6}>
                   <AutoCompleteSelectMenu
                     formik={props}
@@ -493,7 +503,12 @@ export default function Index({ backAction, editObject, deleteAction }) {
                 </Grid>
               )}
 
-              {(values?.Action === 'Credit' || values?.Action === 'Debit') && (
+              {(values?.Action === 'Credit' ||
+                values?.Action === 'Debit' ||
+                values?.Action === 'Refund' ||
+                values?.Action === 'Return' ||
+                values?.Action === 'Payer' ||
+                values?.Action === 'Buyer') && (
                 <Grid item xs={12} md={6}>
                   <AutoCompleteSelectMenu
                     formik={props}
