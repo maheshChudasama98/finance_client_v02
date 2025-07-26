@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -12,18 +13,17 @@ import {
   BalanceFollService,
   TopCategoriesService,
   BalanceOverviewService,
-  AccountOverviewService,
 } from 'src/Services/AnalystData.Services';
 
 import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import OverView from './OverView';
-import AccountCards from './AccountCards';
 import QuickInsights from './QuickInsights';
 import LoadingSkeleton from './LoadingSkeleton';
 import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
+import MonthlyOverviewPDF from './MonthlyOverviewPDF';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -41,8 +41,7 @@ export default function Index() {
 
   const [cashFlowData, setCashFlowData] = useState([]);
   const [cashFlowDuration, setCashFlowDuration] = useState('Last_Thirty_Days');
-
-  const [accountOverview, setAccountOverview] = useState({});
+  const [downloadFlag, setDownloadFlag] = useState(false);
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -63,14 +62,6 @@ export default function Index() {
   }, [selectedYear]);
 
   useEffect(() => {
-    dispatch(
-      AccountOverviewService({}, (res) => {
-        if (res.status) {
-          setAccountOverview(res.data);
-        }
-      })
-    );
-
     dispatch(
       TopCategoriesService({ Duration: 'MONTH' }, (res) => {
         setCurrentYearBaseLoader(false);
@@ -129,17 +120,28 @@ export default function Index() {
             </Typography>
           </Box>
 
-          <DateRangePicker
-            disableFuture
-            format="YYYY"
-            label="Select Year"
-            onChange={(event) => {
-              setSelectedYear(event);
-            }}
-            openTo="year"
-            value={selectedYear}
-            views={['year']}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<i className="fa-solid fa-download" />}
+              onClick={() => setDownloadFlag(true)}
+              disabled={currentYearBaseLoader}
+            >
+              Download Monthly Overview
+            </Button>
+            <DateRangePicker
+              disableFuture
+              format="YYYY"
+              label="Select Year"
+              onChange={(event) => {
+                setSelectedYear(event);
+              }}
+              openTo="year"
+              value={selectedYear}
+              views={['year']}
+            />
+          </Box>
         </Box>
 
         {/* Key Metrics Cards */}
@@ -371,14 +373,19 @@ export default function Index() {
         </Grid>
       </Box>
 
-      {/* Account Section */}
-      <Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <AccountCards accounts={accountOverview.accountSummary} />
-          </Grid>
-        </Grid>
-      </Box>
+      {/* PDF Download Component */}
+      {downloadFlag && (
+        <MonthlyOverviewPDF
+          currentYearData={currentYearBaseData}
+          lastYearData={lastYearBaseData}
+          currentMonth={currentMonth}
+          lastMonth={lastMonth}
+          currentYearMonthData={currentYearMonthBaseData}
+          topCategories={topTen}
+          selectedYear={selectedYear}
+          setFlag={setDownloadFlag}
+        />
+      )}
     </Container>
   );
 }

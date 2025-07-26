@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -15,13 +16,14 @@ import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { TransactionActions } from 'src/constance';
 
-import { CustomAvatar, CustomTooltip } from 'src/components/CustomComponents';
+import { CustomAvatar } from 'src/components/CustomComponents';
 
 const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) => {
-  const styes = {
-    fontSize: { xs: 11, md: 12 },
+  const chipStyles = {
+    fontSize: { xs: 10, sm: 11},
     borderRadius: 1,
-    fontWeight: 600,
+    fontWeight: 700,
+    // height: { xs: 24, sm: 28 },
   };
 
   const ChipFun = (status) => {
@@ -29,15 +31,15 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
     return (
       <Chip
-        onClick={() => filterHeader('Actions', Action?.key)}
+        // onClick={() => filterHeader('Actions', Action?.key)}
         size="small"
         sx={{
-          ...styes,
+          ...chipStyles,
           color: Action?.textColor ? Action?.textColor : '#000',
-          backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.92),
-          cursor: 'pointer',
+          backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
+          // cursor: 'pointer',
           '&:hover': {
-            backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
+            backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5),
           },
         }}
         label={Action?.value || status}
@@ -55,7 +57,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     if (action === 'Debit' || action === 'Credit' || action === 'Refund' || action === 'Credit') {
       return 'fa-solid fa-people-arrows';
     }
-
     return icon;
   };
 
@@ -68,145 +69,184 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     }
     return record?.Action;
   };
-  
-  const tooltipString = (record) => {
-    const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
 
-    let formattedTags = '';
-    if (tagList.length > 1) {
-      formattedTags = `${tagList.slice(0, -1).join(', ')} and ${tagList.slice(-1)}`;
-    } else if (tagList.length === 1) {
-      formattedTags = tagList[0];
-    }
+  // const tooltipString = (record) => {
+  //   const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
+
+  //   let formattedTags = '';
+  //   if (tagList.length > 1) {
+  //     formattedTags = `${tagList.slice(0, -1).join(', ')} and ${tagList.slice(-1)}`;
+  //   } else if (tagList.length === 1) {
+  //     formattedTags = tagList[0];
+  //   }
+
+  //   return (
+  //     <div>
+  //       {tagList.length > 0 && (
+  //         <div>
+  //           <small>
+  //             <b>Label:</b> {formattedTags}
+  //           </small>
+  //         </div>
+  //       )}
+  //       {record?.Description && (
+  //         <div>
+  //           <small>
+  //             <b>Desc:</b> {record.Description}
+  //           </small>
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
+  const renderTags = (record) => {
+    if (!record?.TagList || record.TagList.length === 0) return null;
 
     return (
-      <div>
-        {tagList.length > 0 && (
-          <div>
-            <small>
-              <b>Label:</b> {formattedTags}
-            </small>
-          </div>
-        )}
+      <Box sx={{ mt: 1.5, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
+        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, mr: 1 }}>
+            Tags:
+          </Typography>
+          {record.TagList.map((tag, index) => (
+            <Chip
+              key={index}
+              size="small"
+              variant="outlined"
+              sx={{
+                fontSize: 10,
+                height: 20,
+                borderRadius: 1,
+                borderColor: 'success.main',
+                color: 'white',
+                backgroundColor: 'success.main',
+              }}
+              label={tag.LabelName}
+            />
+          ))}
+        </Stack>
+      </Box>
+    );
+  };
 
-        {record?.Description && (
-          <div>
-            <small>
-              <b>Desc:</b> {record.Description}
-            </small>
-          </div>
-        )}
-      </div>
+  const renderDescription = (record) => {
+    if (!record?.Description) return null;
+
+    return (
+      <Box sx={{ mt: 1, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+          &ldquo;{record.Description}&rdquo;
+        </Typography>
+      </Box>
     );
   };
 
   return (
-    <>
-      <Box
+    <Box sx={{ mb: 2 }}>
+      {/* Date Header */}
+      <Card
         sx={{
-          py: { xs: 1.2, md: 2 },
-          px: { xs: 1.2, md: 2.5 },
-          backgroundColor: (theme) => `${theme?.palette?.grey?.[100]}`,
+          mb: 1,
+          backgroundColor: (theme) => theme.palette.grey[100],
+          borderRadius: 2,
         }}
       >
-        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-          <Grid xs={6}>
-            <Typography variant="normal" color="text.secondary" sx={{ fontWeight: 500 }}>
-              {fDate(item?.date)}
-            </Typography>
+        <Box sx={{ p: 2 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid xs={6}>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                {fDate(item?.date)}
+              </Typography>
+            </Grid>
+            <Grid xs={6}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  textAlign: 'end',
+                  fontWeight: 700,
+                  color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
+                }}
+              >
+                {formatToINR(item?.dayTotal)}
+              </Typography>
+            </Grid>
           </Grid>
+        </Box>
+      </Card>
 
-          <Grid xs={6}>
-            <Typography
-              color="text.secondary"
-              variant="normal"
-              sx={{
-                textAlign: 'end',
-                fontWeight: 700,
-                color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
-              }}
-            >
-              {formatToINR(item?.dayTotal)}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
+      {/* Transaction Records */}
       {item?.records?.map((record, key) => (
-        <Box sx={{ px: { xs: 1.2, md: 2 } }} key={key}>
-          <Box
-            key={key}
-            sx={{
-              display: { xs: 'none', lg: 'block' },
-              py: isHeader ? 1.5 : 1,
-              borderBottom:
-                item?.records?.length > key + 1
-                  ? (theme) => `dashed 1px ${theme?.palette?.grey?.[300]}`
-                  : '',
-              backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
-            }}
-          >
-            <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+        <Card
+          key={key}
+          sx={{
+            mb: 1,
+            borderRadius: 2,
+            border: 1,
+            borderColor: 'divider',
+            '&:hover': {
+              boxShadow: 2,
+              borderColor: 'success.main',
+            },
+          }}
+        >
+          {/* Desktop View */}
+          <Box sx={{ display: { xs: 'none', lg: 'block' }, p: 2 }}>
+            <Grid container spacing={2} alignItems="center">
               <Grid xs={2.5}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <CustomAvatar
-                    width={45}
-                    height={45}
-                    iconSize={15}
+                    width={40}
+                    height={40}
+                    iconSize={14}
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
-                  <Typography variant="normal" sx={{ fontWeight: 500 }}>
-                    {getSubCategoryName(record)}
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      {getSubCategoryName(record)}
+                    </Typography>
                     {record?.CategoryDetails?.CategoryName && (
-                      <Typography variant="light" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                      <Typography variant="caption" color="text.secondary">
                         {fText(`${record?.CategoryDetails?.CategoryName}`)}
                       </Typography>
                     )}
-                  </Typography>
+                  </Box>
                 </Stack>
               </Grid>
 
-              <Grid
-                xs={1.5}
-                sx={{
-                  alignItems: 'center',
-                  display: 'inline-flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                {ChipFun(record?.Action)}
-                {(record.Description || record?.TagList) && (
-                  <CustomTooltip label={tooltipString(record)} Placement="right">
-                    <i className="fa-solid fa-info custom-info-icon-css" />
-                  </CustomTooltip>
-                )}
+              <Grid xs={1.5}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {ChipFun(record?.Action)}
+                  {/* {(record.Description || record?.TagList) && (
+                    <CustomTooltip label={tooltipString(record)} Placement="top">
+                      <i
+                        className="fa-solid fa-info"
+                        style={{ fontSize: 12, color: 'text.secondary' }}
+                      />
+                    </CustomTooltip>
+                  )} */}
+                </Stack>
               </Grid>
 
               <Grid xs={1.5}>
-                <Typography variant="light">
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Chip
-                      onClick={() => filterHeader('AccountsIds', [record?.AccountId])}
-                      size="small"
-                      sx={{
-                        ...styes,
-                        color: record?.AccountDetails?.Color || '#1b925e',
-                        backgroundColor: lightenColor(
-                          record?.AccountDetails?.Color || '#1b925e',
-                          0.92
-                        ),
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: lightenColor(
-                            record?.AccountDetails?.Color || '#1b925e',
-                            0.85
-                          ),
-                        },
-                      }}
-                      label={record?.AccountDetails?.AccountName}
-                    />
-                  </Stack>
-                </Typography>
+                <Chip
+                  onClick={() => filterHeader('AccountsIds', [record?.AccountId])}
+                  size="small"
+                  sx={{
+                    ...chipStyles,
+                    color: record?.AccountDetails?.Color || '#1b925e',
+                    backgroundColor: lightenColor(record?.AccountDetails?.Color || '#1b925e', 0.85),
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: lightenColor(
+                        record?.AccountDetails?.Color || '#1b925e',
+                        0.85
+                      ),
+                    },
+                  }}
+                  label={record?.AccountDetails?.AccountName}
+                />
               </Grid>
 
               <Grid xs={1.5}>
@@ -214,7 +254,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   <Chip
                     size="small"
                     sx={{
-                      ...styes,
+                      ...chipStyles,
                       color: record?.TransferDetails?.Color || '#1b925e',
                       backgroundColor: lightenColor(
                         record?.TransferDetails?.Color || '#00A76F',
@@ -228,14 +268,14 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
               <Grid xs={1.5}>
                 {record?.PartyDetails?.FullName && (
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  <Stack direction="row" alignItems="center" spacing={1}>
                     <CustomAvatar
                       width={45}
                       height={45}
                       iconSize={15}
                       displayName={record?.PartyDetails?.PartyAvatar}
                     />
-                    <Typography variant="light" sx={{ fontSize: '0.875rem' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>
                       {fText(`${record?.PartyDetails?.FullName}`)}
                     </Typography>
                   </Stack>
@@ -244,7 +284,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
               <Grid xs={1.5}>
                 <Typography
-                  variant="light"
+                  variant="subtitle2"
                   sx={{
                     textAlign: 'end',
                     fontWeight: 700,
@@ -255,21 +295,17 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 </Typography>
               </Grid>
 
-              <Grid xs={2} sx={{ alignItems: 'end', textAlign: 'end', justifyContent: 'end' }}>
-                <Stack
-                  direction="row"
-                  alignItems="end"
-                  spacing={1}
-                  sx={{ alignItems: 'end', textAlign: 'end', justifyContent: 'end' }}
-                >
-                  <Button 
-                    size="small" 
-                    color="success" 
+              <Grid xs={2}>
+                <Stack direction="row" spacing={1} justifyContent="flex-end">
+                  <Button
+                    size="small"
+                    color="success"
+                    // variant="outlined"
                     onClick={() => editAction(record)}
-                    sx={{ 
+                    sx={{
                       minWidth: 'auto',
                       px: 1.5,
-                      fontSize: '0.75rem'
+                      fontSize: '0.75rem',
                     }}
                   >
                     Edit
@@ -289,10 +325,10 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                           console.error(error);
                         });
                     }}
-                    sx={{ 
+                    sx={{
                       minWidth: 'auto',
                       px: 1.5,
-                      fontSize: '0.75rem'
+                      fontSize: '0.75rem',
                     }}
                   >
                     Delete
@@ -300,25 +336,68 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 </Stack>
               </Grid>
             </Grid>
+
+            {/* Tags and Description for Desktop */}
+            {(record?.TagList?.length > 0 || record?.Description) && (
+              <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                <Grid container spacing={2}>
+                  {record?.TagList?.length > 0 && (
+                    <Grid xs={6}>
+                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Tags:
+                        </Typography>
+                        {record.TagList.map((tag, index) => (
+                          <Chip
+                            key={index}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: 10,
+                              height: 20,
+                              borderRadius: 1,
+                              borderColor: 'success.main',
+                              color: 'white',
+                              backgroundColor: 'success.main',
+                            }}
+                            label={tag.LabelName}
+                          />
+                        ))}
+                      </Stack>
+                    </Grid>
+                  )}
+                  {record?.Description && (
+                    <Grid xs={record?.TagList?.length > 0 ? 6 : 12}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontStyle: 'italic' }}
+                      >
+                        &ldquo;{record.Description}&rdquo;
+                      </Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
+            )}
           </Box>
 
+          {/* Mobile View */}
           <Box
-            key={key}
             sx={{
               display: { xs: 'block', lg: 'none' },
-              py: isHeader ? 1.5 : 1,
-              borderBottom: isHeader ? '' : (theme) => `solid 1px ${theme?.palette?.grey?.[200]}`,
-              backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
+              p: 2,
               cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: (theme) => `${theme?.palette?.grey?.[50]}`,
-              },
             }}
             onClick={() => editAction(record)}
           >
-            <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-              <Grid xs={6}>
-                <Stack direction="row" alignItems="center" spacing={1}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid xs={8}>
+                <Stack direction="row" alignItems="center" spacing={2}>
                   <CustomAvatar
                     width={40}
                     height={40}
@@ -326,37 +405,65 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
-
-                  <Typography variant="normal" sx={{ fontWeight: 500 }}>
-                    {record?.SubCategoryDetails?.SubCategoriesName || ''}
-                    <Typography variant="light" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                      {record?.AccountDetails?.AccountName}
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                      {getSubCategoryName(record)}
                     </Typography>
-                  </Typography>
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                      {ChipFun(record?.Action)}
+                      {record?.AccountDetails?.AccountName && (
+                        <Chip
+                          size="small"
+                          sx={{
+                            fontSize: 10,
+                            height: 20,
+                            color: record?.AccountDetails?.Color || '#1b925e',
+                            backgroundColor: lightenColor(
+                              record?.AccountDetails?.Color || '#1b925e',
+                              0.92
+                            ),
+                          }}
+                          label={record?.AccountDetails?.AccountName}
+                        />
+                      )}
+                    </Stack>
+                  </Box>
                 </Stack>
               </Grid>
 
-              <Grid xs={6}>
-                <Typography
-                  variant="light"
-                  sx={{
-                    textAlign: 'end',
-                    fontWeight: 700,
-                    color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
-                  }}
-                >
-                  {formatToINR(record?.AccountAmount)}
-
-                  <Typography fontSize={5} color="text.secondary" sx={{ mt: 0.5 }}>
-                    {ChipFun(record?.Action, false)}
+              <Grid xs={4}>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 700,
+                      color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
+                      mb: 0.5,
+                    }}
+                  >
+                    {formatToINR(record?.AccountAmount)}
                   </Typography>
-                </Typography>
+                  {record?.PartyDetails?.FullName && (
+                    <Typography variant="caption" color="text.secondary">
+                      {fText(`${record?.PartyDetails?.FullName}`)}
+                    </Typography>
+                  )}
+                </Box>
               </Grid>
             </Grid>
+
+            {/* Tags and Description for Mobile */}
+            {(record?.TagList?.length > 0 || record?.Description) && (
+              <Box sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
+                {renderTags(record)}
+                {renderDescription(record)}
+              </Box>
+            )}
           </Box>
-        </Box>
+        </Card>
       ))}
-    </>
+    </Box>
   );
 };
+
 export default RecordList;

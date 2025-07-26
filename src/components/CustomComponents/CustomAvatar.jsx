@@ -49,16 +49,16 @@ export const CustomAvatar = ({
       onClick={handleOpen}
       sx={{
         ...buttonSize,
-        background: (theme) => (borderDashed !== true ? alpha(theme.palette.grey[900], 0.08) : ''),
-        border: (theme) => (borderDashed === true ? `dashed 1px ${theme.palette.grey[400]}` : ''),
-        ...(open && {
-          background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
-        }),
-        ...(error && {
-          background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
-        }),
+        // background: (theme) => (borderDashed !== true ? alpha(theme.palette.grey[900], 0.08) : ''),
+        // border: (theme) => (borderDashed === true ? `dashed 1px ${theme.palette.grey[400]}` : ''),
+        // ...(open && {
+        //   background: (theme) =>
+        //     `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
+        // }),
+        // ...(error && {
+        //   background: (theme) =>
+        //     `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
+        // }),
       }}
     >
       <Avatar
@@ -66,7 +66,7 @@ export const CustomAvatar = ({
         alt={displayName}
         sx={{
           ...avatarSize,
-          border: (theme) => `solid 2px ${theme.palette.background.default}`,
+          // border: (theme) => `solid 2px ${theme.palette.background.default}`,
           background: (theme) =>
             borderDashed !== true ? alpha(bgColor || theme.palette.primary.main, 0.8) : '',
         }}
