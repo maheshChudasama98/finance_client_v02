@@ -19,7 +19,9 @@ import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import OverView from './OverView';
+import AccountList from './AccountList';
 import QuickInsights from './QuickInsights';
+import GrowthRateChart from './GrowthRateChart';
 import LoadingSkeleton from './LoadingSkeleton';
 import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
@@ -27,21 +29,27 @@ import MonthlyOverviewPDF from './MonthlyOverviewPDF';
 
 export default function Index() {
   const dispatch = useDispatch();
-  const [selectedYear, setSelectedYear] = useState(new Date());
-  const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
-  const [currentYearBaseData, setCurrentYearBaseData] = useState({});
-  const [lastYearBaseData, setLastYearBaseData] = useState({});
-  const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
+
+  const DefaultTimeFrame = localStorage.getItem('DefaultTimeFrame');
+  const DefaultDuration = localStorage.getItem('DefaultDuration');
+
+  const [topTen, setTopTen] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
-  const [topTen, setTopTen] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(new Date());
+  const [lastYearBaseData, setLastYearBaseData] = useState({});
+  const [currentYearBaseData, setCurrentYearBaseData] = useState({});
+  const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
+  const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
 
-  const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState('WEEK');
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
+  const [dataFlowTimeDurationLoader, setDataFlowTimeDurationLoader] = useState(true);
+  const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState(DefaultTimeFrame || 'WEEK');
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  const [cashFlowDuration, setCashFlowDuration] = useState('Last_Thirty_Days');
   const [downloadFlag, setDownloadFlag] = useState(false);
+  const [cashFlowDurationLoader, setCashFlowDurationLoader] = useState(true);
+  const [cashFlowDuration, setCashFlowDuration] = useState(DefaultDuration || 'Last_Thirty_Days');
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -73,8 +81,10 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    setDataFlowTimeDurationLoader(true);
     dispatch(
       BalanceOverviewService({ Duration: dataFlowTimeDuration }, (res) => {
+        setDataFlowTimeDurationLoader(false);
         if (res.status) {
           setDataFlowIncrement(res?.data?.increment);
         }
@@ -83,8 +93,10 @@ export default function Index() {
   }, [dataFlowTimeDuration]);
 
   useEffect(() => {
+    setCashFlowDurationLoader(true);
     dispatch(
       BalanceFollService({ Duration: cashFlowDuration }, (res) => {
+        setCashFlowDurationLoader(false);
         if (res.status) {
           setCashFlowData(res?.data);
         }
@@ -99,7 +111,7 @@ export default function Index() {
         <Box
           sx={{
             alignItems: 'center',
-            display: 'flex',
+            display: { md: 'flex', xs: 'block' },
             justifyContent: 'space-between',
             mb: 3,
           }}
@@ -120,7 +132,7 @@ export default function Index() {
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: { xs: 3, md: 0 } }}>
             <Button
               variant="contained"
               color="success"
@@ -128,7 +140,7 @@ export default function Index() {
               onClick={() => setDownloadFlag(true)}
               disabled={currentYearBaseLoader}
             >
-              Download Monthly Overview
+              Download
             </Button>
             <DateRangePicker
               disableFuture
@@ -152,6 +164,11 @@ export default function Index() {
           lastMonth={lastMonth}
           loading={currentYearBaseLoader}
         />
+      </Box>
+      
+      {/* Account List Section */}
+      <Box sx={{ mb: 2 }}>
+        <AccountList />
       </Box>
 
       {/* Quick Insights */}
@@ -200,6 +217,11 @@ export default function Index() {
                           : [],
                     },
                   ],
+                  options: {
+                    stroke: {
+                      width: [1],
+                    },
+                  },
                 }}
               />
             ) : (
@@ -226,119 +248,157 @@ export default function Index() {
       {/* Data Flow and Cash Flow Section */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={3}>
-          {/* Data Flow Chart */}
           <Grid item xs={12} lg={6}>
-            <OverView
-              height={280}
-              title={
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Data Flow
-                  </Typography>
-                  <Box>
-                    <CustomSelect
-                      callBackAction={(value) => setDataFlowTimeDuration(value)}
-                      defaultValue={dataFlowTimeDuration}
-                      labelKey="Value"
-                      menuList={TimeDurationList}
-                      size="small"
-                      sx={{ width: 120 }}
-                      valueKey="Key"
-                    />
+            {dataFlowTimeDurationLoader ? (
+              <LoadingSkeleton type="chart" />
+            ) : (
+              <OverView
+                height={280}
+                title={
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Data Flow
+                    </Typography>
+                    <Box>
+                      <CustomSelect
+                        callBackAction={(value) => setDataFlowTimeDuration(value)}
+                        defaultValue={dataFlowTimeDuration}
+                        labelKey="Value"
+                        menuList={TimeDurationList}
+                        size="small"
+                        sx={{ width: 120 }}
+                        valueKey="Key"
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              }
-              chart={{
-                labels:
-                  dataFlowIncrement?.length > 0
-                    ? dataFlowIncrement?.map((item, key) => item?.duration)
-                    : [],
-                series: [
-                  {
-                    name: 'Income',
-                    type: 'area',
-                    fill: 'gradient',
-                    color: '#00A76F',
-                    data:
-                      dataFlowIncrement?.length > 0
-                        ? dataFlowIncrement?.map((item, key) => item?.totalIn || 0)
-                        : [],
-                  },
-                  {
-                    name: 'Expense',
-                    type: 'area',
-                    fill: 'gradient',
-                    color: '#FFAb00',
-                    data:
-                      dataFlowIncrement?.length > 0
-                        ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
-                        : [],
-                  },
-                ],
-              }}
-            />
+                }
+                chart={{
+                  labels:
+                    dataFlowIncrement?.length > 0
+                      ? dataFlowIncrement?.map((item, key) => item?.duration)
+                      : [],
+                  series: [
+                    {
+                      name: 'Income',
+                      type: 'area',
+                      fill: 'gradient',
+                      color: '#00A76F',
+                      data:
+                        dataFlowIncrement?.length > 0
+                          ? dataFlowIncrement?.map((item, key) => item?.totalIn || 0)
+                          : [],
+                    },
+                    {
+                      name: 'Expense',
+                      type: 'area',
+                      fill: 'gradient',
+                      color: '#FFAb00',
+                      data:
+                        dataFlowIncrement?.length > 0
+                          ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
+                          : [],
+                    },
+                  ],
+                }}
+              />
+            )}
           </Grid>
 
           {/* Cash Flow Chart */}
           <Grid item xs={12} lg={6}>
-            <OverView
-              height={280}
-              title={
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Cash Flow
-                  </Typography>
-                  <CustomButtonGroup
-                    defaultValue={cashFlowDuration}
-                    onSelect={(value) => {
-                      setCashFlowDuration(value);
+            {cashFlowDurationLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <OverView
+                height={280}
+                title={
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}
-                  />
-                </Box>
-              }
-              chart={{
-                labels:
-                  cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
-                series: [
-                  {
-                    name: 'Cash Flow',
-                    type: 'line',
-                    color: '#00A76F',
-                    data:
-                      cashFlowData?.length > 0
-                        ? cashFlowData?.map((item, key) => item?.Count || 0)
-                        : [],
-                  },
-                ],
-                options: {
-                  xaxis: {
-                    labels: {
-                      show: false,
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Cash Flow
+                    </Typography>
+                    <CustomButtonGroup
+                      defaultValue={cashFlowDuration}
+                      onSelect={(value) => {
+                        setCashFlowDuration(value);
+                      }}
+                    />
+                  </Box>
+                }
+                chart={{
+                  labels:
+                    cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
+                  series: [
+                    {
+                      name: 'Cash Flow',
+                      type: 'line',
+                      color: '#00A76F',
+                      data:
+                        cashFlowData?.length > 0
+                          ? cashFlowData?.map((item, key) => item?.Count || 0)
+                          : [],
+                    },
+                  ],
+                  options: {
+                    chart: {
+                      zoom: { enabled: true },
+                    },
+                    dataLabels: {
+                      enabled: true,
+                      formatter: (val, opts) => {
+                        if (
+                          opts.dataPointIndex === Number((cashFlowData?.length || 0) - 1) ||
+                          null
+                        ) {
+                          return val?.toLocaleString('en-IN');
+                        }
+                        return '';
+                      },
+                      // style: {
+                      //   colors: ['#ffffff'],
+                      //   fontSize: '12px',
+                      //   fontWeight: 'bold',
+                      // },
+                      // background: {
+                      //   enabled: true,
+                      //   foreColor: '#00A76F',
+                      //   borderRadius: 4,
+                      //   padding: 6,
+                      // },
+                      offsetY: -10,
+                      offsetX: -10,
+                    },
+                    // markers: {
+                    //   hover: {
+                    //     sizeOffset: 4,
+                    //   },
+                    //   size: 4,
+                    // },
+                    xaxis: {
+                      labels: {
+                        show: false,
+                      },
+                    },
+                    yaxis: {
+                      labels: {
+                        show: false,
+                      },
                     },
                   },
-                  yaxis: {
-                    labels: {
-                      show: false,
-                    },
-                  },
-                  chart: {
-                    zoom: { enabled: true },
-                  },
-                },
-              }}
-            />
+                }}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
@@ -369,6 +429,11 @@ export default function Index() {
                 ],
               }}
             />
+          </Grid>
+
+          {/* Growth Rate Chart */}
+          <Grid item xs={12} lg={6}>
+            <GrowthRateChart monthlyData={currentYearMonthBaseData} title="Monthly Growth Rate" />
           </Grid>
         </Grid>
       </Box>

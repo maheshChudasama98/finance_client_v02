@@ -129,6 +129,9 @@ export default function AccountPopover() {
         <MenuItem sx={{ m: 0, py: 1.5 }} onClick={() => navigate('/change-password')}>
           Change Password
         </MenuItem>
+        <MenuItem sx={{ m: 0, py: 1.5 }} onClick={() => navigate('/finance-calculator')}>
+          Finance Calculator
+        </MenuItem>
         <Divider sx={{ borderStyle: 'dashed', m: 0, p: 0 }} />
 
         {/* <Divider sx={{ borderStyle: 'dashed', m: 0 }} /> */}

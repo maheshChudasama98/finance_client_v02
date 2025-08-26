@@ -22,6 +22,7 @@ export const CustomAvatar = ({
   width = { xs: 40, md: 45, lg: 56 }, // default width
   height = { xs: 40, md: 45, lg: 56 }, // default height
   borderDashed = false,
+  iconColor = '#ffffff',
   ...props
 }) => {
   // Calculate the size for IconButton and Avatar
@@ -66,7 +67,7 @@ export const CustomAvatar = ({
         alt={displayName}
         sx={{
           ...avatarSize,
-          // border: (theme) => `solid 2px ${theme.palette.background.default}`,
+          border: (theme) => `solid 2px ${theme.palette.background.default}`,
           background: (theme) =>
             borderDashed !== true ? alpha(bgColor || theme.palette.primary.main, 0.8) : '',
         }}
@@ -75,7 +76,9 @@ export const CustomAvatar = ({
         {!icon && displayName && (
           <Typography variant="light">{displayName?.toUpperCase()}</Typography>
         )}
-        {icon && <i className={icon} style={{ fontSize: iconSize }} />}
+        {icon && (
+          <i className={icon} style={{ fontSize: iconSize, color: iconColor || '#ffffff' }} />
+        )}
       </Avatar>
     </IconButton>
   );

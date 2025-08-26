@@ -28,21 +28,45 @@ export const AccountTypes = [
   { key: 6, value: 'Emergency Fund' },
 ];
 
+export const LoanTypes = [
+  { key: 'personal_loan', value: 'Personal Loan' },
+  { key: 'home_loan', value: 'Home Loan' },
+  { key: 'car_loan', value: 'Car Loan' },
+  { key: 'education_loan', value: 'Education Loan' },
+  { key: 'business_loan', value: 'Business Loan' },
+  { key: 'gold_loan', value: 'Gold Loan' },
+  { key: 'mortgage_loan', value: 'Mortgage Loan' },
+  { key: 'payday_loan', value: 'Payday Loan' },
+];
+
+export const LoanStatus = [
+  { key: 'Pending', value: 'Pending' },
+  { key: 'Ongoing', value: 'Ongoing' },
+  { key: 'Completed', value: 'Completed' },
+  { key: 'Overdue', value: 'Overdue' },
+];
+
+export const LoanRepaymentFrequency = [
+  { key: 'Monthly', value: 'Monthly' },
+  { key: 'Weekly', value: 'Weekly' },
+  { key: 'Yearly', value: 'Yearly' },
+];
+
 export const TransactionActions = [
   { key: 'In', value: 'Income', textColor: '#3A8F2A' },
   { key: 'Out', value: 'Expend', textColor: '#D92D20' },
   { key: 'From', value: 'Transfer', textColor: '#FFB703' },
 
   { key: 'Investment', value: 'Investment', textColor: '#8E44AD' },
-  { key: 'Installment', value: 'Installment', textColor: '#6D28D9' },
+  { key: 'Installment', value: 'EMI', textColor: '#6D28D9' },
 
-  { key: 'Credit', value: 'Credit', textColor: '#0F766E' }, 
+  { key: 'Credit', value: 'Credit', textColor: '#0F766E' },
   { key: 'Debit', value: 'Debit', textColor: '#1D4ED8' },
 
-  { key: 'Refund', value: 'Refund Received', textColor: '#15803D' }, 
+  { key: 'Refund', value: 'Refund Received', textColor: '#15803D' },
   { key: 'Return', value: 'Return Paid', textColor: '#B91C1C' },
 
-  { key: 'Payer', value: 'Paid for Someone', textColor: '#C2410C' }, 
+  { key: 'Payer', value: 'Paid for Someone', textColor: '#C2410C' },
   { key: 'Buyer', value: 'Paid by Someone', textColor: '#2563EB' },
 ];
 
@@ -69,11 +93,10 @@ export const TimeDurationList = [
 export const SettingDurationList = [
   { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },
   { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
-  { Key: 'This Week', Value: 'This_Week' },
-  { Key: 'This Month', Value: 'This_Month' },
   { Key: 'Last 6 Months', Value: 'Six_Month' },
   { Key: 'This Year', Value: 'This_Year' },
   { Key: 'Last 5 Years', Value: 'Last_Five_Year' },
+  { Key: 'All', Value: 'All' },
 ];
 
 export const ButtonGroupDurationList = [
@@ -86,12 +109,48 @@ export const ButtonGroupDurationList = [
 ];
 
 export const DateFormatList = [
-  { Key: 'DD/MM/YYYY', Value: 'DD/MM/YYYY' },
-  { Key: 'MM/DD/YYYY', Value: 'MM/DD/YYYY' },
-  { Key: 'YYYY/MM/DD', Value: 'YYYY/MM/DD' },
-  { Key: 'DD-MM-YYYY', Value: 'DD-MM-YYYY' },
-  { Key: 'MM-DD-YYYY', Value: 'MM-DD-YYYY' },
-  { Key: 'YYYY-MM-DD', Value: 'YYYY-MM-DD' },
+  // Slash formats
+  { Key: 'DD/MM/YYYY', Value: '01/12/2000' },
+  { Key: 'MM/DD/YYYY', Value: '12/01/2000' },
+  { Key: 'YYYY/MM/DD', Value: '2000/12/01' },
+
+  // Dash formats
+  { Key: 'DD-MM-YYYY', Value: '01-12-2000' },
+  { Key: 'MM-DD-YYYY', Value: '12-01-2000' },
+  { Key: 'YYYY-MM-DD', Value: '2000-12-01' },
+
+  // Dot formats
+  { Key: 'DD.MM.YYYY', Value: '01.12.2000' },
+  { Key: 'MM.DD.YYYY', Value: '12.01.2000' },
+  { Key: 'YYYY.MM.DD', Value: '2000.12.01' },
+
+  // Space-separated
+  { Key: 'DD MM YYYY', Value: '01 12 2000' },
+  { Key: 'MM DD YYYY', Value: '12 01 2000' },
+  { Key: 'YYYY MM DD', Value: '2000 12 01' },
+
+  // Month as short name (MMM)
+  { Key: 'DD-MMM-YYYY', Value: '01-Jun-2000' },
+  { Key: 'MMM-DD-YYYY', Value: 'Jun-01-2000' },
+  { Key: 'YYYY-MMM-DD', Value: '2000-Jun-01' },
+
+  { Key: 'DD/MMM/YYYY', Value: '01/Jun/2000' },
+  { Key: 'MMM/DD/YYYY', Value: 'Jun/01/2000' },
+  { Key: 'YYYY/MMM/DD', Value: '2000/Jun/01' },
+
+  // Month as full name (MMMM)
+  { Key: 'DD-MMM-YYYY', Value: '01-Jun-2000' },
+  { Key: 'MMM-DD-YYYY', Value: 'Jun-01-2000' },
+  { Key: 'YYYY-MMM-DD', Value: '2000-Jun-01' },
+
+  { Key: 'DD/MMM/YYYY', Value: '01/Jun/2000' },
+  { Key: 'MMM/DD/YYYY', Value: 'Jun/01/2000' },
+  { Key: 'YYYY/MMM/DD', Value: '2000/Jun/01' },
+
+  // With year first + month name
+  { Key: 'YYYY MMM DD', Value: '2000 Jun 01' },
+  { Key: 'YYYY MMMM DD', Value: '2000 June 01' },
+  { Key: 'DD MMM YYYY ', Value: '01 Jun 2000 ' },
 ];
 
 export const DurationList = [
@@ -111,13 +170,13 @@ export const CurrencyList = [
   { Key: 'US Dollar (USD)', Value: 'USD' },
   { Key: 'Euro (EUR)', Value: 'EUR' },
   { Key: 'Indian Rupee (INR)', Value: 'INR' },
-  // { Key: 'British Pound (GBP)', Value: 'GBP' },
-  // { Key: 'Japanese Yen (JPY)', Value: 'JPY' },
-  // { Key: 'Swiss Franc (CHF)', Value: 'CHF' },
-  // { Key: 'Canadian Dollar (CAD)', Value: 'CAD' },
-  // { Key: 'Australian Dollar (AUD)', Value: 'AUD' },
-  // { Key: 'Chinese Yuan (CNY)', Value: 'CNY' },
-  // { Key: 'Singapore Dollar (SGD)', Value: 'SGD' },
-  // { Key: 'UAE Dirham (AED)', Value: 'AED' },
-  // { Key: 'Russian Ruble (RUB)', Value: 'RUB' },
+  { Key: 'British Pound (GBP)', Value: 'GBP' },
+  { Key: 'Japanese Yen (JPY)', Value: 'JPY' },
+  { Key: 'Swiss Franc (CHF)', Value: 'CHF' },
+  { Key: 'Canadian Dollar (CAD)', Value: 'CAD' },
+  { Key: 'Australian Dollar (AUD)', Value: 'AUD' },
+  { Key: 'Chinese Yuan (CNY)', Value: 'CNY' },
+  { Key: 'Singapore Dollar (SGD)', Value: 'SGD' },
+  { Key: 'UAE Dirham (AED)', Value: 'AED' },
+  { Key: 'Russian Ruble (RUB)', Value: 'RUB' },
 ];

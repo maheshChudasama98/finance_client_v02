@@ -260,7 +260,13 @@ const Pages = ({ details }) => {
       <Page size="A4" style={styles.page}>
         {/* PDF Header */}
         <View style={styles.header} fixed>
-          <Image style={styles.logo} src={`${ImgUrl}${details?.SelectBranch?.ImgPath}`} />
+          {details?.SelectBranch?.ImgPath && 
+           details?.SelectBranch?.ImgPath.trim() !== '' && 
+           /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(details?.SelectBranch?.ImgPath) ? (
+            <Image style={styles.logo} src={`${ImgUrl}${details?.SelectBranch?.ImgPath}`} />
+          ) : (
+            <View style={styles.logo} />
+          )}
 
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={styles.headerText}>{details?.SelectOrg?.OrgName}</Text>
@@ -277,8 +283,9 @@ const Pages = ({ details }) => {
           </View>
 
           <View style={styles.br} />
-          <View style={styles.row}>
-            <View style={{ width: '50%' }}>
+          {details?.summary && Array.isArray(details?.summary) && (
+            <View style={styles.row}>
+              <View style={{ width: '50%' }}>
               <View style={styles.row}>
                 <View style={{ width: '50%' }}>
                   <Text style={{ ...styles.boldText }}>Income </Text>
@@ -292,7 +299,7 @@ const Pages = ({ details }) => {
                       fontSize: 10,
                     }}
                   >
-                    {details?.summary[0]?.Income}
+                    {details?.summary?.[0]?.Income || '0'}
                   </Text>
                 </View>
               </View>
@@ -311,7 +318,7 @@ const Pages = ({ details }) => {
                       fontSize: 10,
                     }}
                   >
-                    {details?.summary[1]?.Expense}
+                    {details?.summary?.[1]?.Expense || '0'}
                   </Text>
                 </View>
               </View>
@@ -330,7 +337,7 @@ const Pages = ({ details }) => {
                       fontSize: 10,
                     }}
                   >
-                    {details?.summary[2]?.Investment}
+                    {details?.summary?.[2]?.Investment || '0'}
                   </Text>
                 </View>
               </View>
@@ -348,7 +355,7 @@ const Pages = ({ details }) => {
                       fontSize: 10,
                     }}
                   >
-                    {details?.summary[3]?.Credit}
+                    {details?.summary?.[3]?.Credit || '0'}
                   </Text>
                 </View>
               </View>
@@ -367,39 +374,41 @@ const Pages = ({ details }) => {
                       fontSize: 10,
                     }}
                   >
-                    {details?.summary[4]?.Debit}
+                    {details?.summary?.[4]?.Debit || '0'}
                   </Text>
                 </View>
               </View>
             </View>
           </View>
+          )}
 
           {details?.list &&
+            Array.isArray(details?.list) &&
             details?.list?.length > 0 &&
             details?.list?.map((item, index) => (
               <>
                 <View style={styles.row}>
                   <View style={{ width: '15%' }}>
-                    <Text style={{ ...styles.normalText }}>{fDate(item?.Date)}</Text>
+                    <Text style={{ ...styles.normalText }}>{fDate(item?.Date || new Date())}</Text>
                   </View>
                   <View style={{ width: '50%' }}>
-                    <Text style={styles.normalText}>{item?.Details}</Text>
+                    <Text style={styles.normalText}>{item?.Details || 'No details'}</Text>
                   </View>
 
                   <View style={{ width: '12%' }}>
                     <Text style={{ ...styles.normalText, textAlign: 'right' }}>
-                      {item?.AccountAmount < 0 && item?.AccountAmount}
+                      {item?.AccountAmount < 0 ? item?.AccountAmount : ''}
                     </Text>
                   </View>
                   <View style={{ width: '12%' }}>
                     <Text style={{ ...styles.normalText, textAlign: 'right' }}>
-                      {item?.AccountAmount > 0 && item?.AccountAmount}
+                      {item?.AccountAmount > 0 ? item?.AccountAmount : ''}
                     </Text>
                   </View>
 
                   <View style={{ width: '12%' }}>
                     <Text style={{ ...styles.normalText, textAlign: 'right' }}>
-                      {item?.Balance}
+                      {item?.Balance || '0'}
                     </Text>
                   </View>
                 </View>

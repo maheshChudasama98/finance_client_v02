@@ -1,5 +1,7 @@
 import numeral from 'numeral';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 // ----------------------------------------------------------------------
 
 export function fNumber(number) {
@@ -36,7 +38,46 @@ function result(format, key = '.00') {
   return isInteger ? format.replace(key, '') : format;
 }
 
-export function formatToINR(value) {
+export function formatToINR(value, isAmountVisible = true) {
+  const number = Number(value);
+  if (Number.isNaN(number)) return '00.00';
+
+  const DefaultCurrency = localStorage.getItem('DefaultCurrency') || 'INR';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: DefaultCurrency,
+    minimumFractionDigits: 0,
+  });
+
+  if (!isAmountVisible) {
+    const lastTwoDigits = Math.floor(number % 100);
+    return `***${lastTwoDigits.toString().padStart(2, '0')}`;
+  }
+  return formatter.format(number).replace('₹', '₹ ');
+}
+
+export function FormatToINR(value) {
+  const { isAmountVisible } = useAmountVisibility();
+  const number = Number(value);
+  if (Number.isNaN(number)) return '00.00';
+
+  const DefaultCurrency = localStorage.getItem('DefaultCurrency') || 'INR';
+
+  const formatter = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: DefaultCurrency,
+    minimumFractionDigits: 0,
+  });
+
+  if (!isAmountVisible) {
+    const lastTwoDigits = Math.floor(number % 100);
+    return `***${lastTwoDigits.toString().padStart(2, '0')}`;
+  }
+  return formatter.format(number).replace('₹', '₹ ');
+}
+
+export function formatToINRLegacy(value) {
   const number = Number(value);
   if (Number.isNaN(number)) return '00.00';
 

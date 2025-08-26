@@ -11,5 +11,6 @@ export { CustomPageHeader } from './CustomPageHeader';
 export { CustomButtonGroup } from './CustomButtonGroup';
 export { CustomColorPicker } from './CustomColorPicker';
 export { CustomSearchInput } from './CustomSearchInput';
+export { CustomPerformance } from './CustomPerformance';
 export { CustomTransactions } from './CustomTransactions';
 export { CustomLabelComponent } from './CustomLabelComponent';

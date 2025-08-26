@@ -2,21 +2,23 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
-import Table from '@mui/material/Table';
+import Tabs from '@mui/material/Tabs';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
 import TableRow from '@mui/material/TableRow';
-import TableHead from '@mui/material/TableHead';
+import Grid from '@mui/material/Unstable_Grid2';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
+import TableHead from '@mui/material/TableHead';
 import CardHeader from '@mui/material/CardHeader';
-import ToggleButton from '@mui/material/ToggleButton';
+import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
 import { formatToINR } from 'src/utils/format-number';
 
@@ -31,6 +33,7 @@ export default function EnhancedAnalytics({
   selectedYear,
   onYearChange,
 }) {
+  const { isAmountVisible } = useAmountVisibility();
   const [selectedView, setSelectedView] = useState('overview');
 
   // const handleChartTypeChange = (event, newType) => {
@@ -303,16 +306,17 @@ export default function EnhancedAnalytics({
         }
         action={
           <Stack direction="row" spacing={2} sx={{ mb: 3 }} alignItems="center">
-            <ToggleButtonGroup
+            <Tabs
               value={selectedView}
-              exclusive
               onChange={handleViewChange}
-              size="small"
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="scrollable auto tabs example"
             >
-              <ToggleButton value="overview">Overview</ToggleButton>
-              <ToggleButton value="trends">Trends</ToggleButton>
-              <ToggleButton value="breakdown">Breakdown</ToggleButton>
-            </ToggleButtonGroup>
+              <Tab label="Overview" value="overview" />
+              <Tab label="Trends" value="trends" />
+              <Tab label="Breakdown" value="breakdown" />
+            </Tabs>
           </Stack>
         }
       />
@@ -324,7 +328,7 @@ export default function EnhancedAnalytics({
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h4" color="success.main" gutterBottom>
                 {console.log(summaryStats, 'summaryStats summaryStats')}
-                {formatToINR(summaryStats.totalIncome)}
+                {formatToINR(summaryStats.totalIncome, isAmountVisible)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Total Income
@@ -342,7 +346,7 @@ export default function EnhancedAnalytics({
           <Card>
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h4" color="error.main" gutterBottom>
-                {formatToINR(summaryStats.totalExpense)}
+                {formatToINR(summaryStats.totalExpense, isAmountVisible)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Total Expense
@@ -362,7 +366,7 @@ export default function EnhancedAnalytics({
           <Card>
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h4" color="warning.main" gutterBottom>
-                {formatToINR(summaryStats.netSavings)}
+                {formatToINR(summaryStats.netSavings, isAmountVisible)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Net Savings
@@ -380,7 +384,7 @@ export default function EnhancedAnalytics({
           <Card>
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h4" color="info.main" gutterBottom>
-                {formatToINR(summaryStats.totalInvestment)}
+                {formatToINR(summaryStats.totalInvestment, isAmountVisible)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Total Investment
@@ -399,190 +403,192 @@ export default function EnhancedAnalytics({
       </Grid>
 
       {/* Charts based on selected view */}
-      {selectedView === 'overview' && (
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <CardHeader
-                title="Income vs Expense Trend"
-                subheader="Monthly comparison of income and expenses"
-              />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="line"
-                  series={incomeExpenseChartData.series}
-                  options={{
-                    ...chartOptions,
-                    xaxis: {
-                      categories: incomeExpenseChartData.labels,
-                    },
-                  }}
-                  width="100%"
-                  height={350}
-                />
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <Card>
-              <CardHeader title="Category Distribution" subheader="Expense breakdown by category" />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="donut"
-                  series={categoryDistributionData.series[0].data}
-                  options={{
-                    ...pieChartOptions,
-                    labels: categoryDistributionData.labels,
-                  }}
-                  width="100%"
-                  height={400}
-                />
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      )}
 
-      {selectedView === 'trends' && (
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={6}>
-            <Card>
-              <CardHeader title="Account Balance Trend" subheader="Cumulative balance over time" />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="area"
-                  series={accountBalanceData.series}
-                  options={{
-                    ...chartOptions,
-                    xaxis: {
-                      categories: accountBalanceData.labels,
-                    },
-                  }}
-                  width="100%"
-                  height={300}
-                />
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12} lg={6}>
-            <Card>
-              <CardHeader
-                title="Monthly Growth Rate"
-                subheader="Income growth rate month over month"
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={8}>
+          <Card>
+            <CardHeader
+              title="Income vs Expense Trend"
+              subheader="Monthly comparison of income and expenses"
+            />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="line"
+                series={incomeExpenseChartData.series}
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    categories: incomeExpenseChartData.labels,
+                  },
+                }}
+                width="100%"
+                height={350}
               />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="line"
-                  series={growthRateData.series}
-                  options={{
-                    ...lineChartOptions,
-                    xaxis: {
-                      categories: growthRateData.labels,
-                    },
-                  }}
-                  width="100%"
-                  height={300}
-                />
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <CardHeader
-                title="Investment vs Savings"
-                subheader="Monthly investment and savings comparison"
-              />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="bar"
-                  series={investmentSavingsData.series}
-                  options={{
-                    ...chartOptions,
-                    xaxis: {
-                      categories: investmentSavingsData.labels,
-                    },
-                  }}
-                  width="100%"
-                  height={300}
-                />
-              </Box>
-            </Card>
-          </Grid>
+            </Box>
+          </Card>
         </Grid>
-      )}
-
-      {selectedView === 'breakdown' && (
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <CardHeader
-                title="Top Sub-Categories by Expense"
-                subheader="Detailed breakdown of expenses by sub-categories"
+        <Grid item xs={12} lg={4}>
+          <Card>
+            <CardHeader title="Category Distribution" subheader="Expense breakdown by category" />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="donut"
+                series={categoryDistributionData.series[0].data}
+                options={{
+                  ...pieChartOptions,
+                  labels: categoryDistributionData.labels,
+                }}
+                width="100%"
+                height={400}
               />
-              <Box sx={{ p: 3, pb: 1 }}>
-                <Chart
-                  dir="ltr"
-                  type="bar"
-                  series={subCategoryBarData.series}
-                  options={{
-                    ...barChartOptions,
-                    xaxis: {
-                      categories: subCategoryBarData.labels,
-                    },
-                  }}
-                  width="100%"
-                  height={400}
-                />
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <Card>
-              <CardHeader title="Monthly Breakdown" />
-              <Box sx={{ p: 2 }}>
-                <TableContainer component={Paper} variant="outlined">
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Month</TableCell>
-                        <TableCell align="right">Income</TableCell>
-                        <TableCell align="right">Expense</TableCell>
-                        <TableCell align="right">Savings</TableCell>
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={6}>
+          <Card>
+            <CardHeader title="Account Balance Trend" subheader="Cumulative balance over time" />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="area"
+                series={accountBalanceData.series}
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    categories: accountBalanceData.labels,
+                  },
+                }}
+                width="100%"
+                height={300}
+              />
+            </Box>
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Card>
+            <CardHeader
+              title="Monthly Growth Rate"
+              subheader="Income growth rate month over month"
+            />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="line"
+                series={growthRateData.series}
+                options={{
+                  ...lineChartOptions,
+                  xaxis: {
+                    categories: growthRateData.labels,
+                  },
+                }}
+                width="100%"
+                height={300}
+              />
+            </Box>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card>
+            <CardHeader
+              title="Investment vs Savings"
+              subheader="Monthly investment and savings comparison"
+            />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="bar"
+                series={investmentSavingsData.series}
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    categories: investmentSavingsData.labels,
+                  },
+                }}
+                width="100%"
+                height={300}
+              />
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={6}>
+          <Card>
+            <CardHeader
+              title="Top Sub-Categories by Expense"
+              subheader="Detailed breakdown of expenses by sub-categories"
+            />
+            <Box sx={{ p: 3, pb: 1 }}>
+              <Chart
+                dir="ltr"
+                type="bar"
+                series={subCategoryBarData.series}
+                options={{
+                  ...barChartOptions,
+                  xaxis: {
+                    categories: subCategoryBarData.labels,
+                  },
+                }}
+                width="100%"
+                height={400}
+              />
+            </Box>
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Card>
+            <CardHeader title="Monthly Breakdown" />
+            <Box sx={{ p: 2 }}>
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Month</TableCell>
+                      <TableCell align="right">Income</TableCell>
+                      <TableCell align="right">Expense</TableCell>
+                      <TableCell align="right">Savings</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {monthlyData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{item.monthName}</TableCell>
+                        <TableCell align="right">
+                          {formatToINR(item.totalIn || 0, isAmountVisible)}
+                        </TableCell>
+                        <TableCell align="right">
+                          {formatToINR(item.totalOut || 0, isAmountVisible)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography
+                            variant="body2"
+                            color={
+                              (item.totalIn || 0) - (item.totalOut || 0) >= 0
+                                ? 'success.main'
+                                : 'error.main'
+                            }
+                          >
+                            {formatToINR(
+                              (item.totalIn || 0) - (item.totalOut || 0),
+                              isAmountVisible
+                            )}
+                          </Typography>
+                        </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {monthlyData.map((item, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{item.monthName}</TableCell>
-                          <TableCell align="right">{formatToINR(item.totalIn || 0)}</TableCell>
-                          <TableCell align="right">{formatToINR(item.totalOut || 0)}</TableCell>
-                          <TableCell align="right">
-                            <Typography
-                              variant="body2"
-                              color={
-                                (item.totalIn || 0) - (item.totalOut || 0) >= 0
-                                  ? 'success.main'
-                                  : 'error.main'
-                              }
-                            >
-                              {formatToINR((item.totalIn || 0) - (item.totalOut || 0))}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
-            </Card>
-          </Grid>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </Card>
         </Grid>
-      )}
+      </Grid>
 
       {/* Financial Insights */}
       <Grid container spacing={3} sx={{ mt: 2 }}>

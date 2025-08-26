@@ -78,7 +78,9 @@ export default function Analyst({ AccountId }) {
           )}
         </>
       )}
-      {downloadFlag && <PDFCreateComponent list={list} setFlag={(value) => setDownloadFlag(value)} />}
+      {downloadFlag && (
+        <PDFCreateComponent list={list} setFlag={(value) => setDownloadFlag(value)} />
+      )}
     </Box>
   );
 }

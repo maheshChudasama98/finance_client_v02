@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { fDate } from 'src/utils/format-time';
 import { fText } from 'src/utils/format-text';
 import { lightenColor } from 'src/utils/utils';
@@ -19,6 +21,8 @@ import { TransactionActions } from 'src/constance';
 import { CustomAvatar } from 'src/components/CustomComponents';
 
 const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) => {
+  const { isAmountVisible } = useAmountVisibility();
+
   const chipStyles = {
     fontSize: { xs: 10, sm: 11},
     borderRadius: 1,
@@ -291,7 +295,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                     color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
                   }}
                 >
-                  {formatToINR(record?.AccountAmount)}
+                  {formatToINR(record?.AccountAmount, isAmountVisible)}
                 </Typography>
               </Grid>
 
@@ -441,7 +445,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                       mb: 0.5,
                     }}
                   >
-                    {formatToINR(record?.AccountAmount)}
+                    {formatToINR(record?.AccountAmount, isAmountVisible)}
                   </Typography>
                   {record?.PartyDetails?.FullName && (
                     <Typography variant="caption" color="text.secondary">

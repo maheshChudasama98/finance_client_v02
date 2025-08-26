@@ -8,6 +8,8 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { formatToINR } from 'src/utils/format-number';
 
 export default function QuickInsights({
@@ -16,6 +18,8 @@ export default function QuickInsights({
   lastMonth = [],
   topCategories = [],
 }) {
+  const { isAmountVisible } = useAmountVisibility();
+
   const calculatePercentageChange = (current, previous) => {
     if (!previous || previous === 0) return 0;
     return ((current - previous) / previous) * 100;
@@ -31,24 +35,28 @@ export default function QuickInsights({
       value: netIncome,
       change: monthlyChange - expenseChange,
       color: netIncome >= 0 ? 'success.main' : 'error.main',
-      icon: netIncome >= 0 ? '📈' : '📉'
+      icon:
+        netIncome >= 0 ? (
+          <i className="fa-solid fa-arrow-trend-up" style={{ color: '#00A76F' }} />
+        ) : (
+          <i className="fa-solid fa-arrow-trend-down" style={{ color: '#FF5630' }} />
+        ),
+    },
+    {
+      title: 'Current Balance',
+      value: netIncome,
+      change: topCategories?.[0]?.totalOut || 0,
+      color: 'warning.main',
+      icon: '💰',
     },
     {
       title: 'Savings Rate',
-      value: currentYearData?.totalIn > 0 ? ((netIncome / currentYearData.totalIn) * 100) : 0,
+      value: currentYearData?.totalIn > 0 ? (netIncome / currentYearData.totalIn) * 100 : 0,
       change: 0,
       color: 'info.main',
-      icon: '💰',
-      format: 'percentage'
+      icon: <i className="fa-solid fa-piggy-bank" style={{ color: '#FFAB00' }} />,
+      format: 'percentage',
     },
-    {
-      title: 'Top Category',
-      value: topCategories?.[0]?.CategoryName || 'N/A',
-      change: topCategories?.[0]?.totalOut || 0,
-      color: 'warning.main',
-      icon: '🏆',
-      format: 'text'
-    }
   ];
 
   const formatValue = (value, format) => {
@@ -56,35 +64,35 @@ export default function QuickInsights({
       return `${value.toFixed(1)}%`;
     }
     if (format === 'currency') {
-      return formatToINR(value);
+      return formatToINR(value, isAmountVisible);
     }
     if (format === 'text') {
       return value;
     }
-    return formatToINR(value);
+    return formatToINR(value, isAmountVisible);
   };
 
   return (
-    <Card sx={{ mb: 3 }}>
-      <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+    <Card sx={{ mb: 2 }}>
+      <CardContent sx={{ p: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
           Quick Insights
         </Typography>
-        
-        <Grid container spacing={3}>
+
+        <Grid container spacing={2}>
           {insights.map((insight, index) => (
             <Grid item xs={12} md={4} key={index}>
-              <Box sx={{ 
-                p: 2, 
-                borderRadius: 2, 
-                bgcolor: 'grey.50',
-                border: 1,
-                borderColor: 'grey.200'
-              }}>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: 'grey.50',
+                  border: 1,
+                  borderColor: 'grey.200',
+                }}
+              >
                 <Stack direction="row" spacing={2} sx={{ mb: 1 }}>
-                  <Typography variant="h5">
-                    {insight.icon}
-                  </Typography>
+                  <Typography variant="h5">{insight.icon}</Typography>
                   <Box sx={{ flex: 1 }}>
                     <Typography color="text.secondary" sx={{ mb: 0.5 }} variant="body2">
                       {insight.title}
@@ -100,17 +108,6 @@ export default function QuickInsights({
                     </Typography>
                   </Box>
                 </Stack>
-                
-                {/* {insight.format !== 'text' && insight.change !== 0 && (
-                  <Typography
-                    color={insight.change >= 0 ? 'success.main' : 'error.main'}
-                    sx={{ fontWeight: 600 }}
-                    variant="caption"
-                  >
-                    {insight.change >= 0 ? '+' : ''}
-                    {insight.change.toFixed(1)}% from last month
-                  </Typography>
-                )} */}
               </Box>
             </Grid>
           ))}
@@ -125,4 +122,4 @@ QuickInsights.propTypes = {
   currentYearData: PropTypes.object,
   lastMonth: PropTypes.array,
   topCategories: PropTypes.array,
-}; 
+};

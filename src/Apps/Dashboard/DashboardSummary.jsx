@@ -35,99 +35,107 @@ export default function DashboardSummary({
     {
       title: 'Total Income',
       current: currentYearData?.totalIn || 0,
-      previous: calculatePercentageChange(currentMonth?.totalIn, lastMonth?.totalIn),
+      lastYear: lastYearData?.totalIn || 0,
+      previous: calculatePercentageChange(currentMonth?.totalIn || 0, lastMonth?.totalIn || 0),
       color: '#5BC43A',
-      positive: true
+      positive: true,
     },
     {
       title: 'Total Expense',
       current: currentYearData?.totalOut || 0,
-      previous: calculatePercentageChange(currentMonth?.totalOut, lastMonth?.totalOut),
+      lastYear: lastYearData?.totalIn || 0,
+      previous: calculatePercentageChange(currentMonth?.totalOut || 0, lastMonth?.totalOut || 0),
       color: '#FF5630',
-      positive: false
+      positive: false,
     },
     {
       title: 'Total Investment',
       current: currentYearData?.totalInvestment || 0,
-      previous: calculatePercentageChange(currentMonth?.totalInvestment, lastMonth?.totalInvestment),
+      lastYear: lastYearData?.totalIn || 0,
+      previous: calculatePercentageChange(
+        currentMonth?.totalInvestment || 0,
+        lastMonth?.totalInvestment || 0,
+      ),
       color: '#00B8D9',
-      positive: true
+      positive: true,
     },
-    {
-      title: 'Total Debit',
-      current: currentYearData?.totalDebit || 0,
-      previous: calculatePercentageChange(currentYearData?.totalDebit, lastYearData?.totalDebit),
-      color: '#8E33FF',
-      positive: false
-    }
+    // {
+    //   title: 'Growth Rate',
+    //   lastYear: lastYearData?.totalIn || 0,
+    //   current: calculatePercentageChange(currentYearData?.totalIn || 0, lastYearData?.totalIn || 0),
+    //   previous: calculatePercentageChange(currentMonth?.totalIn || 0, lastMonth?.totalIn || 0),
+    //   color: '#FFC107',
+    //   positive: true,
+    //   format: 'percentage',
+    // },
   ];
-
 
   return (
     <Grid container spacing={3}>
       {metrics.map((metric, index) => (
-        <Grid item xs={12} sm={6} md={3} key={index}>
-          <Card 
-            sx={{ 
+        <Grid item xs={12} sm={6} md={4} key={index}>
+          <Card
+            sx={{
               height: '100%',
               transition: 'all 0.3s ease',
               '&:hover': {
                 transform: 'translateY(-4px)',
                 boxShadow: 4,
-              }
+              },
             }}
           >
             <CardContent sx={{ p: 3 }}>
               {/* Title */}
-              <Typography 
-                variant="body2" 
-                color="text.secondary" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
                   fontWeight: 500,
                   mb: 2,
                   textTransform: 'uppercase',
                   letterSpacing: 0.5,
-                  fontSize: '0.75rem'
+                  fontSize: '0.75rem',
                 }}
               >
                 {metric.title}
               </Typography>
 
               {/* Amount */}
-              <Box sx={{ mb: 2 }}>
-                <AnimatedCounter 
-                  value={metric.current} 
-                  format="currency" 
-                  variant="h4" 
+              <Box sx={{ mb: 0.5 }}>
+                <AnimatedCounter
+                  value={metric.current}
+                  format={metric.format || 'currency'}
+                  variant="h4"
                   duration={1500}
-                  sx={{ 
+                  sx={{
                     fontWeight: 700,
                     color: 'text.primary',
-                    lineHeight: 1.2
+                    lineHeight: 1.2,
                   }}
                 />
               </Box>
 
               {/* Progress Bar */}
-              <Box sx={{ mb: 2 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                  <Typography 
-                    variant="caption" 
-                    color="text.secondary"
-                    sx={{ fontSize: '0.75rem' }}
-                  >
+              <Box sx={{ mb: 0.5 }}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ mb: 1 }}
+                >
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                     Monthly Change
                   </Typography>
-                  <Typography 
-                    variant="caption" 
-                    sx={{ 
+                  <Typography
+                    variant="caption"
+                    sx={{
                       fontWeight: 600,
                       fontSize: '0.75rem',
-                      color: getMetricColor(metric.title, metric.previous)
+                      color: getMetricColor(metric.title, metric.previous),
                     }}
                   >
                     {metric.previous >= 0 ? '+' : ''}
-                    {metric.previous.toFixed(1)}%
+                    {metric?.previous ? metric?.previous?.toFixed(1) : '00.0'}%
                   </Typography>
                 </Stack>
                 <LinearProgress
@@ -148,22 +156,18 @@ export default function DashboardSummary({
               {/* Year over Year */}
               <Box>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography 
-                    variant="caption" 
-                    color="text.secondary"
-                    sx={{ fontSize: '0.75rem' }}
-                  >
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                     vs Last Year
                   </Typography>
-                  <Typography 
-                    variant="caption" 
-                    sx={{ 
+                  <Typography
+                    variant="caption"
+                    sx={{
                       fontWeight: 600,
                       fontSize: '0.75rem',
-                      color: 'text.primary'
+                      color: 'text.primary',
                     }}
                   >
-                    {formatToINR(metric.current)}
+                    {formatToINR(metric.lastYear)}
                   </Typography>
                 </Stack>
               </Box>

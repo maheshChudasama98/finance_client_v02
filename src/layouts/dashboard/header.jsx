@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
@@ -13,13 +16,15 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
 import { grey } from 'src/theme/palette';
+import { setDisplayFlag } from 'src/redux/actions/common';
 
 import Iconify from 'src/components/iconify';
+import AmountVisibilityToggle from 'src/components/CustomComponents/AmountVisibilityToggle';
 
-// import Searchbar from './common/searchbar';
 import { NAV, HEADER } from './config-layout';
 import BranchPopover from './common/branch-popover';
 import AccountPopover from './common/account-popover';
+// import Searchbar from './common/searchbar';
 // import LanguagePopover from './common/language-popover';
 // import TransactionsPopover from './common/transactions-popover';
 // import NotificationsPopover from './common/notifications-popover';
@@ -28,9 +33,16 @@ import AccountPopover from './common/account-popover';
 
 export default function Header({ onOpenNav, isActive, setIsActive }) {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const lgUp = useResponsive('up', 'lg');
   const upLg = useResponsive('up', 'lg');
+
+  const handleRecordClick = () => {
+    navigate('/records');
+    dispatch(setDisplayFlag(true));
+  };
 
   const renderContent = (
     <>
@@ -43,7 +55,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       {/* <Searchbar /> */}
 
       <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ display: { xs: "none", md: "contents" } }}>
+      <Box sx={{ display: { xs: 'none', md: 'contents' } }}>
         <BranchPopover />
       </Box>
 
@@ -55,6 +67,10 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       >
         {/* <TransactionsPopover /> */}
         {/* <NotificationsPopover /> */}
+        <AmountVisibilityToggle />
+        <Button onClick={handleRecordClick} variant="outlined" color="success">
+          Record
+        </Button>
         <AccountPopover />
       </Stack>
     </>

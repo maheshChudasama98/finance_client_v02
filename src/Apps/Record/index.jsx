@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -13,6 +13,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 import { shadows } from 'src/theme/shadows';
+import { setDisplayFlag } from 'src/redux/actions/common';
 import {
   TransactionFetchListService,
   TransactionRemoveController,
@@ -29,19 +30,20 @@ import FilterComponent from './FilterComponent';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const DefaultDuration = localStorage.getItem('DefaultDuration');
+  const displayFlag = useSelector((state) => state?.common?.displayFlag);
 
-  const [displayFlag, setDisplayFlag] = useState(false);
   const [loadingLoader, setLoadingLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [transactionList, setTransactionList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [arrayObject, setArrayObject] = useState([]);
   const [FilterBy, setFilterBy] = useState({});
-  const [Duration, setDuration] = useState('Last_Thirty_Days');
+  const [Duration, setDuration] = useState(DefaultDuration || 'Last_Thirty_Days');
   const [downloadFlag, setDownloadFlag] = useState(false);
 
   const showDisplayAction = () => {
-    setDisplayFlag(!displayFlag);
+    dispatch(setDisplayFlag(!displayFlag));
     setEditObject({});
   };
 
@@ -122,7 +124,7 @@ export default function Index() {
             SearchKey: searchValue,
             Duration,
           };
-          setDisplayFlag(false);
+          dispatch(setDisplayFlag(false));
           setLoadingLoader(true);
           dispatch(
             TransactionFetchListService(payLoad, (resp) => {
@@ -139,7 +141,7 @@ export default function Index() {
 
   const editAction = (record) => {
     setEditObject(record);
-    setDisplayFlag(true);
+    dispatch(setDisplayFlag(true));
   };
 
   const [open, setOpen] = useState(false);
@@ -183,17 +185,17 @@ export default function Index() {
 
   return (
     <Box sx={{ paddingX: { xs: 1, sm: 2 } }}>
-      <Card sx={{ borderRadius: 2, boxShadow: "none" }}>
+      <Card sx={{ borderRadius: 2, boxShadow: 'none' }}>
         <CardHeader
           title={
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               {titleAction(!displayFlag)}
             </Typography>
           }
-          sx={{ 
+          sx={{
             marginBottom: 1,
             paddingX: { xs: 2, sm: 3 },
-            paddingY: 2
+            paddingY: 2,
           }}
           action={
             <Button
@@ -225,7 +227,7 @@ export default function Index() {
                 paddingY: 2,
                 // backgroundColor: (theme) => theme.palette.grey[50],
                 borderBottom: 1,
-                borderColor: 'divider'
+                borderColor: 'divider',
               }}
             >
               <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#e8f5e8' }}>
@@ -236,7 +238,7 @@ export default function Index() {
                   ₹{summaryTotals.totalIn.toLocaleString()}
                 </Typography>
               </Card>
-              
+
               <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#ffeaea' }}>
                 <Typography variant="body2" color="text.secondary">
                   Total Out
@@ -245,14 +247,14 @@ export default function Index() {
                   ₹{summaryTotals.totalOut.toLocaleString()}
                 </Typography>
               </Card>
-              
+
               <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#f0f8ff' }}>
                 <Typography variant="body2" color="text.secondary">
                   Net Total
                 </Typography>
-                <Typography 
-                  variant="h6" 
-                  color={summaryTotals.netTotal >= 0 ? 'success.main' : 'error.main'} 
+                <Typography
+                  variant="h6"
+                  color={summaryTotals.netTotal >= 0 ? 'success.main' : 'error.main'}
                   sx={{ fontWeight: 700 }}
                 >
                   ₹{summaryTotals.netTotal.toLocaleString()}
@@ -269,19 +271,19 @@ export default function Index() {
                 flexDirection: { xs: 'column', md: 'row' },
                 gap: 2,
                 alignItems: { xs: 'stretch', md: 'center' },
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}
             >
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <CustomSearchInput callBack={setSearchValue} />
               </Box>
-              
+
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: { xs: 'column', sm: 'row' },
                   gap: 1,
-                  alignItems: { xs: 'stretch', sm: 'center' }
+                  alignItems: { xs: 'stretch', sm: 'center' },
                 }}
               >
                 <CustomButtonGroup
@@ -327,7 +329,7 @@ export default function Index() {
                     borderRadius: 2,
                     boxShadow: shadows()[10],
                     backgroundColor: (theme) => theme?.palette?.success?.contrastText,
-                    zIndex: 1300
+                    zIndex: 1300,
                   }}
                 >
                   <FilterComponent
@@ -343,7 +345,14 @@ export default function Index() {
 
             {/* Content Area */}
             {loadingLoader ? (
-              <Box sx={{ display: 'flex', height: '50vh', alignItems: 'center', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  height: '50vh',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <Loader />
               </Box>
             ) : (

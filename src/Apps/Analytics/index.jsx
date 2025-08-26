@@ -34,6 +34,7 @@ import { Table } from 'antd';
 
 import OverView from './OverView';
 import AccountCards from './AccountCards';
+import AnalyticsPDF from './AnalyticsPDF';
 import PDFCreateComponent from './PDFMonthly';
 import AccountAnalytics from './AccountAnalytics';
 import DetailedAnalytics from './DetailedAnalytics';
@@ -141,6 +142,7 @@ export default function Index() {
 
   const [list, setList] = useState({});
   const [downloadFlag, setDownloadFlag] = useState(false);
+  const [analyticsDownloadFlag, setAnalyticsDownloadFlag] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
   const [subCategoriesList, setSubCategoriesList] = useState([]);
   const [categorySelectedDate, setCategorySelectedDate] = useState(new Date());
@@ -319,12 +321,18 @@ export default function Index() {
         },
         (res) => {
           if (res.status) {
-            setDownloadFlag(true);
+            setDownloadFlag(false);
             setList(res?.data || []);
           }
         }
       )
     );
+  };
+
+  console.log(MonthlyReportDownload);
+
+  const ComprehensiveAnalyticsDownload = () => {
+    setAnalyticsDownloadFlag(true);
   };
 
   const handleChange = (event, newValue) => {
@@ -389,11 +397,11 @@ export default function Index() {
             <Stack direction="row" spacing={1} alignItems="center">
               <Button
                 variant="contained"
-                color="success"
-                startIcon={<i className="fa-solid fa-download" />}
-                onClick={MonthlyReportDownload}
+                color="primary"
+                startIcon={<i className="fa-solid fa-chart-line" />}
+                onClick={ComprehensiveAnalyticsDownload}
               >
-                Download Report
+                Download 
               </Button>
 
               <DateRangePicker
@@ -643,7 +651,7 @@ export default function Index() {
                   <Grid item xs={12}>
                     <AccountSummaryWidget accountsList={accountOverview.accountSummary} />
                   </Grid>
-                  
+
                   <Grid item xs={12}>
                     <AccountAnalytics accountsList={accountOverview.accountSummary} />
                   </Grid>
@@ -659,6 +667,18 @@ export default function Index() {
 
       {downloadFlag && (
         <PDFCreateComponent list={list} setFlag={(value) => setDownloadFlag(value)} />
+      )}
+
+      {analyticsDownloadFlag && (
+        <AnalyticsPDF
+          currentYearMonthBaseData={currentYearMonthBaseData}
+          categoriesList={categoriesList}
+          subCategoriesList={subCategoriesList}
+          performanceList={performanceList}
+          accountOverview={accountOverview}
+          selectedYear={categorySelectedDate}
+          setFlag={setAnalyticsDownloadFlag}
+        />
       )}
     </Box>
   );

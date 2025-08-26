@@ -12,7 +12,7 @@ export const CustomTooltip = ({ label, Placement, children, ...props }) => {
   return (
     <Tooltip
       placement={Placement}
-      title={renderLabel}
+      title={renderLabel} 
       color={success?.main}
       overlayInnerStyle={{ fontSize: '16px' }}
       {...props}

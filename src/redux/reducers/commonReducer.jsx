@@ -4,7 +4,9 @@ const INIT_STATE = {
     message: '',
     loading: false,
     isSearchBarOpen: false,
-    isDataUpdate: true
+    isDataUpdate: true,
+    isAmountVisible: true,
+    displayFlag: false
 };
 
 export default (state = INIT_STATE, action) => {
@@ -26,6 +28,15 @@ export default (state = INIT_STATE, action) => {
         }
         case "IS_DATA_UPDATE": {
             return { ...state, isDataUpdate: !state.isDataUpdate };
+        }
+        case "TOGGLE_AMOUNT_VISIBILITY": {
+            return { ...state, isAmountVisible: !state.isAmountVisible };
+        }
+        case "TOGGLE_DISPLAY_FLAG": {
+            return { ...state, displayFlag: !state.displayFlag };
+        }
+        case "SET_DISPLAY_FLAG": {
+            return { ...state, displayFlag: action.payload };
         }
         default:
             return state;

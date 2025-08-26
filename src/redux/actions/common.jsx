@@ -31,3 +31,22 @@ export const showMessage = message => dispatch => {
     payload: message,
   });
 };
+
+export const toggleAmountVisibility = () => dispatch => {
+  dispatch({
+    type: "TOGGLE_AMOUNT_VISIBILITY",
+  });
+};
+
+export const toggleDisplayFlag = () => dispatch => {
+  dispatch({
+    type: "TOGGLE_DISPLAY_FLAG",
+  });
+};
+
+export const setDisplayFlag = (value) => dispatch => {
+  dispatch({
+    type: "SET_DISPLAY_FLAG",
+    payload: value,
+  });
+};

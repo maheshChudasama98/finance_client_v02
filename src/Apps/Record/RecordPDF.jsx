@@ -32,7 +32,7 @@ Font.register({
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
-    padding: '20px',
+    padding: '15px',
     fontFamily: 'Roboto',
     fontWeight: 'normal',
     fontSize: 12,
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 5,
     paddingBottom: 15,
-    borderBottom: '2 solid #1976d2',
+    borderBottom: '2 solid #5BC43A',
   },
   footer: {
     paddingTop: 15,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: '24px',
     fontFamily: 'Roboto',
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: '#5BC43A',
   },
   subHeaderText: {
     fontSize: 16,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: '#5BC43A',
   },
   summaryLabel: {
     fontSize: 10,
@@ -217,19 +217,25 @@ const RecordPDF = ({ transactionList, FilterBy, Duration, searchValue, setFlag }
           <Page size="A4" style={styles.page}>
             {/* Header */}
             <View style={styles.header} fixed>
-              <Image style={styles.logo} src={`${ImgUrl}${SelectBranch?.ImgPath}`} />
+              {SelectBranch?.ImgPath && 
+               SelectBranch?.ImgPath.trim() !== '' && 
+               /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(SelectBranch?.ImgPath) ? (
+                <Image style={styles.logo} src={`${ImgUrl}${SelectBranch?.ImgPath}`} />
+              ) : (
+                <View style={styles.logo} />
+              )}
               <View style={{ alignItems: 'flex-end' }}>
                 <Text style={styles.headerText}>{SelectOrg?.OrgName}</Text>
               </View>
             </View>
 
             {/* Organization Details */}
-            <View style={{ marginBottom: 20 }}>
+            {/* <View style={{ marginBottom: 20 }}>
               <Text style={styles.boldText}>{SelectBranch?.BranchName}</Text>
               <Text style={styles.normalText}>{SelectBranch?.Address}</Text>
               <Text style={styles.normalText}>{SelectBranch?.City}</Text>
               <Text style={styles.normalText}>{SelectBranch?.Phone}</Text>
-            </View>
+            </View> */}
 
             {/* Report Summary */}
             <Text style={styles.sectionTitle}>Report Summary</Text>

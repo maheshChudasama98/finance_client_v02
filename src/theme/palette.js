@@ -54,12 +54,19 @@ export const tabsColors = {
 };
 
 export const primary = {
-  lighter: '#D0ECFE',
-  light: '#73BAFB',
-  main: '#1877F2',
-  dark: '#0C44AE',
-  darker: '#042174',
-  contrastText: '#FFFFFF',
+  lighter: '#C8FAD0', // Lightest shade
+  light: '#7BE86B', // Lighter shade
+  main: '#5BC43A', // Base color
+  dark: '#3A8F2A', // Darker shade
+  darker: '#1F5A18', // Darkest shade
+  contrastText: '#FFFFFF', // Contrast text color
+  
+  // lighter: '#D0ECFE',
+  // light: '#73BAFB',
+  // main: '#1877F2',
+  // dark: '#0C44AE',
+  // darker: '#042174',
+  // contrastText: '#FFFFFF',
 };
 
 export const secondary = {

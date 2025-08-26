@@ -1,7 +1,7 @@
 {
   "name": "@minimal/material-kit-react",
   "author": "Mr.yug chudasama",
-  "version": "1.0.11",
+  "version": "1.0.14",
   "private": false,
   "type": "module",
   "scripts": {
@@ -69,6 +69,7 @@
     "redux-thunk": "^3.1.0",
     "simplebar-react": "^3.2.4",
     "sweetalert2": "^11.13.3",
+    "swiper": "^11.2.10",
     "tinycolor2": "^1.6.0",
     "xlsx": "^0.18.5",
     "yup": "^1.4.0"
@@ -90,5 +91,5 @@
     "vite": "^4.4.11",
     "vite-plugin-checker": "^0.6.2"
   },
-  "buildTime": "2025-05-18T07:34:54.852Z"
+  "buildTime": "2025-08-23T13:35:30.244Z"
 }

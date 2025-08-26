@@ -22,6 +22,9 @@ export default function OverView({ chart, height, subheader, title, ...other }) 
     fill: {
       type: series.map((i) => i.fill),
     },
+    stroke: {
+      width: [2, 2, 2, 2],
+    },
     labels,
     xaxis: {
       labels: {

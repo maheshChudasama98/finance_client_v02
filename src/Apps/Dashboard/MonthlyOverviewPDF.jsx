@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
     paddingBottom: 15,
-    borderBottom: '2 solid #1976d2',
+    borderBottom: '2 solid #5BC43A',
   },
   footer: {
     paddingTop: 15,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     fontSize: '24px',
     fontFamily: 'Roboto',
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: '#5BC43A',
   },
   subHeaderText: { 
     fontSize: 16, 
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1976d2',
+    color: '#5BC43A',
   },
   summaryLabel: {
     fontSize: 10,
@@ -198,12 +198,12 @@ const MonthlyOverviewPDF = ({
             </View>
 
             {/* Organization Details */}
-            <View style={{ marginBottom: 20 }}>
+            {/* <View style={{ marginBottom: 20 }}>
               <Text style={styles.boldText}>{SelectBranch?.BranchName}</Text>
               <Text style={styles.normalText}>{SelectBranch?.Address}</Text>
               <Text style={styles.normalText}>{SelectBranch?.City}</Text>
               <Text style={styles.normalText}>{SelectBranch?.Phone}</Text>
-            </View>
+            </View> */}
 
             {/* Executive Summary */}
             <Text style={styles.sectionTitle}>Executive Summary</Text>

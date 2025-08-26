@@ -8,9 +8,12 @@ import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import Grid from '@mui/material/Unstable_Grid2';
+import { useTheme } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -26,7 +29,6 @@ import { DataNotFound } from 'src/components/DataNotFound';
 import {
   CustomAvatar,
   CustomSelect,
-  CustomTabLabel,
   CustomCheckbox,
   CustomSearchInput,
 } from 'src/components/CustomComponents';
@@ -39,6 +41,8 @@ import PerformanceComponent from './Performance';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [apiFlag, setApiFlag] = useState(false);
   const [displayFlag, setDisplayFlag] = useState(false);
@@ -297,6 +301,262 @@ export default function Index() {
       });
   };
 
+  const MobileGrid = () => (
+    <Box sx={{ p: 2 }}>
+      <Grid container spacing={2}>
+        {getList.map((item) => (
+          <Grid item xs={12} key={item?.PartyId}>
+            <Box
+              sx={{
+                p: 2,
+                cursor: 'pointer',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+                backgroundColor: 'background.paper',
+                '&:hover': {
+                  borderColor: 'primary.main',
+                  boxShadow: 2,
+                  transform: 'translateY(-2px)',
+                  transition: 'all 0.2s ease-in-out',
+                },
+              }}
+              onClick={() => selectItemAction(item?.PartyId)}
+            >
+              {/* Header Row: Icon/Name on left, Current Amount on right */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  mb: 3,
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                  <CustomAvatar
+                    displayName={item?.PartyAvatar}
+                    width={48}
+                    height={48}
+                    iconSize={20}
+                  />
+                  <Box sx={{ ml: 1, flex: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                      {item?.FullName}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: '0.75rem' }}
+                    >
+                      {fDate(item?.createdAt)}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ textAlign: 'right', ml: 2 }}>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 700,
+                      color: item?.CurrentAmount < 0 ? 'error.main' : 'primary.main',
+                    }}
+                  >
+                    {formatToINR(item?.CurrentAmount) || '-'}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                    Current Balance
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Party Details Row */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 3,
+                }}
+              >
+                <Box sx={{ flex: 1 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                  >
+                    Start Amount
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 500,
+                      color: item?.StartAmount < 0 ? 'error.main' : 'text.main',
+                    }}
+                  >
+                    {formatToINR(item?.StartAmount) || '-'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ flex: 1, textAlign: 'right' }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                  >
+                    Max Amount
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {formatToINR(item?.MaxAmount) || '-'}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {(item?.Address || item?.Email || item?.Phone) && (
+                <Box sx={{ my: 2, p: 1.5, backgroundColor: 'grey.50', borderRadius: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mb: 3,
+                    }}
+                  >
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                      >
+                        Email
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                        {item?.Email || '-'}
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ flex: 1, textAlign: 'right' }}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                      >
+                        Phone
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {item?.Phone || '-'}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Additional Details Row */}
+                  {item?.Address && (
+                    <Box sx={{ mb: 3 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ fontSize: '0.7rem' }}
+                        >
+                          Address
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {item?.Address || '-'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
+              {/* Bottom Row: Status and Actions */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  pt: 2,
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomCheckbox
+                    loading={loadingSwitch[item?.PartyId] && loadingSwitch?.action === 'isActive'}
+                    checked={item?.isActive}
+                    onClick={(e) => {
+                      StatusChange('isActive', !item?.isActive, item?.PartyId);
+                      e.stopPropagation();
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ ml: 1, fontSize: '0.75rem' }}
+                  >
+                    {item?.isActive ? 'Active' : 'Inactive'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayFlag(true);
+                      setEditObject(item);
+                      setTabValue('1');
+                    }}
+                    sx={{
+                      fontSize: '0.7rem',
+                      px: 1.5,
+                      py: 0.5,
+                      minWidth: 'auto',
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="error"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sweetAlertQuestion()
+                        .then((result) => {
+                          if (result === 'Yes') {
+                            StatusChange('isDeleted', true, item?.PartyId);
+                          }
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }}
+                    sx={{
+                      fontSize: '0.7rem',
+                      px: 1.5,
+                      py: 0.5,
+                      minWidth: 'auto',
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -326,7 +586,7 @@ export default function Index() {
               <Box
                 sx={{
                   margin: 2,
-                  display: { sm: 'flex', xs: 'inline-block' },
+                  display: { md: 'flex', xs: 'block' },
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
@@ -334,39 +594,7 @@ export default function Index() {
                 <Box
                   sx={{
                     display: 'flex',
-                  }}
-                >
-                  <Tabs
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    disableRipple
-                    value={tabValue}
-                    onChange={handleChange}
-                  >
-                    <Tab
-                      value="0"
-                      label={<CustomTabLabel selectValue={tabValue} label="Party list" value="0" />}
-                    />
-                    <Tab
-                      value="1"
-                      label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
-                    />
-                    <Tab
-                      value="2"
-                      label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
-                    />
-                    <Tab
-                      value="3"
-                      label={
-                        <CustomTabLabel selectValue={tabValue} label="Performance" value="3" />
-                      }
-                    />
-                  </Tabs>
-                </Box>
-
-                <Box
-                  sx={{
-                    display: 'flex',
+                    mt: { xs: 2, md: 0 },
                   }}
                 >
                   <CustomSelect
@@ -376,27 +604,48 @@ export default function Index() {
                     menuList={getList}
                     defaultValue={editObject?.PartyId}
                     callBackAction={selectItemAction}
-                    sx={{ width: { xs: 230, md: 230, lg: 230 } }}
+                    sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
                   />
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
+                >
+                  <Tabs
+                    disableRipple
+                    value={tabValue}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    onChange={handleChange}
+                  >
+                    <Tab value="1" label="Details" />
+                    <Tab value="2" label="Activity" />
+                    <Tab value="3" label="Performance" />
+                  </Tabs>
                 </Box>
               </Box>
             )}
 
-            {tabValue === '0' && editObject.PartyId && (
-              <Table
-                className="custom-ant-table"
-                columns={columns}
-                dataSource={tableSetData}
-                pagination={false}
-                rowKey={(record) => record.PartyId}
-                onRow={(record) => ({
-                  onClick: () => {
-                    selectItemAction(record.key);
-                    handleChange(null, '2');
-                  },
-                })}
-              />
-            )}
+            {tabValue === '0' &&
+              editObject.PartyId &&
+              (isMobile ? (
+                <MobileGrid />
+              ) : (
+                <Table
+                  className="custom-ant-table"
+                  columns={columns}
+                  dataSource={tableSetData}
+                  pagination={false}
+                  rowKey={(record) => record.PartyId}
+                  onRow={(record) => ({
+                    onClick: () => {
+                      selectItemAction(record.key);
+                      handleChange(null, '2');
+                    },
+                  })}
+                />
+              ))}
             {(tabValue === '1' || !editObject.PartyId) && (
               <Form
                 backAction={showDisplayAction}
@@ -434,18 +683,23 @@ export default function Index() {
                 </Box>
 
                 {getList && getList?.length > 0 ? (
-                  <Table
-                    className="custom-ant-table"
-                    columns={columns}
-                    dataSource={tableSetData}
-                    pagination={false}
-                    rowKey={(record) => record.PartyId}
-                    onRow={(record) => ({
-                      onClick: () => {
-                        selectItemAction(record.key);
-                      },
-                    })}
-                  />
+                  <>
+                    {isMobile && <MobileGrid />}
+                    {!isMobile && (
+                      <Table
+                        className="custom-ant-table"
+                        columns={columns}
+                        dataSource={tableSetData}
+                        pagination={false}
+                        rowKey={(record) => record.PartyId}
+                        onRow={(record) => ({
+                          onClick: () => {
+                            selectItemAction(record.key);
+                          },
+                        })}
+                      />
+                    )}
+                  </>
                 ) : (
                   <DataNotFound />
                 )}

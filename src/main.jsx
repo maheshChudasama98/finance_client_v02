@@ -6,9 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { store } from 'src/redux/store/index';
 
-import 'src/assets/styles/styles.css'
-
-// import { App as AntdApp } from "antd";
+import 'src/assets/styles/styles.css';
 
 import App from './app';
 
@@ -21,9 +19,7 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <Suspense>
-          {/* <AntdApp> */}
-            <App />
-          {/* </AntdApp> */}
+          <App />
         </Suspense>
       </BrowserRouter>
     </Provider>

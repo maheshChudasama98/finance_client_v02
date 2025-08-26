@@ -188,6 +188,7 @@
           "custom-tinycolor2",
           "custom-highcharts",
           "custom-highcharts-react-official",
+          "custom-swiper/react",
           [
             "parent",
             "sibling",
@@ -229,7 +230,8 @@
             "custom-react-color": "react-color",
             "custom-tinycolor2": "tinycolor2",
             "custom-highcharts": "highcharts",
-            "custom-highcharts-react-official": "highcharts-react-official"
+            "custom-highcharts-react-official": "highcharts-react-official",
+            "custom-swiper/react": "swiper/react"
           }
         },
         "internal-pattern": [

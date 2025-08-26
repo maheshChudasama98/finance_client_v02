@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { formatToINR } from 'src/utils/format-number';
 
 export default function AnimatedCounter({
@@ -17,6 +19,7 @@ export default function AnimatedCounter({
   ...other
 }) {
   const [displayValue, setDisplayValue] = useState(0);
+  const { isAmountVisible } = useAmountVisibility();
 
   useEffect(() => {
     const targetValue = parseFloat(value) || 0;
@@ -52,7 +55,7 @@ export default function AnimatedCounter({
 
   const formatValue = (val) => {
     if (format === 'currency') {
-      return formatToINR(val);
+      return formatToINR(val, isAmountVisible);
     }
     if (format === 'number') {
       return new Intl.NumberFormat('en-IN').format(Math.round(val));

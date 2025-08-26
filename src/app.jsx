@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import 'src/global.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
