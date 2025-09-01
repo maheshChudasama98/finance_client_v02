@@ -44,7 +44,6 @@ export default function AnimatedCounter({
       }
     };
 
-    // Reset to 0 first, then animate
     setDisplayValue(0);
     const timer = setTimeout(() => {
       animate();
@@ -95,4 +94,4 @@ AnimatedCounter.propTypes = {
   suffix: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   variant: PropTypes.string,
-}; 
+};

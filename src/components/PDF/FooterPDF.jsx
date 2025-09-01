@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { fDate } from 'src/utils/format-time';
 
@@ -39,19 +38,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const FooterPDF = ({ title }) => {
-  const { SelectBranch } = useSelector((state) => state?.master?.BranchesList || {});
-  return (
-    <View style={styles.footer} fixed>
-      <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+const FooterPDF = ({ title, SelectBranch }) => (
+  <View style={styles.footer} fixed>
+    <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
 
-      <Text>
-        {title || ''} {fDate(moment())}
-      </Text>
+    <Text>
+      {title || ''} {fDate(moment())}
+    </Text>
 
-      <Text>{SelectBranch?.BranchName}</Text>
-    </View>
-  );
-};
+    <Text>{SelectBranch?.BranchName}</Text>
+  </View>
+);
 
 export default FooterPDF;

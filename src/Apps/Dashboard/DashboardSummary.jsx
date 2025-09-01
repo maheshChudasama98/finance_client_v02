@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import LinearProgress from '@mui/material/LinearProgress';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { formatToINR } from 'src/utils/format-number';
 
 import AnimatedCounter from './AnimatedCounter';
@@ -19,6 +21,8 @@ export default function DashboardSummary({
   lastMonth = [],
   lastYearData = {},
 }) {
+  const { isAmountVisible } = useAmountVisibility();
+
   const calculatePercentageChange = (current, previous) => {
     if (!previous || previous === 0) return 0;
     return ((current - previous) / previous) * 100;
@@ -54,7 +58,7 @@ export default function DashboardSummary({
       lastYear: lastYearData?.totalIn || 0,
       previous: calculatePercentageChange(
         currentMonth?.totalInvestment || 0,
-        lastMonth?.totalInvestment || 0,
+        lastMonth?.totalInvestment || 0
       ),
       color: '#00B8D9',
       positive: true,
@@ -85,7 +89,6 @@ export default function DashboardSummary({
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              {/* Title */}
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -167,7 +170,7 @@ export default function DashboardSummary({
                       color: 'text.primary',
                     }}
                   >
-                    {formatToINR(metric.lastYear)}
+                    {formatToINR(metric.lastYear, isAmountVisible)}
                   </Typography>
                 </Stack>
               </Box>
@@ -184,4 +187,4 @@ DashboardSummary.propTypes = {
   currentYearData: PropTypes.object,
   lastMonth: PropTypes.array,
   lastYearData: PropTypes.object,
-}; 
+};

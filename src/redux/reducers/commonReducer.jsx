@@ -29,6 +29,9 @@ export default (state = INIT_STATE, action) => {
         case "IS_DATA_UPDATE": {
             return { ...state, isDataUpdate: !state.isDataUpdate };
         }
+        case "AMOUNT_VISIBILITY_CHANGE": {
+            return { ...state, isAmountVisible: action.payload };
+        }
         case "TOGGLE_AMOUNT_VISIBILITY": {
             return { ...state, isAmountVisible: !state.isAmountVisible };
         }

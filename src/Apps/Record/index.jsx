@@ -7,8 +7,10 @@ import Badge from '@mui/material/Badge';
 import Popper from '@mui/material/Popper';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import { useTheme } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 
@@ -30,6 +32,9 @@ import FilterComponent from './FilterComponent';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const DefaultDuration = localStorage.getItem('DefaultDuration');
   const displayFlag = useSelector((state) => state?.common?.displayFlag);
 
@@ -202,6 +207,7 @@ export default function Index() {
               onClick={showDisplayAction}
               variant="contained"
               color="success"
+              size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
@@ -328,7 +334,7 @@ export default function Index() {
                     maxWidth: '90vw',
                     borderRadius: 2,
                     boxShadow: shadows()[10],
-                    backgroundColor: (theme) => theme?.palette?.success?.contrastText,
+                    backgroundColor: () => theme?.palette?.success?.contrastText,
                     zIndex: 1300,
                   }}
                 >

@@ -33,6 +33,8 @@ export default function Index() {
   const DefaultTimeFrame = localStorage.getItem('DefaultTimeFrame');
   const DefaultDuration = localStorage.getItem('DefaultDuration');
 
+  const [currentBalance, setCurrentBalance] = useState(0);
+
   const [topTen, setTopTen] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
@@ -149,6 +151,7 @@ export default function Index() {
               onChange={(event) => {
                 setSelectedYear(event);
               }}
+              sx={{ width: 200 }}
               openTo="year"
               value={selectedYear}
               views={['year']}
@@ -156,7 +159,6 @@ export default function Index() {
           </Box>
         </Box>
 
-        {/* Key Metrics Cards */}
         <DashboardSummary
           currentYearData={currentYearBaseData}
           lastYearData={lastYearBaseData}
@@ -165,15 +167,16 @@ export default function Index() {
           loading={currentYearBaseLoader}
         />
       </Box>
-      
+
       {/* Account List Section */}
       <Box sx={{ mb: 2 }}>
-        <AccountList />
+        <AccountList setCurrentBalance={setCurrentBalance} />
       </Box>
 
       {/* Quick Insights */}
       <Box sx={{ mb: 2 }}>
         <QuickInsights
+          currentBalance={currentBalance}
           currentMonth={currentMonth}
           currentYearData={currentYearBaseData}
           lastMonth={lastMonth}

@@ -17,6 +17,7 @@ export default function QuickInsights({
   currentYearData = {},
   lastMonth = [],
   topCategories = [],
+  currentBalance = 0,
 }) {
   const { isAmountVisible } = useAmountVisibility();
 
@@ -44,7 +45,7 @@ export default function QuickInsights({
     },
     {
       title: 'Current Balance',
-      value: netIncome,
+      value: currentBalance,
       change: topCategories?.[0]?.totalOut || 0,
       color: 'warning.main',
       icon: '💰',

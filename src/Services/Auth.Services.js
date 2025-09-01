@@ -115,6 +115,12 @@ export function InfoApiActionService(cb) {
         jwtAuthAxios.get('/user/info').then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
+
+
+                dispatch({
+                    type: "AMOUNT_VISIBILITY_CHANGE",
+                    payload: !!res?.data?.data?.UserInfo?.AmountHide,
+                });
                 
                 dispatch({
                     type: "ORGS_LIST",
@@ -135,8 +141,7 @@ export function InfoApiActionService(cb) {
                     type: "USER_PERMISSION",
                     PermissionList: res?.data?.data?.PermissionList || []
                 });
-                console.log(res?.data?.data?.UserInfo?.AmountHide ,"res?.data?.data?.UserInfo?.AmountHide");
-                
+
                 localStorage.setItem('DefaultTimeFrame', res?.data?.data?.UserInfo?.DefaultTimeFrame || "MONTH");
                 localStorage.setItem('DefaultDuration', res?.data?.data?.UserInfo?.DefaultDuration || "Last_Thirty_Days");
                 localStorage.setItem('DefaultDateFormat', res?.data?.data?.UserInfo?.DefaultDateFormat || "DD/MM/YYYY");

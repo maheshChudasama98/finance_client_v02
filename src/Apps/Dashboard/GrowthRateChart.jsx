@@ -1,21 +1,27 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
 import Chart, { useChart } from 'src/components/chart';
+import { CustomSelect } from 'src/components/CustomComponents';
 
 export default function GrowthRateChart({
   monthlyData = [],
   title = 'Monthly Growth Rate',
-  subheader = 'Income growth rate month over month',
+  subheader = 'Growth rate month over month',
 }) {
-  // Calculate growth rate data from monthly data
+  const [keyString, setKeyString] = useState('totalIn');
+  const keyColor = [
+    { key: 'totalIn', value: 'Income', textColor: '#FFB703' },
+    { key: 'totalOut', value: 'Expend', textColor: '#ff1100ff' },
+    { key: 'totalInvestment', value: 'Investment', textColor: '#00B8D9' },
+  ];
+
   const calculateGrowthData = () => {
     if (!monthlyData || monthlyData.length === 0) {
-      // Return mock data that matches the image pattern
       const months = [
         'Jan',
         'Feb',
@@ -30,20 +36,7 @@ export default function GrowthRateChart({
         'Nov',
         'Dec',
       ];
-      const growthData = [
-        0, // Jan - stable around 0%
-        0, // Feb - stable around 0%
-        0, // Mar - stable around 0%
-        5, // Apr - slight increase
-        0, // May - returns to 0%
-        0, // Jun - stable around 0%
-        0, // Jul - stable around 0%
-        -105, // Aug - dramatic drop
-        0, // Sep - sharp recovery
-        0, // Oct - stable at 0%
-        0, // Nov - stable at 0%
-        0, // Dec - stable at 0%
-      ];
+      const growthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       return {
         labels: months,
@@ -59,23 +52,35 @@ export default function GrowthRateChart({
       };
     }
 
-    // Calculate actual growth rate from monthly data
     const labels = monthlyData.map((item) => item.monthName);
-    const growthData = monthlyData.map((item, index) => {
-      if (index === 0) return 0;
-      const prevIncome = monthlyData[index - 1].totalIn || 0;
-      const currentIncome = item.totalIn || 0;
-      return prevIncome > 0 ? ((currentIncome - prevIncome) / prevIncome) * 100 : 0;
-    });
 
+    const growthData = (() => {
+      let baseline = null; // store first non-zero
+      return monthlyData.map((item) => {
+        const currentIncome = item?.[keyString] || 0;
+
+        if (currentIncome <= 0) {
+          return 0;
+        }
+
+        if (baseline === null) {
+          baseline = currentIncome;
+          return 100;
+        }
+
+        return ((currentIncome / baseline) * 100).toFixed(2);
+      });
+    })();
+
+    const selected = keyColor.find((k) => k.key === keyString) || keyColor[0];
     return {
       labels,
       series: [
         {
-          name: 'Growth Rate (%)',
+          name: `${selected.value} Growth Rate (%)`,
           type: 'line',
           fill: 'gradient',
-          color: '#FFC107', // Yellow color to match the image
+          color: selected.textColor,
           data: growthData,
         },
       ],
@@ -83,6 +88,10 @@ export default function GrowthRateChart({
   };
 
   const growthRateData = calculateGrowthData();
+
+  const absoluteMax = Math.max(
+    ...growthRateData.series.flatMap((s) => s.data.map((value) => Math.abs(value)))
+  );
 
   const chartOptions = useChart({
     colors: ['#FFC107'], // Yellow color
@@ -92,7 +101,6 @@ export default function GrowthRateChart({
     },
     fill: {
       type: 'solid',
-      // type: 'gradient',
       gradient: {
         shade: 'light',
         type: 'vertical',
@@ -103,20 +111,17 @@ export default function GrowthRateChart({
       },
     },
     tooltip: {
-      y: {
-        formatter: (value) => `${value.toFixed(2)}%`,
-      },
+      y: { formatter: (value) => `${Number(value).toFixed(2)}%` },
     },
     yaxis: {
-      min: -120,
-      max: 30,
+      min: -absoluteMax,
+      max: absoluteMax,
       labels: {
         formatter: (value) => `${value.toFixed(1)}%`,
         style: {
           colors: '#637381',
         },
       },
-      tickAmount: 6,
     },
     xaxis: {
       categories: growthRateData.labels,
@@ -130,17 +135,6 @@ export default function GrowthRateChart({
       borderColor: '#F4F6F8',
       strokeDashArray: 3,
     },
-    // markers: {
-    //   size: 4,
-    //   colors: ['#FFC107'],
-    //   strokeColors: '#FFFFFF',
-    //   strokeWidth: 2,
-    // },
-    // xaxis: {
-    //   labels: {
-    //     show: false,
-    //   },
-    // },
   });
 
   return (
@@ -153,7 +147,21 @@ export default function GrowthRateChart({
         },
       }}
     >
-      <CardHeader title={title} subheader={subheader} />
+      <CardHeader
+        title={title}
+        subheader={subheader}
+        action={
+          <CustomSelect
+            callBackAction={(value) => setKeyString(value)}
+            defaultValue={keyString}
+            labelKey="value"
+            valueKey="key"
+            menuList={keyColor}
+            size="small"
+            sx={{ width: 120 }}
+          />
+        }
+      />
       <Box sx={{ p: 2 }}>
         <Chart
           dir="ltr"

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { ImgUrl } from 'src/constance';
 
@@ -48,17 +47,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const HeaderPDF = ({ subHeader }) => {
-  const { SelectBranch } = useSelector((state) => state?.master?.BranchesList || {});
-  return (
-    <View style={styles.header} fixed>
-      <Image style={styles.logo} src={`${ImgUrl}${SelectBranch?.ImgPath}`} />
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={styles.headerText}>{SelectBranch?.BranchName}</Text>
-        <Text style={styles.subHeaderText}>{subHeader || ''}</Text>
-      </View>
+const HeaderPDF = ({ subHeader, SelectBranch }) => (
+  <View style={styles.header} fixed>
+    <Image style={styles.logo} src={`${ImgUrl}${SelectBranch?.ImgPath}`} />
+    <View style={{ alignItems: 'flex-end' }}>
+      <Text style={styles.headerText}>{SelectBranch?.BranchName}</Text>
+      <Text style={styles.subHeaderText}>{subHeader || ''}</Text>
     </View>
-  );
-};
+  </View>
+);
 
 export default HeaderPDF;

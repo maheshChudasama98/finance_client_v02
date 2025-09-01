@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import moment from 'moment';
 
@@ -39,14 +40,15 @@ const styles = StyleSheet.create({
 });
 
 const PagePDF = ({ title, ChildComponent, setFlag }) => {
+  const { SelectBranch } = useSelector((state) => state?.master?.BranchesList || {});
   useEffect(() => {
     const generatePDF = async () => {
       const blob = await pdf(
         <Document>
           <Page size="A4" style={styles.page}>
-            <HeaderPDF subHeader={title} />
+            <HeaderPDF subHeader={title} SelectBranch={SelectBranch} />
             <ChildComponent />
-            <FooterPDF title={title} />
+            <FooterPDF title={title} SelectBranch={SelectBranch} />
           </Page>
         </Document>
       ).toBlob();

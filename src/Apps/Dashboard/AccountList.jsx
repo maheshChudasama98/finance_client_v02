@@ -19,7 +19,7 @@ import Iconify from 'src/components/iconify';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-export default function AccountList() {
+export default function AccountList({ setCurrentBalance }) {
   const dispatch = useDispatch();
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,15 @@ export default function AccountList() {
     dispatch(
       AccountsFetchListService({}, (res) => {
         if (res?.status) {
-          setAccounts(res?.data?.list || []);
+          const filterData = res?.data?.list?.filter((i) => i.TypeId === 1 || i.TypeId === 2);
+
+          const total = filterData.reduce(
+            (sum, account) => sum + Number(account.CurrentAmount || 0),
+            0
+          );
+          setCurrentBalance(total);
+
+          setAccounts(filterData || []);
         } else {
           console.error('Failed to fetch accounts:', res?.message);
         }
@@ -97,8 +105,8 @@ export default function AccountList() {
                 spaceBetween: 10,
               },
               480: {
-                slidesPerView: 2.2,
-                spaceBetween: 12,
+                slidesPerView: 1.2,
+                spaceBetween: 10,
               },
               768: {
                 slidesPerView: 3.2,
@@ -125,6 +133,7 @@ export default function AccountList() {
                     py: 1,
                     borderRadius: 0.8,
                     width: '100%',
+                    minWidth: 250,
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

@@ -608,6 +608,7 @@ export default function Index() {
               onClick={showDisplayAction}
               variant="contained"
               color="success"
+              size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
