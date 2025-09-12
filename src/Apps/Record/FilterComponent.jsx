@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -7,7 +7,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Unstable_Grid2';
 
 import { TransactionActions } from 'src/constance';
-import { TransactionFetchDataService } from 'src/Services/Transaction.Services';
+// import { TransactionFetchDataService } from 'src/Services/Transaction.Services';
 
 import { TextFieldForm, DatePickerCustom, AutoCompleteSelectMultiple } from 'src/components/inputs';
 
@@ -17,8 +17,8 @@ import * as Yup from 'yup';
 
 import dayjs from 'dayjs';
 
-export default function FilterComponent({ backAction, defaultValue }) {
-  const dispatch = useDispatch();
+export default function FilterComponent({ backAction, defaultValue, dataList }) {
+  // const dispatch = useDispatch();
   const [loader, setLoader] = useState(true);
   const [accountList, setAccountList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -27,17 +27,17 @@ export default function FilterComponent({ backAction, defaultValue }) {
   const [subCategoriesList, setSubCategoriesList] = useState([]);
 
   useEffect(() => {
-    setLoader(true);
-    dispatch(
-      TransactionFetchDataService((res) => {
-        setLoader(false);
-        setAccountList(res?.accountList || []);
-        setCategoriesList(res?.categoriesList || []);
-        setLabelsList(res?.labelsList || []);
-        setPartyList(res?.partyList || []);
-        setSubCategoriesList(res?.subCategoriesList || []);
-      })
-    );
+    // setLoader(true);
+    // dispatch(
+    // TransactionFetchDataService((res) => {
+    setAccountList(dataList?.accountList || []);
+    setCategoriesList(dataList?.categoriesList || []);
+    setLabelsList(dataList?.labelsList || []);
+    setPartyList(dataList?.partyList || []);
+    setSubCategoriesList(dataList?.subCategoriesList || []);
+    setLoader(false);
+    // })
+    // );
   }, []);
 
   if (loader)

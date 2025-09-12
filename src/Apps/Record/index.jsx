@@ -19,6 +19,7 @@ import { formatToINR } from 'src/utils/format-number';
 
 import { setDisplayFlag } from 'src/redux/actions/common';
 import {
+  TransactionFetchDataService,
   TransactionFetchListService,
   TransactionRemoveController,
 } from 'src/Services/Transaction.Services';
@@ -49,6 +50,7 @@ export default function Index() {
   const [FilterBy, setFilterBy] = useState({});
   const [Duration, setDuration] = useState(DefaultDuration || 'Last_Thirty_Days');
   const [downloadFlag, setDownloadFlag] = useState(false);
+  const [dataList, setDataList] = useState({});
 
   const showDisplayAction = () => {
     dispatch(setDisplayFlag(!displayFlag));
@@ -191,6 +193,14 @@ export default function Index() {
     { totalIn: 0, totalOut: 0, netTotal: 0 }
   );
 
+  useEffect(() => {
+    dispatch(
+      TransactionFetchDataService((res) => {
+        setDataList(res);
+      })
+    );
+  }, []);
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 0 } }}>
       <Card sx={{ borderRadius: 2, boxShadow: 'none' }}>
@@ -322,7 +332,7 @@ export default function Index() {
                     }}
                   />
 
-                  <Box sx={{ display: 'list-item' }}>
+                  <Box sx={{}}>
                     <Badge badgeContent={count > 0 ? count : null} color="error">
                       <Button
                         ref={anchorRef}
@@ -387,6 +397,7 @@ export default function Index() {
                   }}
                 >
                   <FilterComponent
+                    dataList={dataList}
                     defaultValue={FilterBy}
                     backAction={(e) => {
                       setFilterBy(e);

@@ -375,10 +375,9 @@ export function overrides(theme) {
             fontSize: 14,
             borderRadius: 5,
             backgroundColor: theme.palette.grey[200],
-            maxHeight: 45,
-            minHeight: 45,
+            padding: '6px 8px',
             '& .MuiOutlinedInput-input': {
-              padding: '12px 12px',
+              padding: '6px 8px',
             },
             '& .MuiOutlinedInput-notchedOutline': {
               legend: {
@@ -388,6 +387,8 @@ export function overrides(theme) {
             '& fieldset': {
               top: 0, // remove notch offset
             },
+            // height: 45,
+            // minHeight: 45,
             // '& .MuiOutlinedInput-notchedOutline': {
             //   border: `1px solid ${theme.palette.grey[300]}`,
             // },
@@ -418,7 +419,8 @@ export function overrides(theme) {
             fontSize: 14,
             borderRadius: 5,
             backgroundColor: theme.palette.grey[200],
-            padding: '4px 5px',
+            padding: '6px 8px',
+            // padding: '4px 5px',
             // minHeight: 55,
             // margin: 0,
             // '& .MuiAutocomplete-input': {

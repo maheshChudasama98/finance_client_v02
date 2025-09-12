@@ -48,8 +48,8 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
               More effectively with optimized workflows.
             </Typography>
             <img
-              style={{ width: 500, height: 'auto' }}
-              src="/assets/background/illustration-dashboard.webp"
+              style={{ width: 700, height: 'auto' }}
+              src="/assets/background/background.png"
               alt="Dashboard illustration"
             />
           </Stack>
