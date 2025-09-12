@@ -192,7 +192,7 @@ export default function Index() {
   );
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
+    <Box sx={{ paddingX: { xs: 0, sm: 0 } }}>
       <Card sx={{ borderRadius: 2, boxShadow: 'none' }}>
         <CardHeader
           title={
@@ -292,33 +292,12 @@ export default function Index() {
               <Box
                 sx={{
                   flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 1.5,
                   alignItems: { xs: 'stretch', sm: 'center' },
-                  display: { xs: 'flex', sm: 'grid', md: 'flex' },
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+                  gap: 1.5,
+                  display: { xs: 'flex', sm: 'flex' },
+                  justifyContent: 'space-between',
                 }}
               >
-                <CustomButtonGroup
-                  defaultValue={Duration}
-                  onSelect={(value) => {
-                    setDuration(value);
-                  }}
-                />
-                <Box>
-                  <Badge badgeContent={count > 0 ? count : null} color="error">
-                    <Button
-                      ref={anchorRef}
-                      size="small"
-                      color="success"
-                      variant="outlined"
-                      onClick={handleToggle}
-                      startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
-                    >
-                      Filter
-                    </Button>
-                  </Badge>
-                </Box>
-
                 <Button
                   variant="contained"
                   color="primary"
@@ -329,6 +308,35 @@ export default function Index() {
                 >
                   Download
                 </Button>
+                <Box
+                  sx={{
+                    gap: 1.5,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <CustomButtonGroup
+                    defaultValue={Duration}
+                    onSelect={(value) => {
+                      setDuration(value);
+                    }}
+                  />
+
+                  <Box sx={{ display: 'list-item' }}>
+                    <Badge badgeContent={count > 0 ? count : null} color="error">
+                      <Button
+                        ref={anchorRef}
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                        onClick={handleToggle}
+                        startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+                      >
+                        Filter
+                      </Button>
+                    </Badge>
+                  </Box>
+                </Box>
               </Box>
             </Box>
 
@@ -354,6 +362,7 @@ export default function Index() {
                 </Box>
               </ClickAwayListener>
             </Popper> */}
+
             <Drawer anchor="right" open={open} onClose={handleClickAway}>
               <Box
                 sx={{
