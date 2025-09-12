@@ -38,15 +38,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const FooterPDF = ({ title, SelectBranch }) => (
+const FooterPDF = ({ title }) => (
   <View style={styles.footer} fixed>
     <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
 
-    <Text>
-      {title || ''} {fDate(moment())}
-    </Text>
+    <Text>{title || ''}</Text>
 
-    <Text>{SelectBranch?.BranchName}</Text>
+    <Text>{fDate(moment())}</Text>
   </View>
 );
 

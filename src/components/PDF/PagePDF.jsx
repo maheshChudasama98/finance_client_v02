@@ -41,6 +41,16 @@ const styles = StyleSheet.create({
 
 const PagePDF = ({ title, ChildComponent, setFlag }) => {
   const { SelectBranch } = useSelector((state) => state?.master?.BranchesList || {});
+
+  // const MyDocument = () => (
+  //   <Document>
+  //     <Page size="A4" style={styles.page}>
+  //       <HeaderPDF subHeader={title} SelectBranch={SelectBranch} />
+  //       <ChildComponent />
+  //       <FooterPDF title={title} SelectBranch={SelectBranch} />
+  //     </Page>
+  //   </Document>
+  // );
   useEffect(() => {
     const generatePDF = async () => {
       const blob = await pdf(
@@ -61,6 +71,11 @@ const PagePDF = ({ title, ChildComponent, setFlag }) => {
   }, []);
 
   return null;
+  // return (
+  //   <PDFViewer height="600" width="800">
+  //     <MyDocument />
+  //   </PDFViewer>
+  // );
 };
 
 export default PagePDF;

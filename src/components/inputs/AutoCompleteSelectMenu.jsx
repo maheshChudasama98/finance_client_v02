@@ -9,7 +9,7 @@ import { shadows } from 'src/theme/shadows';
 
 import { Empty } from 'antd';
 
-export const AutoCompleteSelectMenu = ({ formik, label, field, menuList, valueKey, labelKey, required = true, unitType, startUnitType, callBackAction, ...props }) => {
+export const AutoCompleteSelectMenu = ({ formik, label, field, menuList = [], valueKey = 'key', labelKey = 'value', required = true, unitType, startUnitType, callBackAction, ...props }) => {
 
     const handleChange = (e, value) => {
         const selectedPesticideId = value?.[valueKey] || '';
@@ -20,14 +20,22 @@ export const AutoCompleteSelectMenu = ({ formik, label, field, menuList, valueKe
         }
     };
 
+    // Safe value finding with null checks
+    const getSelectedValue = () => {
+        if (!menuList || !Array.isArray(menuList) || !formik?.values?.[field]) {
+            return null;
+        }
+        return menuList.find((option) => option?.[valueKey] === formik.values[field]) || null;
+    };
+
     return (
         <Autocomplete
             fullWidth
             id={field}
             name={field}
-            options={menuList}
+            options={menuList || []}
             getOptionLabel={(option) => option?.[labelKey] || " "}
-            value={menuList.find((option) => option[valueKey] === formik.values[field]) || null}
+            value={getSelectedValue()}
             onChange={handleChange}
             renderInput={(params) => (
                 <TextField

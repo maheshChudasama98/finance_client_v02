@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
@@ -20,6 +21,7 @@ export default function DashboardSummary({
   currentYearData = {},
   lastMonth = [],
   lastYearData = {},
+  loading,  
 }) {
   const { isAmountVisible } = useAmountVisibility();
 
@@ -77,7 +79,7 @@ export default function DashboardSummary({
   return (
     <Grid container spacing={3}>
       {metrics.map((metric, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid item xs={12} sm={12} md={4} key={index}>
           <Card
             sx={{
               height: '100%',
@@ -100,80 +102,90 @@ export default function DashboardSummary({
                   fontSize: '0.75rem',
                 }}
               >
-                {metric.title}
+                {loading ? <Skeleton variant="text" width="60%" height={15} /> : metric.title}
               </Typography>
-
-              {/* Amount */}
-              <Box sx={{ mb: 0.5 }}>
-                <AnimatedCounter
-                  value={metric.current}
-                  format={metric.format || 'currency'}
-                  variant="h4"
-                  duration={1500}
-                  sx={{
-                    fontWeight: 700,
-                    color: 'text.primary',
-                    lineHeight: 1.2,
-                  }}
-                />
-              </Box>
-
-              {/* Progress Bar */}
-              <Box sx={{ mb: 0.5 }}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 1 }}
-                >
-                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                    Monthly Change
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: '0.75rem',
-                      color: getMetricColor(metric.title, metric.previous),
-                    }}
-                  >
-                    {metric.previous >= 0 ? '+' : ''}
-                    {metric?.previous ? metric?.previous?.toFixed(1) : '00.0'}%
-                  </Typography>
-                </Stack>
-                <LinearProgress
-                  variant="determinate"
-                  value={Math.min(Math.abs(metric.previous), 100)}
-                  sx={{
-                    height: 6,
-                    borderRadius: 3,
-                    backgroundColor: 'grey.200',
-                    '& .MuiLinearProgress-bar': {
-                      borderRadius: 3,
-                      backgroundColor: getMetricColor(metric.title, metric.previous),
-                    },
-                  }}
-                />
-              </Box>
-
-              {/* Year over Year */}
-              <Box>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                    vs Last Year
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: '0.75rem',
-                      color: 'text.primary',
-                    }}
-                  >
-                    {formatToINR(metric.lastYear, isAmountVisible)}
-                  </Typography>
-                </Stack>
-              </Box>
+              {loading ? (
+                <Skeleton variant="rounded" width="100%" height={90} />
+              ) : (
+                <>
+                  <Box sx={{ mb: 0.5 }}>
+                    <AnimatedCounter
+                      value={metric.current}
+                      format={metric.format || 'currency'}
+                      variant="h4"
+                      duration={1500}
+                      sx={{
+                        fontWeight: 700,
+                        color: 'text.primary',
+                        lineHeight: 1.2,
+                      }}
+                    />
+                  </Box>
+                  {/* Progress Bar */}
+                  <Box sx={{ mb: 0.5 }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mb: 1 }}
+                    >
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.75rem' }}
+                      >
+                        Monthly Change
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          fontSize: '0.75rem',
+                          color: getMetricColor(metric.title, metric.previous),
+                        }}
+                      >
+                        {metric.previous >= 0 ? '+' : ''}
+                        {metric?.previous ? metric?.previous?.toFixed(1) : '00.0'}%
+                      </Typography>
+                    </Stack>
+                    <LinearProgress
+                      variant="determinate"
+                      value={Math.min(Math.abs(metric.previous), 100)}
+                      sx={{
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: 'grey.200',
+                        '& .MuiLinearProgress-bar': {
+                          borderRadius: 3,
+                          backgroundColor: getMetricColor(metric.title, metric.previous),
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* Year over Year */}
+                  <Box>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: '0.75rem' }}
+                      >
+                        vs Last Year
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 600,
+                          fontSize: '0.75rem',
+                          color: 'text.primary',
+                        }}
+                      >
+                        {formatToINR(metric.lastYear, isAmountVisible)}
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </>
+              )}
             </CardContent>
           </Card>
         </Grid>

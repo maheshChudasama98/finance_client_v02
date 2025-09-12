@@ -5,13 +5,13 @@ import FinanceCalculator from 'src/Apps/FinanceCalculator';
 // ----------------------------------------------------------------------
 
 export default function FinanceCalculatorPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Finance Calculator </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Finance Calculator </title>
+      </Helmet>
 
-            <FinanceCalculator />
-        </>
-    );
-} 
+      <FinanceCalculator />
+    </>
+  );
+}

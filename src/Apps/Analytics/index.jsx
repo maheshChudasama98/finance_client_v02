@@ -437,10 +437,10 @@ export default function Index() {
             onChange={handleChange}
           >
             <Tab value="5" label="Enhanced Analytics" />
-            <Tab value="0" label="Overview" />
+            {/* <Tab value="0" label="Overview" /> */}
             <Tab value="1" label="Categories" />
             <Tab value="2" label="Sub Categories" />
-            <Tab value="3" label="Performance" />
+            {/* <Tab value="3" label="Performance" /> */}
             <Tab value="6" label="Accounts" />
             {/* <Tab value="4" label="Detailed Analysis" /> */}
           </Tabs>

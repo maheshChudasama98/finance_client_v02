@@ -14,7 +14,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 
 import { useRouter } from 'src/routes/hooks';
 
-import { LoginApiAction, InfoApiActionService } from 'src/Services/Auth.Services';
+import { SignupApiAction, InfoApiActionService } from 'src/Services/Auth.Services';
 
 import { TextFieldForm } from 'src/components/inputs';
 import { CustomAuthBackend } from 'src/components/CustomComponents';
@@ -27,7 +27,7 @@ import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function SignupView() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const router = useRouter();
@@ -45,6 +45,8 @@ export default function LoginView() {
 
   const handleSubmitAction = async (values, { setSubmitting }) => {
     const payload = {
+      UserFirstName: values.UserFirstName,
+      UserLastName: values.UserLastName,
       UserEmail: values.UserEmail,
       UserPassword: values.UserPassword,
     };
@@ -57,21 +59,24 @@ export default function LoginView() {
 
     try {
       dispatch(
-        LoginApiAction(payload, (response) => {
+        SignupApiAction(payload, (response) => {
           setIsLoading(false);
           setIsSubmitting(false);
           setSubmitting(false);
 
           if (response?.status) {
             setErrorMsg(null);
-            setSuccessMsg('Login successful! Redirecting to dashboard...');
-            dispatch(
-              InfoApiActionService((res) => {
-                router.push('/dashboard');
-              })
-            );
+            setSuccessMsg('Account created successfully! Redirecting to dashboard...');
+
+            setTimeout(() => {
+              dispatch(
+                InfoApiActionService((res) => {
+                  router.push('/dashboard');
+                })
+              );
+            }, 1500);
           } else {
-            setErrorMsg(response?.message || 'Invalid email or password. Please try again.');
+            setErrorMsg(response?.message || 'An error occurred during signup. Please try again.');
             setSuccessMsg(null);
           }
         })
@@ -87,16 +92,24 @@ export default function LoginView() {
 
   return (
     <CustomAuthBackend
-      titleString="Sign in to your account"
-      height={{ xs: '70%', md: '100%' }}
+      titleString="Get started absolutely free"
+      height={{ xs: '50%', md: '100%' }}
       ChildComponent={
         <Formik
           enableReinitialize
           initialValues={{
+            UserFirstName: '',
+            UserLastName: '',
             UserEmail: '',
             UserPassword: '',
           }}
           validationSchema={Yup.object().shape({
+            UserFirstName: Yup.string()
+              .min(2, 'First name must be at least 2 characters')
+              .required('First name is required'),
+            UserLastName: Yup.string()
+              .min(2, 'Last name must be at least 2 characters')
+              .required('Last name is required'),
             UserEmail: Yup.string()
               .email('Please enter a valid email address')
               .matches(
@@ -105,7 +118,11 @@ export default function LoginView() {
               )
               .required('Email is required'),
             UserPassword: Yup.string()
-              .min(1, 'Password is required')
+              .min(6, 'Password must be at least 6 characters')
+              .matches(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+              )
               .required('Password is required'),
           })}
           onSubmit={handleSubmitAction}
@@ -129,11 +146,22 @@ export default function LoginView() {
 
                 <TextFieldForm
                   formik={props}
+                  label="First Name"
+                  field="UserFirstName"
+                  disabled={isLoading}
+                />
+                <TextFieldForm
+                  formik={props}
+                  label="Last Name"
+                  field="UserLastName"
+                  disabled={isLoading}
+                />
+                <TextFieldForm
+                  formik={props}
                   label="Email"
                   field="UserEmail"
                   disabled={isLoading}
                 />
-
                 <TextFieldForm
                   formik={props}
                   label="Password"
@@ -160,40 +188,28 @@ export default function LoginView() {
                     ),
                   }}
                 />
-              </Stack>
 
-              <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-                <Link
-                  variant="subtitle2"
-                  underline="hover"
-                  onClick={() => !isLoading && router.push('/forgot-password')}
-                  sx={{
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
-                    opacity: isLoading ? 0.5 : 1,
-                  }}
-                >
-                  Forgot password?
-                </Link>
+                {!successMsg && (
+                  <Button
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    disabled={isLoading || isSubmitting || !props.isValid}
+                    startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                    sx={{
+                      minHeight: 48,
+                      '&:disabled': {
+                        backgroundColor: theme.palette.grey[300],
+                        color: theme.palette.grey[500],
+                      },
+                    }}
+                  >
+                    {isSubmitting ? 'Creating Account...' : 'Sign up'}
+                  </Button>
+                )}
               </Stack>
-
-              <Button
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                color="success"
-                disabled={isLoading || isSubmitting || !props.isValid}
-                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
-                sx={{
-                  minHeight: 48,
-                  '&:disabled': {
-                    backgroundColor: theme.palette.grey[300],
-                    color: theme.palette.grey[500],
-                  },
-                }}
-              >
-                {isSubmitting ? 'Signing in...' : 'Login'}
-              </Button>
             </Form>
           )}
         </Formik>
@@ -208,18 +224,17 @@ export default function LoginView() {
             opacity: isLoading ? 0.5 : 1,
           }}
         >
-          Don&apos;t have an account?
+          Do you already have an account?{' '}
           <Link
             variant="subtitle2"
             underline="hover"
-            onClick={() => !isLoading && router.push('/signup')}
+            onClick={() => !isLoading && router.push('/login')}
             sx={{
               cursor: isLoading ? 'not-allowed' : 'pointer',
               opacity: isLoading ? 0.5 : 1,
             }}
           >
-            {' '}
-            Sign up
+            Sign in
           </Link>
         </Typography>
       }

@@ -5,11 +5,17 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { formatToINR } from 'src/utils/format-number';
+
 import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
 export default function OverView({ chart, height, subheader, title, ...other }) {
+  const { isAmountVisible } = useAmountVisibility();
+
   const { labels, colors, series, options } = chart;
 
   const chartOptions = useChart({
@@ -40,7 +46,8 @@ export default function OverView({ chart, height, subheader, title, ...other }) 
       y: {
         formatter: (value) => {
           if (typeof value !== 'undefined') {
-            return `${value?.toLocaleString('en-IN') || value || '0'} `;
+            // return `${value?.toLocaleString('en-IN') || value || '0'} `;
+            return formatToINR(value || 0, isAmountVisible);
           }
           return value;
         },

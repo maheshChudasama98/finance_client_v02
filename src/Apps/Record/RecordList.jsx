@@ -24,7 +24,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
   const { isAmountVisible } = useAmountVisibility();
 
   const chipStyles = {
-    fontSize: { xs: 10, sm: 11},
+    fontSize: { xs: 10, sm: 11 },
     borderRadius: 1,
     fontWeight: 700,
     // height: { xs: 24, sm: 28 },
@@ -457,11 +457,17 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
             </Grid>
 
             {/* Tags and Description for Mobile */}
-            {(record?.TagList?.length > 0 || record?.Description) && (
+            {/* {record?.TagList?.length > 0 && (
               <Box sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
                 {renderTags(record)}
-                {renderDescription(record)}
               </Box>
+            )} */}
+
+            {(record?.TagList?.length > 0 || record?.Description) && (
+              <>
+                {renderDescription(record)}
+                {renderTags(record)}
+              </>
             )}
           </Box>
         </Card>

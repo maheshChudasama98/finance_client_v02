@@ -7,6 +7,10 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { formatToINR } from 'src/utils/format-number';
+
 import { TimeDurationList } from 'src/constance';
 import {
   DashboardService,
@@ -25,10 +29,11 @@ import GrowthRateChart from './GrowthRateChart';
 import LoadingSkeleton from './LoadingSkeleton';
 import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
-import MonthlyOverviewPDF from './MonthlyOverviewPDF';
+import YearlyOverviewPDF from '../../DocumentToPDF/YearlyOverviewPDF';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const { isAmountVisible } = useAmountVisibility();
 
   const DefaultTimeFrame = localStorage.getItem('DefaultTimeFrame');
   const DefaultDuration = localStorage.getItem('DefaultDuration');
@@ -135,19 +140,35 @@ export default function Index() {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: { xs: 3, md: 0 } }}>
-            <Button
-              variant="contained"
-              color="success"
-              startIcon={<i className="fa-solid fa-download" />}
-              onClick={() => setDownloadFlag(true)}
-              disabled={currentYearBaseLoader}
-            >
-              Download
-            </Button>
+            {!downloadFlag && (
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<i className="fa-solid fa-download" />}
+                onClick={() => setDownloadFlag(true)}
+                disabled={currentYearBaseLoader}
+              >
+                Download
+              </Button>
+            )}
+
+            {downloadFlag && (
+              <YearlyOverviewPDF
+                setFlag={setDownloadFlag}
+                selectedYear={selectedYear}
+                currentYearData={currentYearBaseData}
+                lastYearData={lastYearBaseData}
+                currentMonth={currentMonth}
+                lastMonth={lastMonth}
+                currentYearMonthBaseData={currentYearMonthBaseData}
+                // dataFlowIncrement={dataFlowIncrement}
+                // topCategories={topTen}
+              />
+            )}
             <DateRangePicker
               disableFuture
               format="YYYY"
-              label="Select Year"
+              label=""
               onChange={(event) => {
                 setSelectedYear(event);
               }}
@@ -158,7 +179,11 @@ export default function Index() {
             />
           </Box>
         </Box>
+        <AccountList setCurrentBalance={setCurrentBalance} />
+      </Box>
 
+      {/* Account List Section */}
+      <Box sx={{ mb: 2 }}>
         <DashboardSummary
           currentYearData={currentYearBaseData}
           lastYearData={lastYearBaseData}
@@ -166,11 +191,6 @@ export default function Index() {
           lastMonth={lastMonth}
           loading={currentYearBaseLoader}
         />
-      </Box>
-
-      {/* Account List Section */}
-      <Box sx={{ mb: 2 }}>
-        <AccountList setCurrentBalance={setCurrentBalance} />
       </Box>
 
       {/* Quick Insights */}
@@ -364,7 +384,8 @@ export default function Index() {
                           opts.dataPointIndex === Number((cashFlowData?.length || 0) - 1) ||
                           null
                         ) {
-                          return val?.toLocaleString('en-IN');
+                          // return val?.toLocaleString('en-IN');
+                          return formatToINR(val, isAmountVisible);
                         }
                         return '';
                       },
@@ -410,50 +431,50 @@ export default function Index() {
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={6}>
-            <OverView
-              title="Investment Overview"
-              height={280}
-              chart={{
-                labels:
-                  currentYearMonthBaseData?.length > 0
-                    ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
-                    : [],
-                series: [
-                  {
-                    name: 'Investment',
-                    type: 'column',
-                    fill: 'solid',
-                    color: '#00B8D9',
-                    data:
-                      currentYearMonthBaseData?.length > 0
-                        ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
-                        : [],
-                  },
-                ],
-              }}
-            />
+            {currentYearBaseLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <OverView
+                title="Investment Overview"
+                height={280}
+                chart={{
+                  labels:
+                    currentYearMonthBaseData?.length > 0
+                      ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
+                      : [],
+                  series: [
+                    {
+                      name: 'Investment',
+                      type: 'column',
+                      fill: 'solid',
+                      color: '#00B8D9',
+                      data:
+                        currentYearMonthBaseData?.length > 0
+                          ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
+                          : [],
+                    },
+                  ],
+                }}
+              />
+            )}
           </Grid>
 
           {/* Growth Rate Chart */}
           <Grid item xs={12} lg={6}>
-            <GrowthRateChart monthlyData={currentYearMonthBaseData} title="Monthly Growth Rate" />
+            {currentYearBaseLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <GrowthRateChart
+                loading={currentYearBaseLoader}
+                monthlyData={currentYearMonthBaseData}
+                title="Monthly Growth Rate"
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
 
       {/* PDF Download Component */}
-      {downloadFlag && (
-        <MonthlyOverviewPDF
-          currentYearData={currentYearBaseData}
-          lastYearData={lastYearBaseData}
-          currentMonth={currentMonth}
-          lastMonth={lastMonth}
-          currentYearMonthData={currentYearMonthBaseData}
-          topCategories={topTen}
-          selectedYear={selectedYear}
-          setFlag={setDownloadFlag}
-        />
-      )}
     </Container>
   );
 }

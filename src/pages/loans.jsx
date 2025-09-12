@@ -8,7 +8,7 @@ export default function LoansPage() {
   return (
     <>
       <Helmet>
-        <title> Loans </title>
+        <title>{__PROJECT_NAME__} | Loans </title>
       </Helmet>
 
       <Loans />

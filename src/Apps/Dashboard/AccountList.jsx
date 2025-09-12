@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -8,6 +9,8 @@ import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
+
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
 import { lightenColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
@@ -20,9 +23,13 @@ import Iconify from 'src/components/iconify';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 export default function AccountList({ setCurrentBalance }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { isAmountVisible } = useAmountVisibility();
 
   useEffect(() => {
     fetchAccounts();
@@ -59,7 +66,7 @@ export default function AccountList({ setCurrentBalance }) {
         <CardContent>
           <Grid container spacing={2}>
             {[1, 2, 3, 4].map((item) => (
-              <Grid item xs={12} sm={6} md={3} key={item}>
+              <Grid item xs={3} sm={6} md={3} key={item}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Skeleton variant="circular" width={40} height={40} />
                   <Box sx={{ flex: 1 }}>
@@ -94,11 +101,6 @@ export default function AccountList({ setCurrentBalance }) {
               delay: 5000,
               disableOnInteraction: false,
             }}
-            // pagination={{
-            //   clickable: true,
-            //   dynamicBullets: true,
-            // }}
-            // navigation={true}
             breakpoints={{
               320: {
                 slidesPerView: 1.2,
@@ -121,6 +123,9 @@ export default function AccountList({ setCurrentBalance }) {
             {accounts.map((account) => (
               <SwiperSlide key={account.AccountId}>
                 <Card
+                  onClick={() => {
+                    navigate('/accounts', { state: { accountId: account.AccountId } });
+                  }}
                   sx={{
                     backgroundColor: lightenColor(account?.Color, 0.2),
                     cursor: 'pointer',
@@ -173,7 +178,7 @@ export default function AccountList({ setCurrentBalance }) {
                           fontWeight: 700,
                         }}
                       >
-                        {formatToINR(account.CurrentAmount || 0)}
+                        {formatToINR(account.CurrentAmount || 0, isAmountVisible)}
                       </Typography>
                     </Stack>
                   </Box>

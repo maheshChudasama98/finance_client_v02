@@ -8,7 +8,7 @@ export default function NotFoundPage() {
   return (
     <>
       <Helmet>
-        <title> 404 Page Not Found </title>
+        <title>{__PROJECT_NAME__} | 404 Page Not Found </title>
       </Helmet>
 
       <NotFoundView />

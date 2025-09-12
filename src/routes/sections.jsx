@@ -5,6 +5,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
+export const SignupPage = lazy(() => import('src/pages/signup'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
 export const ChangePasswordPage = lazy(() => import('src/pages/change.password'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
@@ -33,6 +34,7 @@ export const LoansPage = lazy(() => import('src/pages/loans'));
 export default function Router({ permissionList }) {
   const CommRoutes = [
     { path: 'login', element: <LoginPage />, index: true },
+    { path: 'signup', element: <SignupPage />, index: true },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
     { path: '*', element: <Page404 /> },
     { path: '', element: <Navigate to="login" replace /> },
@@ -78,7 +80,11 @@ export default function Router({ permissionList }) {
         { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
         { path: '/change-password', element: <ChangePasswordPage />, title: 'Change Password' },
         { path: '/profile', element: <ProfilePage />, title: 'Profile' },
-        { path: '/finance-calculator', element: <FinanceCalculatorPage />, title: 'Finance Calculator' },
+        {
+          path: '/finance-calculator',
+          element: <FinanceCalculatorPage />,
+          title: 'Finance Calculator',
+        },
       ],
     },
     ...CommRoutes,

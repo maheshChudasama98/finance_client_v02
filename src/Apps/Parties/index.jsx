@@ -566,7 +566,7 @@ export default function Index() {
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
-          sx={{ marginBottom: 2 }}
+          sx={{ marginBottom: 2, paddingX: { xs: 2, sm: 3 }, paddingY: 2 }}
           action={
             <Button
               onClick={showDisplayAction}

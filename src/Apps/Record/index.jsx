@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Badge from '@mui/material/Badge';
-import Popper from '@mui/material/Popper';
+import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { useTheme } from '@mui/material/styles';
@@ -12,9 +12,11 @@ import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
 
-import { shadows } from 'src/theme/shadows';
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { formatToINR } from 'src/utils/format-number';
+
 import { setDisplayFlag } from 'src/redux/actions/common';
 import {
   TransactionFetchListService,
@@ -33,6 +35,7 @@ import FilterComponent from './FilterComponent';
 export default function Index() {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { isAmountVisible } = useAmountVisibility();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const DefaultDuration = localStorage.getItem('DefaultDuration');
@@ -168,7 +171,7 @@ export default function Index() {
     return true;
   };
 
-  const count = Object.values(FilterBy).filter(hasValue).length;
+  const count = Object.values(FilterBy)?.filter(hasValue).length;
 
   const filterHeader = (field, value) => {
     setFilterBy((prev) => ({
@@ -189,7 +192,7 @@ export default function Index() {
   );
 
   return (
-    <Box sx={{ paddingX: { xs: 1, sm: 2 } }}>
+    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card sx={{ borderRadius: 2, boxShadow: 'none' }}>
         <CardHeader
           title={
@@ -227,11 +230,10 @@ export default function Index() {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+                gridTemplateColumns: 'repeat(2, 1fr)',
                 gap: 2,
-                paddingX: { xs: 2, sm: 3 },
+                paddingX: { xs: 1, sm: 3 },
                 paddingY: 2,
-                // backgroundColor: (theme) => theme.palette.grey[50],
                 borderBottom: 1,
                 borderColor: 'divider',
               }}
@@ -240,8 +242,8 @@ export default function Index() {
                 <Typography variant="body2" color="text.secondary">
                   Total In
                 </Typography>
-                <Typography variant="h6" color="success.main" sx={{ fontWeight: 700 }}>
-                  ₹{summaryTotals.totalIn.toLocaleString()}
+                <Typography variant="body1" color="success.main" sx={{ fontWeight: 700 }}>
+                  {formatToINR(summaryTotals.totalIn, isAmountVisible)}
                 </Typography>
               </Card>
 
@@ -249,23 +251,23 @@ export default function Index() {
                 <Typography variant="body2" color="text.secondary">
                   Total Out
                 </Typography>
-                <Typography variant="h6" color="error.main" sx={{ fontWeight: 700 }}>
-                  ₹{summaryTotals.totalOut.toLocaleString()}
+                <Typography variant="body1" color="error.main" sx={{ fontWeight: 700 }}>
+                  {formatToINR(summaryTotals.totalOut, isAmountVisible)}
                 </Typography>
               </Card>
 
-              <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#f0f8ff' }}>
+              {/* <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#f0f8ff' }}>
                 <Typography variant="body2" color="text.secondary">
                   Net Total
                 </Typography>
                 <Typography
-                  variant="h6"
+                  variant="body1"
                   color={summaryTotals.netTotal >= 0 ? 'success.main' : 'error.main'}
                   sx={{ fontWeight: 700 }}
                 >
-                  ₹{summaryTotals.netTotal.toLocaleString()}
+                  {formatToINR(summaryTotals.netTotal, isAmountVisible)}
                 </Typography>
-              </Card>
+              </Card> */}
             </Box>
 
             {/* Search and Filter Section */}
@@ -281,15 +283,19 @@ export default function Index() {
               }}
             >
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <CustomSearchInput callBack={setSearchValue} />
+                <CustomSearchInput
+                  callBack={setSearchValue}
+                  sx={{ width: { xs: '100%', md: 300 } }}
+                />
               </Box>
 
               <Box
                 sx={{
-                  display: 'flex',
                   flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 1,
+                  gap: 1.5,
                   alignItems: { xs: 'stretch', sm: 'center' },
+                  display: { xs: 'flex', sm: 'grid', md: 'flex' },
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
                 }}
               >
                 <CustomButtonGroup
@@ -298,6 +304,20 @@ export default function Index() {
                     setDuration(value);
                   }}
                 />
+                <Box>
+                  <Badge badgeContent={count > 0 ? count : null} color="error">
+                    <Button
+                      ref={anchorRef}
+                      size="small"
+                      color="success"
+                      variant="outlined"
+                      onClick={handleToggle}
+                      startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+                    >
+                      Filter
+                    </Button>
+                  </Badge>
+                </Box>
 
                 <Button
                   variant="contained"
@@ -307,26 +327,12 @@ export default function Index() {
                   onClick={() => setDownloadFlag(true)}
                   disabled={loadingLoader || arrayObject.length === 0}
                 >
-                  Download PDF
+                  Download
                 </Button>
-
-                <Badge badgeContent={count > 0 ? count : null} color="error">
-                  <Button
-                    ref={anchorRef}
-                    size="small"
-                    color="success"
-                    variant="outlined"
-                    onClick={handleToggle}
-                    // sx={{ ml: 1 }}
-                    startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
-                  >
-                    Filter
-                  </Button>
-                </Badge>
               </Box>
             </Box>
 
-            <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
+            {/* <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
               <ClickAwayListener onClickAway={handleClickAway}>
                 <Box
                   sx={{
@@ -347,7 +353,40 @@ export default function Index() {
                   />
                 </Box>
               </ClickAwayListener>
-            </Popper>
+            </Popper> */}
+            <Drawer anchor="right" open={open} onClose={handleClickAway}>
+              <Box
+                sx={{
+                  width: { xs: '90vw', sm: 400, md: 600 },
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 600,
+                    py: 2.5,
+                    px: 2.5,
+                    background: theme.palette.success.main,
+                    color: '#FFF',
+                  }}
+                >
+                  Filter
+                </Typography>
+                <Box
+                  sx={{
+                    p: 1,
+                  }}
+                >
+                  <FilterComponent
+                    defaultValue={FilterBy}
+                    backAction={(e) => {
+                      setFilterBy(e);
+                      handleClickAway();
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Drawer>
 
             {/* Content Area */}
             {loadingLoader ? (

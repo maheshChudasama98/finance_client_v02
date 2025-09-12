@@ -1,11 +1,11 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
+// import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
-import Tabs from '@mui/material/Tabs';
+// import Tabs from '@mui/material/Tabs';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -34,7 +34,7 @@ export default function EnhancedAnalytics({
   onYearChange,
 }) {
   const { isAmountVisible } = useAmountVisibility();
-  const [selectedView, setSelectedView] = useState('overview');
+  // const [selectedView, setSelectedView] = useState('overview');
 
   // const handleChartTypeChange = (event, newType) => {
   //   if (newType !== null) {
@@ -42,11 +42,11 @@ export default function EnhancedAnalytics({
   //   }
   // };
 
-  const handleViewChange = (event, newView) => {
-    if (newView !== null) {
-      setSelectedView(newView);
-    }
-  };
+  // const handleViewChange = (event, newView) => {
+  //   if (newView !== null) {
+  //     setSelectedView(newView);
+  //   }
+  // };
 
   // Calculate summary statistics
   const summaryStats = {
@@ -302,21 +302,6 @@ export default function EnhancedAnalytics({
         title={
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography variant="h5">Enhanced Financial Analytics</Typography>
-          </Stack>
-        }
-        action={
-          <Stack direction="row" spacing={2} sx={{ mb: 3 }} alignItems="center">
-            <Tabs
-              value={selectedView}
-              onChange={handleViewChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="scrollable auto tabs example"
-            >
-              <Tab label="Overview" value="overview" />
-              <Tab label="Trends" value="trends" />
-              <Tab label="Breakdown" value="breakdown" />
-            </Tabs>
           </Stack>
         }
       />

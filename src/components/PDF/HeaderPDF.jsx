@@ -26,23 +26,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
-    paddingBottom: 15,
+    marginBottom: 10,
+    paddingBottom: 10,
     borderBottom: '2 solid #5BC43A',
   },
   headerText: {
-    fontSize: '24px',
+    fontSize: '20px',
     fontFamily: 'Roboto',
     fontWeight: 'bold',
     color: '#5BC43A',
   },
   subHeaderText: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#666',
     marginTop: 5,
   },
   logo: {
-    height: '60px',
+    height: '40px',
     width: 'auto',
   },
 });

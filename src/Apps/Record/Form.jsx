@@ -611,7 +611,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
             <Form noValidate>
               <Grid
                 container
-                spacing={2}
+                spacing={{ xs: 1, sm: 2 }}
                 sx={{
                   paddingY: 2,
                   paddingX: 2,
@@ -710,17 +710,17 @@ export default function Index({ backAction, editObject, deleteAction }) {
                             }}
                           >
                             <CustomAvatar
-                              width={45}
-                              height={45}
+                              width={{ xs: 40, md: 40, lg: 40 }}
+                              height={{ xs: 40, md: 40, lg: 40 }}
                               icon={option?.Icon || ''}
                               iconSize={15}
                               bgColor={option?.Color || ''}
                             />
-                            <Typography variant="normal" sx={{ mx: 2 }}>
+                            <Typography variant="body2" fontWeight={500} sx={{ mx: 1 }}>
                               {option?.AccountName || ''}
                             </Typography>
                           </Box>
-                          <Typography variant="light" sx={{}}>
+                          <Typography variant="body2">
                             {formatToINR(option?.CurrentAmount)}{' '}
                           </Typography>
                         </Box>
@@ -729,8 +729,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
                     startUnitType={
                       values?.AccountId ? (
                         <CustomAvatar
-                          width={45}
-                          height={45}
+                          width={{ xs: 40, md: 40, lg: 40 }}
+                          height={{ xs: 40, md: 40, lg: 40 }}
                           iconSize={15}
                           icon={
                             accountList?.find((item) => item?.AccountId === props.values.AccountId)
@@ -798,13 +798,13 @@ export default function Index({ backAction, editObject, deleteAction }) {
                                 }}
                               >
                                 <CustomAvatar
-                                  width={45}
-                                  height={45}
+                                  width={{ xs: 40, md: 40, lg: 40 }}
+                                  height={{ xs: 40, md: 40, lg: 40 }}
                                   icon={option?.Icon || ''}
                                   iconSize={15}
                                   bgColor={option?.Color || ''}
                                 />
-                                <Typography variant="normal" sx={{ mx: 2 }}>
+                                <Typography variant="body2" fontWeight={500} sx={{ mx: 1 }}>
                                   {option?.CategoryName || ''}
                                 </Typography>
                               </Box>
@@ -814,8 +814,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
                         startUnitType={
                           values?.CategoryId ? (
                             <CustomAvatar
-                              width={45}
-                              height={45}
+                              width={{ xs: 40, md: 40, lg: 40 }}
+                              height={{ xs: 40, md: 40, lg: 40 }}
                               iconSize={15}
                               icon={
                                 categoriesList?.find(
@@ -869,8 +869,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
                                 }}
                               >
                                 <CustomAvatar
-                                  width={45}
-                                  height={45}
+                                  width={{ xs: 40, md: 40, lg: 40 }}
+                                  height={{ xs: 40, md: 40, lg: 40 }}
                                   icon={option?.Icon || ''}
                                   iconSize={15}
                                   bgColor={
@@ -879,7 +879,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                                     )?.Color || ''
                                   }
                                 />
-                                <Typography variant="normal" sx={{ mx: 2 }}>
+                                <Typography variant="body2" fontWeight={500} sx={{ mx: 1 }}>
                                   {option?.SubCategoriesName || ''}
                                 </Typography>
                               </Box>
@@ -897,8 +897,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
 
                                 return (
                                   <CustomAvatar
-                                    width={45}
-                                    height={45}
+                                    width={{ xs: 40, md: 40, lg: 40 }}
+                                    height={{ xs: 40, md: 40, lg: 40 }}
                                     iconSize={15}
                                     bgColor={
                                       categoriesList?.find(
@@ -948,13 +948,13 @@ export default function Index({ backAction, editObject, deleteAction }) {
                               }}
                             >
                               <CustomAvatar
-                                width={45}
-                                height={45}
+                                width={{ xs: 40, md: 40, lg: 40 }}
+                                height={{ xs: 40, md: 40, lg: 40 }}
                                 icon={option?.Icon || ''}
                                 iconSize={15}
                                 bgColor={option?.Color || ''}
                               />
-                              <Typography variant="normal" sx={{ mx: 2 }}>
+                              <Typography variant="body2" fontWeight={500} sx={{ mx: 1 }}>
                                 {option?.AccountName || ''}
                               </Typography>
                             </Box>
@@ -967,8 +967,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       startUnitType={
                         values?.TransferToAccountId ? (
                           <CustomAvatar
-                            width={45}
-                            height={45}
+                            width={{ xs: 40, md: 40, lg: 40 }}
+                            height={{ xs: 40, md: 40, lg: 40 }}
                             iconSize={15}
                             icon={
                               accountList?.find(
@@ -1030,12 +1030,12 @@ export default function Index({ backAction, editObject, deleteAction }) {
                               <CustomAvatar
                                 photoURL={option?.ImgPath || ''}
                                 displayName={option?.PartyAvatar || ''}
-                                width={45}
-                                height={45}
+                                width={{ xs: 40, md: 40, lg: 40 }}
+                                height={{ xs: 40, md: 40, lg: 40 }}
                                 icon={option?.Icon || ''}
                                 bgColor={option?.Color || ''}
                               />
-                              <Typography variant="normal" sx={{ mx: 2 }}>
+                              <Typography variant="body2" fontWeight={500} sx={{ mx: 1 }}>
                                 {option?.FullName || ''}
                               </Typography>
                             </Box>
@@ -1048,8 +1048,8 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       startUnitType={
                         values?.PartyId ? (
                           <CustomAvatar
-                            width={45}
-                            height={45}
+                            width={{ xs: 40, md: 40, lg: 40 }}
+                            height={{ xs: 40, md: 40, lg: 40 }}
                             iconSize={15}
                             photoURL={
                               partyList?.find((item) => item?.PartyId === props.values.PartyId)

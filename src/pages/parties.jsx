@@ -5,13 +5,13 @@ import Parties from 'src/Apps/Parties';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Parties </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Parties </title>
+      </Helmet>
 
-            <Parties />
-        </>
-    );
-} 
+      <Parties />
+    </>
+  );
+}

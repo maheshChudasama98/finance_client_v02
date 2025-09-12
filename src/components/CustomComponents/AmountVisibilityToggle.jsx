@@ -25,9 +25,9 @@ export default function AmountVisibilityToggle({ sx, ...other }) {
         {...other}
       >
         <Iconify
-          icon={isAmountVisible ? 'eva:eye-off-fill' : 'eva:eye-fill'}
+          icon={!isAmountVisible ? 'eva:eye-off-fill' : 'eva:eye-fill'}
           sx={{
-            color: isAmountVisible ? 'text.secondary' : 'primary.main',
+            color: !isAmountVisible ? 'text.secondary' : 'primary.main',
           }}
         />
       </IconButton>

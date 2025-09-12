@@ -52,9 +52,9 @@ export function formatToINR(value, isAmountVisible = true) {
 
   if (!isAmountVisible) {
     const lastTwoDigits = Math.floor(number % 100);
-    return `***${lastTwoDigits.toString().padStart(2, '0')}`;
+    return `***${lastTwoDigits.toString().padStart(2, '0')} /-`;
   }
-  return formatter.format(number).replace('₹', '₹ ');
+  return `${formatter.format(number).replace('₹', '₹ ')} /-`;
 }
 
 export function FormatToINR(value) {

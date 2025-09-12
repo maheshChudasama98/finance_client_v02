@@ -1,16 +1,16 @@
 import { Helmet } from 'react-helmet-async';
 
-import UserViewPage from 'src/Apps/UserViewPage';
+import { SignupView } from 'src/Apps/Auth/signup';
 
 // ----------------------------------------------------------------------
 
-export default function AppPage() {
+export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title>{__PROJECT_NAME__} | Notices </title>
+        <title>{__PROJECT_NAME__} | Sign Up</title>
       </Helmet>
-      <UserViewPage />
+      <SignupView />
     </>
   );
 }

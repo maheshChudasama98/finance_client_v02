@@ -19,6 +19,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { fDate } from 'src/utils/format-time';
 import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
@@ -45,6 +47,8 @@ import PerformanceComponent from './Performance';
 export default function Index() {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { isAmountVisible } = useAmountVisibility();
+
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [apiFlag, setApiFlag] = useState(false);
@@ -155,7 +159,11 @@ export default function Index() {
         {item?.TypeId ? AccountTypes?.find((e) => e?.key === item?.TypeId)?.value : ''}
       </Typography>
     ),
-    StartAmount: <Typography variant="light">{formatToINR(item?.StartAmount) || '-'}</Typography>,
+    StartAmount: (
+      <Typography variant="light">
+        {formatToINR(item?.StartAmount, isAmountVisible) || '-'}
+      </Typography>
+    ),
     CurrentAmount: (
       <Typography
         variant="light"
@@ -163,10 +171,14 @@ export default function Index() {
           color: item?.CurrentAmount < item?.MinAmount ? 'red' : '',
         }}
       >
-        {formatToINR(item?.CurrentAmount) || '-'}
+        {formatToINR(item?.CurrentAmount, isAmountVisible) || '-'}
       </Typography>
     ),
-    MinAmount: <Typography variant="light">{formatToINR(item?.MinAmount) || '-'}</Typography>,
+    MinAmount: (
+      <Typography variant="light">
+        {formatToINR(item?.MinAmount) || '-'}
+      </Typography>
+    ),
     MaxAmount: <Typography variant="light">{formatToINR(item?.MaxAmount) || '-'}</Typography>,
     Used: (
       <Box>
@@ -401,7 +413,7 @@ export default function Index() {
                       color: item?.CurrentAmount < 0 ? 'error.main' : 'primary.main',
                     }}
                   >
-                    {formatToINR(item?.CurrentAmount) || '-'}
+                    {formatToINR(item?.CurrentAmount , isAmountVisible) || '-'}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
                     Current Balance
@@ -602,7 +614,7 @@ export default function Index() {
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
-          sx={{ marginBottom: 2 }}
+          sx={{ marginBottom: 2, paddingX: { xs: 2, sm: 3 }, paddingY: 2 }}
           action={
             <Button
               onClick={showDisplayAction}

@@ -19,11 +19,11 @@ import CompoundInterestCalculator from './CompoundInterestCalculator';
 // ----------------------------------------------------------------------
 
 const CALCULATOR_TABS = [
-  {
-    value: 'basic',
-    label: 'Basic Calculator',
-    icon: 'eva:calculator-fill',
-  },
+  // {
+  //   value: 'basic',
+  //   label: 'Basic Calculator',
+  //   icon: 'eva:calculator-fill',
+  // },
   {
     value: 'loan',
     label: 'Loan Calculator',
@@ -54,7 +54,7 @@ const CALCULATOR_TABS = [
 // ----------------------------------------------------------------------
 
 export default function FinanceCalculator() {
-  const [currentTab, setCurrentTab] = useState('basic');
+  const [currentTab, setCurrentTab] = useState('loan');
 
   const handleChangeTab = (event, newValue) => {
     setCurrentTab(newValue);
@@ -87,6 +87,8 @@ export default function FinanceCalculator() {
 
       <Card sx={{ p: 3 }}>
         <Tabs
+          variant="scrollable"
+          scrollButtons="auto"
           value={currentTab}
           onChange={handleChangeTab}
           sx={{
@@ -115,4 +117,4 @@ export default function FinanceCalculator() {
       </Card>
     </Box>
   );
-} 
+}
