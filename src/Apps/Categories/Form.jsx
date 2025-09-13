@@ -96,7 +96,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
-                  {editObject?.CategoryId && (
+                  {editObject?.CategoryId && editObject?.isPrimitive === 1 && (
                     <Button
                       variant="contained"
                       sx={{ marginX: 1 }}

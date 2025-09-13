@@ -9,9 +9,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { useTheme } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { fDate } from 'src/utils/format-time';
@@ -19,12 +17,11 @@ import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
 import { LabelActionService, LabelsFetchListService } from 'src/Services/Meter.Services';
 
-import SvgColor from 'src/components/svg-color';
 import Loader from 'src/components/Loaders/Loader';
 import { DataNotFound } from 'src/components/DataNotFound';
 import { CustomCheckbox, CustomSearchInput } from 'src/components/CustomComponents';
 
-import { Table, Dropdown } from 'antd';
+import { Table } from 'antd';
 
 import Form from './Form';
 
@@ -42,7 +39,6 @@ export default function Index() {
   const [accountsList, setAccountsList] = useState([]);
   const [editObject, setEditObject] = useState({});
   const [loadingSearchLoader, setLoadingSearchLoader] = useState(false);
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const StatusChange = (action, value, id) => {
     setLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
@@ -95,59 +91,42 @@ export default function Index() {
   }, [searchValue, apiFlag]);
 
   const columns = [
-    // {
-    //   title: '#',
-    //   dataIndex: 'Index',
-    //   key: 'Index',
-    //   width: '50px',
-    //   render: (text) => <Typography variant="">{text}</Typography>,
-    // },
     {
       title: 'Label',
       dataIndex: 'Label',
       key: 'Label',
-      render: (text) => <Typography variant=" ">{text}</Typography>,
     },
     {
-      title: 'Income',
-      dataIndex: 'In',
-      key: 'In',
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
       align: 'right',
       width: '15%',
     },
-    {
-      title: 'Expense',
-      dataIndex: 'Out',
-      key: 'Out',
-      align: 'right',
-      width: '15%',
-    },
-    // {
-    //   title: 'Used',
-    //   dataIndex: 'Used',
-    //   key: 'Used',
-    // },
-    {
-      title: 'Active',
-      dataIndex: 'Active',
-      key: 'Active',
-      align: 'right',
-      width: '10%',
-    },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'Action',
-    //   key: 'Action',
-    //   width: '100px',
-    // },
   ];
 
   const tableSetData = accountsList.map((item, index) => ({
     item,
     key: item?.LabelId,
     Index: index + 1 || '',
-    Label: item?.LabelName || '',
-    Color: item?.StartAmount || '-',
+    Label: (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+            {item?.LabelName || '-'}
+          </Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+            {fDate(item?.createdAt)}
+          </Typography>
+        </Box>
+      </Box>
+    ),
     Used: (
       <CustomCheckbox
         checked={item?.isUsing}
@@ -169,72 +148,56 @@ export default function Index() {
       />
     ),
     Action: (
-      <Dropdown
-        trigger={['click']}
-        menu={{
-          items: [
-            {
-              label: (
-                <Typography
-                  variant=""
-                  onClick={() => {
-                    setDisplayFlag(true);
-                    setEditObject(item);
-                  }}
-                >
-                  <Box display="flex" alignItems="center">
-                    <SvgColor
-                      src="/assets/icons/general/pen.svg"
-                      sx={{ width: 25, height: 25, mr: 2 }}
-                    />
-                    Edit
-                  </Box>
-                </Typography>
-              ),
-            },
-            {
-              label: (
-                <Typography
-                  variant=""
-                  color="error"
-                  onClick={() => {
-                    sweetAlertQuestion()
-                      .then((result) => {
-                        if (result === 'Yes') {
-                          StatusChange('isDeleted', true, item?.LabelId);
-                        }
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                      });
-                  }}
-                >
-                  <Box display="flex" alignItems="center" justifyContent="center">
-                    <SvgColor
-                      src="/assets/icons/general/trash.svg"
-                      sx={{ width: 25, height: 25, mr: 2 }}
-                    />
-                    Delete
-                  </Box>
-                </Typography>
-              ),
-            },
-          ],
-        }}
-        placement="bottomRight"
-        arrow={{ pointAtCenter: true }}
-      >
-        <IconButton size="small" sx={{ pointerEvents: 'auto' }}>
-          <MoreVertIcon fontSize="small" />
-        </IconButton>
-      </Dropdown>
+      <Box sx={{ display: 'inline-flex', gap: 1 }}>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDisplayFlag(true);
+            setEditObject(item);
+          }}
+          sx={{
+            fontSize: '0.7rem',
+            px: 1.5,
+            py: 0.5,
+            minWidth: 'auto',
+          }}
+        >
+          Edit
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          color="error"
+          onClick={(e) => {
+            e.stopPropagation();
+            sweetAlertQuestion()
+              .then((result) => {
+                if (result === 'Yes') {
+                  StatusChange('isDeleted', true, item?.LabelId);
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }}
+          sx={{
+            fontSize: '0.7rem',
+            px: 1.5,
+            py: 0.5,
+            minWidth: 'auto',
+          }}
+        >
+          Delete
+        </Button>
+      </Box>
     ),
   }));
 
   const handleRowClick = (record) => {
     setDisplayFlag(true);
     setEditObject(record?.item);
-    // setExpandedRowKeys([record.key]); // Set the clicked row as expanded
   };
 
   const titleAction = (display) => {
@@ -300,17 +263,6 @@ export default function Index() {
                     {fDate(item?.createdAt)}
                   </Typography>
                 </Box>
-
-                {/* <Box sx={{ textAlign: 'right', ml: 2 }}>
-                  <CustomCheckbox
-                    loading={loadingSwitch[item?.LabelId] && loadingSwitch?.action === 'isActive'}
-                    checked={item?.isActive}
-                    onClick={(e) => {
-                      StatusChange('isActive', !item?.isActive, item?.LabelId);
-                      e.stopPropagation();
-                    }}
-                  />
-                </Box> */}
               </Box>
 
               {/* Financial Summary Row */}
@@ -484,8 +436,8 @@ export default function Index() {
           title={titleAction(!displayFlag)}
           sx={{
             marginBottom: 2,
-            paddingX: { xs: 2, sm: 3 },
-            paddingY: 2,
+            // paddingX: { xs: 2, sm: 3 },
+            // paddingY: 2,
           }}
           action={
             <Button
@@ -558,28 +510,6 @@ export default function Index() {
                           className="custom-ant-table"
                           columns={columns}
                           dataSource={tableSetData}
-                          expandable={{
-                            expandedRowRender: (record) => (
-                              <Box sx={{ backgroundColor: '#fff', padding: 2 }}>
-                                <Form
-                                  backAction={showDisplayAction}
-                                  editObject={record?.item}
-                                  deletedAction={DeletedAction}
-                                  apiCallAction={() => {
-                                    setApiFlag(!apiFlag);
-                                  }}
-                                />
-                              </Box>
-                            ),
-                            rowExpandable: (record) => true,
-                            expandIcon: () => null,
-                            indentSize: 0,
-                            expandIconColumnIndex: -1,
-                          }}
-                          expandedRowKeys={expandedRowKeys}
-                          onExpand={(expanded, record) => {
-                            setExpandedRowKeys(expanded ? [record.key] : []);
-                          }}
                           onRow={(record) => ({
                             onClick: () => {
                               handleRowClick(record);

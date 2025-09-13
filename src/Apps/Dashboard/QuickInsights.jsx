@@ -26,9 +26,13 @@ export default function QuickInsights({
     return ((current - previous) / previous) * 100;
   };
 
+  // Handle both array and object formats for lastMonth
+  const lastMonthData = Array.isArray(lastMonth) ? lastMonth[0] || {} : lastMonth;
+  const currentMonthData = Array.isArray(currentMonth) ? currentMonth[0] || {} : currentMonth;
+
   const netIncome = (currentYearData?.totalIn || 0) - (currentYearData?.totalOut || 0);
-  const monthlyChange = calculatePercentageChange(currentMonth?.totalIn, lastMonth?.totalIn);
-  const expenseChange = calculatePercentageChange(currentMonth?.totalOut, lastMonth?.totalOut);
+  const monthlyChange = calculatePercentageChange(currentMonthData?.totalIn, lastMonthData?.totalIn);
+  const expenseChange = calculatePercentageChange(currentMonthData?.totalOut, lastMonthData?.totalOut);
 
   const insights = [
     {
@@ -119,8 +123,9 @@ export default function QuickInsights({
 }
 
 QuickInsights.propTypes = {
-  currentMonth: PropTypes.array,
+  currentMonth: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   currentYearData: PropTypes.object,
-  lastMonth: PropTypes.array,
+  lastMonth: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   topCategories: PropTypes.array,
+  currentBalance: PropTypes.number,
 };

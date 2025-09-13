@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import React, { useState,  } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
+import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
 
 import { MonthList } from 'src/constance';
 
 import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect } from 'src/components/CustomComponents';
 
-// Import our custom components
-import AccountAnalytics from './AccountAnalytics';
-
 export default function Index() {
+  const dispatch = useDispatch();
+
   const [categorySelectedDate, setCategorySelectedDate] = useState(new Date());
+
   const [tabValue, setTabValue] = useState(1);
+
   const [duration, setDuration] = useState('JAN');
 
   const handleChange = (event, newValue) => {
@@ -29,7 +31,6 @@ export default function Index() {
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      {/* Header Card */}
       <Card>
         <CardHeader
           title={
@@ -58,15 +59,12 @@ export default function Index() {
             />
           }
         />
-
-        <Divider sx={{ mx: 2 }} />
-
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             px: 2,
-            // mb: 2,
+            mb: 2,
           }}
         >
           <Tabs
@@ -76,11 +74,11 @@ export default function Index() {
             value={tabValue}
             onChange={handleChange}
           >
-            <Tab value={1} label="Accounts" />
-            <Tab value={2} label="Parties" />
-            <Tab value={3} label="Categories" />
-            <Tab value={4} label="Sub Categories" />
-            <Tab value={5} label="Labels" />
+            <Tab value={1} label="Accounts" iconPosition="start" />
+            <Tab value={2} label="Parties" iconPosition="start" />
+            <Tab value={3} label="Categories" iconPosition="start" />
+            <Tab value={4} label="Sub Categories" iconPosition="start" />
+            <Tab value={5} label="Labels" iconPosition="start" />
           </Tabs>
 
           <Box>
@@ -95,41 +93,8 @@ export default function Index() {
             />
           </Box>
         </Box>
+        <Divider sx={{ mx: 2 }} />
       </Card>
-
-      <Box sx={{ mt: 2 }}>{tabValue === 1 && <AccountAnalytics />}</Box>
-
-      {/* Main Content */}
-      {/* <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-       
-        <AnalyticsSidebar
-          title={`All ${getTabTitle()}`}
-          icon={getTabIcon(tabValue)}
-          items={currentData}
-          selectedItem={selectedItem}
-          onItemSelect={handleItemSelect}
-          showTrends
-        />
-
-       
-        <Box sx={{ flex: 1 }}>
-          <AnalyticsOverview data={currentData} title={getTabTitle()} />
-
-          <AnalyticsCharts
-            data={currentData}
-            title={getTabTitle()}
-            monthlyTrends={analyticsData.monthlyTrends || []}
-            selectedItem={selectedItem}
-          />
-
-          <ItemDetails
-            selectedItem={selectedItem}
-            tabTitle={getTabTitle()}
-            monthlyTrends={analyticsData.monthlyTrends || []}
-            getTabIcon={() => getTabIcon(tabValue)}
-          />
-        </Box>
-      </Box> */}
     </Box>
   );
 }

@@ -1,7 +1,7 @@
 {
   "name": "@minimal/material-kit-react",
   "author": "Mr.yug chudasama",
-  "version": "1.0.23",
+  "version": "1.0.32",
   "private": false,
   "type": "module",
   "scripts": {
@@ -94,5 +94,5 @@
     "vite": "^4.4.11",
     "vite-plugin-checker": "^0.6.2"
   },
-  "buildTime": "2025-09-11T14:52:11.942Z"
+  "buildTime": "2025-09-13T11:32:19.140Z"
 }

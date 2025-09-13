@@ -89,6 +89,20 @@ export const TimeDurationList = [
   { Key: 'MONTH', Value: 'Monthly' },
   { Key: 'YEAR', Value: 'Yearly' },
 ];
+export const MonthList = [
+  { Key: 'JAN', Value: 'January' },
+  { Key: 'FEB', Value: 'February' },
+  { Key: 'MAR', Value: 'March' },
+  { Key: 'APR', Value: 'April' },
+  { Key: 'MAY', Value: 'May' },
+  { Key: 'JUN', Value: 'June' },
+  { Key: 'JUL', Value: 'July' },
+  { Key: 'AUG', Value: 'August' },
+  { Key: 'SEP', Value: 'September' },
+  { Key: 'OCT', Value: 'October' },
+  { Key: 'NOV', Value: 'November' },
+  { Key: 'DEC', Value: 'December' },
+];
 
 export const SettingDurationList = [
   { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },

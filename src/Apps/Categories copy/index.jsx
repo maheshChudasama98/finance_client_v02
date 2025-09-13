@@ -85,75 +85,6 @@ export default function Index() {
   }, [displayFlag]);
 
   useEffect(() => {
-    if (editObject?.CategoryId) {
-      const key = editObject?.CategoryId ? editObject?.CategoryId : null;
-
-      const details = recodeList?.find((e) => e?.CategoryId === key);
-
-      setCustomSubCategory(
-        details?.SubCategories?.length > 0
-          ? details?.SubCategories?.map((subItem, i) => ({
-              i,
-              key: i,
-              item: subItem,
-              SubCategoriesName: (
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <CustomTooltip label={subItem.Description || ''} Placement="right">
-                    <CustomAvatar
-                      width={{ xs: 35, md: 35, lg: 38 }}
-                      height={{ xs: 35, md: 35, lg: 38 }}
-                      iconSize={14}
-                      icon={subItem?.Icon || ''}
-                      bgColor={details?.Color || ''}
-                    />
-                  </CustomTooltip>
-                  <Typography variant="light">
-                    {subItem?.SubCategoriesName}
-                    <Typography
-                      variant="light"
-                      color="text.secondary"
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      {fDate(subItem?.createdAt)}
-                    </Typography>
-                  </Typography>
-                </Stack>
-              ),
-              Income: (
-                <Typography variant="light">
-                  {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
-                </Typography>
-              ),
-              Expense: (
-                <Typography variant="light">
-                  {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
-                </Typography>
-              ),
-              Active: (
-                <CustomCheckbox
-                  checked={subItem?.isActive}
-                  loading={
-                    subLoadingSwitch[subItem?.SubCategoryId] &&
-                    subLoadingSwitch?.action === 'isActive'
-                  }
-                  onClick={(e) => {
-                    SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
-                    e.stopPropagation();
-                  }}
-                />
-              ),
-            }))
-          : []
-      );
-
-      setSubEditObject({});
-      setDisplayFlag(true);
-      setSubDisplayFlag(false);
-      setEditObject(details);
-    }
-  }, [recodeList]);
-
-  useEffect(() => {
     if (!displayFlag) {
       setLoadingSearchLoader(true);
       const payLoad = {
@@ -189,33 +120,26 @@ export default function Index() {
       key: 'CategoryName',
     },
     {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
+      title: 'Income',
+      dataIndex: 'Income',
+      key: 'Income',
       align: 'right',
       width: '15%',
     },
-    // {
-    //   title: 'Income',
-    //   dataIndex: 'Income',
-    //   key: 'Income',
-    //   align: 'right',
-    //   width: '15%',
-    // },
-    // {
-    //   title: 'Expense',
-    //   dataIndex: 'Expense',
-    //   key: 'Expense',
-    //   align: 'right',
-    //   width: '15%',
-    // },
-    // {
-    //   title: 'Active',
-    //   dataIndex: 'Active',
-    //   key: 'Active',
-    //   align: 'right',
-    //   width: '10%',
-    // },
+    {
+      title: 'Expense',
+      dataIndex: 'Expense',
+      key: 'Expense',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      align: 'right',
+      width: '10%',
+    },
   ];
 
   const subColumns = [
@@ -224,13 +148,20 @@ export default function Index() {
       dataIndex: 'SubCategoriesName',
       key: 'SubCategoriesName',
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'Action',
-    //   key: 'Action',
-    //   align: 'right',
-    //   width: '20%',
-    // },
+    {
+      title: 'Income',
+      dataIndex: 'Income',
+      key: 'Income',
+      align: 'right',
+      width: '15%',
+    },
+    {
+      title: 'Expense',
+      dataIndex: 'Expense',
+      key: 'Expense',
+      align: 'right',
+      width: '15%',
+    },
   ];
 
   const tableSetData = recodeList.map((item, index) => ({
@@ -293,55 +224,65 @@ export default function Index() {
       />
     ),
     Action: (
-      <Box sx={{ display: 'inline-flex', gap: 1 }}>
-        {item?.isPrimitive === 1 && (
-          <>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={(e) => {
-                e.stopPropagation();
-                setDisplayFlag(true);
-                setEditObject(item);
-                setTabValue('1');
-              }}
-              sx={{
-                fontSize: '0.7rem',
-                px: 1.5,
-                py: 0.5,
-                minWidth: 'auto',
-              }}
-            >
-              Edit
-            </Button>
-            <Button
-              size="small"
-              variant="outlined"
-              color="error"
-              onClick={(e) => {
-                e.stopPropagation();
-                sweetAlertQuestion()
-                  .then((result) => {
-                    if (result === 'Yes') {
-                      StatusChange('isDeleted', true, item?.CategoryId);
-                    }
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              }}
-              sx={{
-                fontSize: '0.7rem',
-                px: 1.5,
-                py: 0.5,
-                minWidth: 'auto',
-              }}
-            >
-              Delete
-            </Button>
-          </>
-        )}
-      </Box>
+      <Dropdown
+        trigger={['click']}
+        menu={{
+          items: [
+            {
+              label: (
+                <Typography
+                  variant="light"
+                  onClick={() => {
+                    setDisplayFlag(true);
+                    setEditObject(item);
+                  }}
+                >
+                  <Box display="flex" alignItems="center">
+                    <SvgColor
+                      src="/assets/icons/general/pen.svg"
+                      sx={{ width: 25, height: 25, mr: 2 }}
+                    />
+                    Edit
+                  </Box>
+                </Typography>
+              ),
+            },
+            {
+              label: (
+                <Typography
+                  variant="light"
+                  color="error"
+                  onClick={() => {
+                    sweetAlertQuestion()
+                      .then((result) => {
+                        if (result === 'Yes') {
+                          StatusChange('isDeleted', true, item?.CategoryId);
+                        }
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
+                >
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    <SvgColor
+                      src="/assets/icons/general/trash.svg"
+                      sx={{ width: 25, height: 25, mr: 2 }}
+                    />
+                    Delete
+                  </Box>
+                </Typography>
+              ),
+            },
+          ],
+        }}
+        placement="bottomRight"
+        arrow={{ pointAtCenter: true }}
+      >
+        <IconButton size="small" sx={{ pointerEvents: 'auto' }}>
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+      </Dropdown>
     ),
     child:
       item?.SubCategories?.length > 0
@@ -484,13 +425,7 @@ export default function Index() {
     setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
     dispatch(
       SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
-        dispatch(
-          CategoriesFetchListService({}, (res) => {
-            if (res?.status) {
-              setRecodesList(res?.data?.list);
-            }
-          })
-        );
+        setApiFlag(!apiFlag);
       })
     );
   };
@@ -527,7 +462,6 @@ export default function Index() {
       details?.SubCategories?.length > 0
         ? details?.SubCategories?.map((subItem, i) => ({
             i,
-            key: i,
             item: subItem,
             SubCategoriesName: (
               <Stack direction="row" alignItems="center" spacing={2}>
@@ -646,83 +580,6 @@ export default function Index() {
     setEditObject(details);
   };
 
-  const subCategoryAction = async (item) => {
-    let dataReCode = recodeList;
-    dispatch(
-      CategoriesFetchListService({}, (res) => {
-        if (res?.status) {
-          dataReCode = res?.data?.list;
-          setRecodesList(res?.data?.list);
-
-          const key = editObject?.CategoryId ? editObject?.CategoryId : item;
-
-          const details = dataReCode?.find((e) => e?.CategoryId === key);
-
-          setCustomSubCategory(
-            details?.SubCategories?.length > 0
-              ? details?.SubCategories?.map((subItem, i) => ({
-                  i,
-                  key: i,
-                  item: subItem,
-                  SubCategoriesName: (
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <CustomTooltip label={subItem.Description || ''} Placement="right">
-                        <CustomAvatar
-                          width={{ xs: 35, md: 35, lg: 38 }}
-                          height={{ xs: 35, md: 35, lg: 38 }}
-                          iconSize={14}
-                          icon={subItem?.Icon || ''}
-                          bgColor={details?.Color || ''}
-                        />
-                      </CustomTooltip>
-                      <Typography variant="light">
-                        {subItem?.SubCategoriesName}
-                        <Typography
-                          variant="light"
-                          color="text.secondary"
-                          sx={{ display: 'flex', alignItems: 'center' }}
-                        >
-                          {fDate(subItem?.createdAt)}
-                        </Typography>
-                      </Typography>
-                    </Stack>
-                  ),
-                  Income: (
-                    <Typography variant="light">
-                      {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
-                    </Typography>
-                  ),
-                  Expense: (
-                    <Typography variant="light">
-                      {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
-                    </Typography>
-                  ),
-                  Active: (
-                    <CustomCheckbox
-                      checked={subItem?.isActive}
-                      loading={
-                        subLoadingSwitch[subItem?.SubCategoryId] &&
-                        subLoadingSwitch?.action === 'isActive'
-                      }
-                      onClick={(e) => {
-                        SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
-                        e.stopPropagation();
-                      }}
-                    />
-                  ),
-                }))
-              : []
-          );
-
-          setSubEditObject({});
-          setDisplayFlag(true);
-          setSubDisplayFlag(false);
-          setEditObject(details);
-        }
-      })
-    );
-  };
-
   const ListCustomList = recodeList.map((item) => (
     <MenuItem key={item?.CategoryId} value={item?.CategoryId}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -742,12 +599,12 @@ export default function Index() {
 
   const MobileGrid = () => (
     <Box sx={{ p: 2 }}>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         {recodeList.map((item) => (
           <Grid item xs={12} sm={12} key={item?.CategoryId}>
             <Box
               sx={{
-                p: 1,
+                p: 2,
                 cursor: 'pointer',
                 border: '1px solid',
                 borderColor: 'divider',
@@ -766,6 +623,8 @@ export default function Index() {
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  mb: 2,
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
@@ -777,7 +636,7 @@ export default function Index() {
                     bgColor={item?.Color || ''}
                   />
                   <Box sx={{ ml: 1, flex: 1 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
                       {item?.CategoryName}
                     </Typography>
                     <Typography
@@ -790,54 +649,163 @@ export default function Index() {
                   </Box>
                 </Box>
 
-                <Box sx={{ justifyItems: 'center', alignItems: 'center', display: 'flex', gap: 1 }}>
-                  {item?.isPrimitive === 1 && (
-                    <>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDisplayFlag(true);
-                          setEditObject(item);
-                          setTabValue('1');
-                        }}
-                        sx={{
-                          fontSize: '0.7rem',
-                          px: 1.5,
-                          py: 0.5,
-                          minWidth: 'auto',
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        color="error"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          sweetAlertQuestion()
-                            .then((result) => {
-                              if (result === 'Yes') {
-                                StatusChange('isDeleted', true, item?.CategoryId);
-                              }
-                            })
-                            .catch((error) => {
-                              console.error(error);
-                            });
-                        }}
-                        sx={{
-                          fontSize: '0.7rem',
-                          px: 1.5,
-                          py: 0.5,
-                          minWidth: 'auto',
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </>
-                  )}
+                <Box sx={{ textAlign: 'right', ml: 2 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      color: 'success.main',
+                      fontSize: '0.8rem',
+                    }}
+                  >
+                    {/* {item?.TransactionSummary?.TotalInCome
+                      ? formatToINR(item?.TransactionSummary?.TotalInCome)
+                      : '-'} */}
+                    {item?.SubCategories?.length || 0}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                    Sub Categories
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Financial Summary Row */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Box sx={{ flex: 1 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                  >
+                    Expense
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 600, color: 'error.main', fontSize: '0.8rem' }}
+                  >
+                    {item?.TransactionSummary?.TotalExpense
+                      ? formatToINR(item?.TransactionSummary?.TotalExpense)
+                      : '-'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ flex: 1, textAlign: 'right' }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                  >
+                    Income
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 600, fontSize: '0.8rem', color: 'text.secondary' }}
+                  >
+                    {item?.TransactionSummary?.TotalInCome
+                      ? formatToINR(item?.TransactionSummary?.TotalInCome)
+                      : '-'}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Description Section */}
+              {item?.Description && (
+                <Box sx={{ mb: 2, p: 1.5, backgroundColor: 'grey.50', borderRadius: 1 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontSize: '0.7rem', display: 'block', mb: 0.5 }}
+                  >
+                    Description
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontSize: '0.8rem', lineHeight: 1.4 }}>
+                    {item?.Description}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Bottom Row: Status and Actions */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  pt: 1.5,
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomCheckbox
+                    loading={
+                      loadingSwitch[item?.CategoryId] && loadingSwitch?.action === 'isActive'
+                    }
+                    checked={item?.isActive}
+                    onClick={(e) => {
+                      StatusChange('isActive', !item?.isActive, item?.CategoryId);
+                      e.stopPropagation();
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ ml: 1, fontSize: '0.75rem' }}
+                  >
+                    {item?.isActive ? 'Active' : 'Inactive'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayFlag(true);
+                      setEditObject(item);
+                      setTabValue('1');
+                    }}
+                    sx={{
+                      fontSize: '0.7rem',
+                      px: 1.5,
+                      py: 0.5,
+                      minWidth: 'auto',
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="error"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sweetAlertQuestion()
+                        .then((result) => {
+                          if (result === 'Yes') {
+                            StatusChange('isDeleted', true, item?.CategoryId);
+                          }
+                        })
+                        .catch((error) => {
+                          console.error(error);
+                        });
+                    }}
+                    sx={{
+                      fontSize: '0.7rem',
+                      px: 1.5,
+                      py: 0.5,
+                      minWidth: 'auto',
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </Box>
               </Box>
             </Box>
@@ -847,25 +815,13 @@ export default function Index() {
     </Box>
   );
 
-  const deleteSubAction = (subItem) => {
-    sweetAlertQuestion()
-      .then((result) => {
-        if (result === 'Yes') {
-          SubStatusChange('isDeleted', true, subItem?.SubCategoryId);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
           sx={{
-            // marginBottom: 2,
+            marginBottom: 2,
             paddingX: { xs: 2, sm: 3 },
             paddingY: 2,
           }}
@@ -980,7 +936,7 @@ export default function Index() {
                 <Box
                   sx={{
                     margin: 2,
-                    display: 'flex',
+                    display: { sm: 'flex', xs: 'inline-block' },
                     justifyContent: 'end',
                     alignItems: 'center',
                   }}
@@ -1002,8 +958,6 @@ export default function Index() {
                     Category={editObject}
                     CategoryId={editObject.CategoryId}
                     Color={editObject.Color}
-                    backAction={subCategoryAction}
-                    deleteAction={deleteSubAction}
                   />
                 )}
 
@@ -1012,30 +966,12 @@ export default function Index() {
                   columns={subColumns}
                   dataSource={customSubCategory}
                   pagination={false}
-                  rowKey={(record) => record.key}
-                  expandable={{
-                    expandedRowRender: (record) =>
-                      record?.item?.isPrimitive === 1 && (
-                        <Box
-                          sx={{
-                            m: 2,
-                            borderRadius: 1,
-                            border: 'solid 1px #EEE',
-                          }}
-                        >
-                          <SubCategoriesForm
-                            editObject={record?.item}
-                            Category={editObject}
-                            CategoryId={editObject.CategoryId}
-                            Color={editObject.Color}
-                            backAction={subCategoryAction}
-                            deleteAction={deleteSubAction}
-                          />
-                        </Box>
-                      ),
-                    expandRowByClick: true,
-                    showExpandColumn: false,
-                  }}
+                  onRow={(subItem) => ({
+                    onClick: () => {
+                      setSubDisplayFlag(true);
+                      setSubEditObject(subItem.item);
+                    },
+                  })}
                 />
               </>
             )}

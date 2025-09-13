@@ -211,9 +211,7 @@ export default function Index() {
             </Typography>
           }
           sx={{
-            marginBottom: 1,
-            paddingX: { xs: 2, sm: 3 },
-            paddingY: 2,
+            marginBottom: 2,
           }}
           action={
             <Button
@@ -227,7 +225,7 @@ export default function Index() {
             </Button>
           }
         />
-
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
         {displayFlag ? (
           <Form
             backAction={showDisplayAction}

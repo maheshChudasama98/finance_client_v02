@@ -96,7 +96,8 @@ export default function Performance({ CategoryId }) {
 
   return (
     <Box>
-      <Box sx={{ placeSelf: 'end', m: 2, display: 'flex' }}>
+      
+      <Box sx={{ placeSelf: 'end', mb: 2, mx: 2, display: 'flex' }}>
         <CustomSelect
           valueKey="Key"
           labelKey="Value"

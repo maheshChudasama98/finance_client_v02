@@ -7,7 +7,7 @@ import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
-import Paper from '@mui/material/Paper';
+// import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -15,7 +15,6 @@ import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { ImgUrl } from 'src/constance';
-import { RoleListService } from 'src/Services/org/Org.Services';
 import {
   UserModifyService,
   SettingGetService,
@@ -50,8 +49,8 @@ function ProfileStats({ userDetails }) {
   const stats = [
     {
       label: 'Account Status',
-      value: userDetails?.IsActive ? 'Active' : 'Inactive',
-      color: userDetails?.IsActive ? 'success' : 'error',
+      value: !userDetails?.IsActive ? 'Active' : 'Inactive',
+      color: !userDetails?.IsActive ? 'success' : 'error',
       icon: 'eva:checkmark-circle-2-fill',
     },
     {
@@ -148,7 +147,7 @@ export default function Index({ backAction, editObject }) {
   const [imgUrl, setImgUrl] = useState(null);
   const [formSubmitLoader, setFormSubmitLoader] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const [rolesList, setRolesList] = useState([]);
+
   const [settings, setSettings] = useState({});
   const [settingsLoading, setSettingsLoading] = useState(false);
 
@@ -156,14 +155,6 @@ export default function Index({ backAction, editObject }) {
 
   // Fetch roles and settings on component mount
   useEffect(() => {
-    dispatch(
-      RoleListService((res) => {
-        if (res?.status) {
-          setRolesList(res?.data || []);
-        }
-      })
-    );
-
     dispatch(
       SettingGetService((res) => {
         if (res?.status) {
@@ -230,14 +221,14 @@ export default function Index({ backAction, editObject }) {
               Manage your personal information, preferences, and account settings
             </Typography>
           </Box>
-          <Button
+          {/* <Button
             variant="outlined"
             startIcon={<Iconify icon="eva:arrow-back-fill" />}
             onClick={backAction}
             sx={{ minWidth: 120 }}
           >
             Back
-          </Button>
+          </Button> */}
         </Stack>
 
         {/* Profile Stats */}
@@ -258,11 +249,11 @@ export default function Index({ backAction, editObject }) {
             icon={<Iconify icon="eva:person-fill" />}
             iconPosition="start"
           />
-          <Tab
+          {/* <Tab
             label="Account Settings"
             icon={<Iconify icon="eva:settings-2-fill" />}
             iconPosition="start"
-          />
+          /> */}
           <Tab
             label="Preferences"
             icon={<Iconify icon="eva:options-2-fill" />}
@@ -282,7 +273,6 @@ export default function Index({ backAction, editObject }) {
               UserEmail: userDetails?.Email || '',
               UserNumber: userDetails?.Mobile || '',
               Language: userDetails?.Language || 'EN',
-              RoleId: userDetails?.RoleId || '',
             }}
             validationSchema={Yup.object().shape({
               FirstName: Yup.string().required('First Name is required.'),
@@ -291,7 +281,6 @@ export default function Index({ backAction, editObject }) {
               UserNumber: Yup.string()
                 .matches(/^[0-9]+$/, 'Must be a valid number.')
                 .nullable(),
-              RoleId: Yup.number().required('Role is required.'),
             })}
             onSubmit={ActionSubmit}
           >
@@ -378,16 +367,6 @@ export default function Index({ backAction, editObject }) {
                               labelKey="value"
                             />
                           </Grid>
-                          <Grid item xs={12} md={6}>
-                            <AutoCompleteSelectMenu
-                              formik={props}
-                              field="RoleId"
-                              label="Role"
-                              menuList={rolesList}
-                              valueKey="key"
-                              labelKey="value"
-                            />
-                          </Grid>
                         </Grid>
 
                         <Divider sx={{ my: 3 }} />
@@ -428,7 +407,7 @@ export default function Index({ backAction, editObject }) {
         </TabPanel>
 
         {/* Account Settings Tab */}
-        <TabPanel value={tabValue} index={1}>
+        {/* <TabPanel value={tabValue} index={1}>
           <Card sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
               <Iconify icon="eva:settings-2-fill" width={20} height={20} sx={{ mr: 1 }} />
@@ -500,10 +479,10 @@ export default function Index({ backAction, editObject }) {
               </Grid>
             </Grid>
           </Card>
-        </TabPanel>
+        </TabPanel> */}
 
         {/* Preferences Tab */}
-        <TabPanel value={tabValue} index={2}>
+        <TabPanel value={tabValue} index={1}>
           <Formik
             enableReinitialize
             initialValues={{
@@ -608,7 +587,7 @@ export default function Index({ backAction, editObject }) {
         </TabPanel>
 
         {/* Activity Tab */}
-        <TabPanel value={tabValue} index={3}>
+        <TabPanel value={tabValue} index={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <ActivityTimeline />
