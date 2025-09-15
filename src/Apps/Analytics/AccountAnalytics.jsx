@@ -7,26 +7,50 @@ import Chip from '@mui/material/Chip';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
+import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Unstable_Grid2';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
+import SpeedIcon from '@mui/icons-material/Speed';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import LinearProgress from '@mui/material/LinearProgress';
 import ListItemButton from '@mui/material/ListItemButton';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import TableContainer from '@mui/material/TableContainer';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 import { formatToINR } from 'src/utils/format-number';
+import { MonthList, TimeDurationList } from 'src/constance';
 
 import { AccountsFetchListService } from 'src/Services/Meter.Services';
-
+import { CustomSelect } from 'src/components/CustomComponents';
 import { CustomAvatar } from 'src/components/CustomComponents';
 import { AnimatedChart, AnimatedCounter } from 'src/components/Animated';
 
 export default function AccountAnalytics() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(0);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const [accountsList, setAccountsList] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState('JAN');
+  const [timeFrame, setTimeFrame] = useState('MONTH');
+  const [loading, setLoading] = useState(false);
+  
   const [summaryData, setSummaryData] = useState({
     totalAccounts: 0,
     activeAccounts: 0,
@@ -36,12 +60,96 @@ export default function AccountAnalytics() {
     lowBalanceAccounts: 0,
   });
 
+  // Generate comprehensive time-based data
+  const generateTimeBasedData = () => {
+    const currentYear = selectedYear.getFullYear();
+    const monthIndex = MonthList.findIndex(month => month.Key === selectedMonth);
+    
+    // Generate detailed monthly trends
+    const monthlyTrends = MonthList.map((month, index) => {
+      const baseIncome = Math.floor(Math.random() * 200000) + 100000;
+      const baseExpense = Math.floor(Math.random() * 150000) + 80000;
+      const baseBalance = baseIncome - baseExpense;
+      
+      return {
+        month: month.Value,
+        income: baseIncome,
+        expense: baseExpense,
+        balance: baseBalance,
+        transactions: Math.floor(Math.random() * 100) + 20,
+        accountGrowth: accountsList.map(acc => {
+          const growth = Math.floor(Math.random() * 50) - 10;
+          const balance = Math.floor(Math.random() * 500000) + 10000;
+          const transactions = Math.floor(Math.random() * 50) + 5;
+          const income = Math.floor(Math.random() * 50000) + 10000;
+          const expense = Math.floor(Math.random() * 30000) + 5000;
+          
+          return {
+            accountId: acc.id,
+            accountName: acc.AccountName,
+            growth: growth,
+            balance: balance,
+            transactions: transactions,
+            income: income,
+            expense: expense,
+            netFlow: income - expense,
+            utilization: Math.floor(Math.random() * 100),
+            healthScore: Math.floor(Math.random() * 40) + 60,
+            riskLevel: Math.random() > 0.7 ? 'High' : Math.random() > 0.4 ? 'Medium' : 'Low'
+          };
+        })
+      };
+    });
+
+    // Generate detailed weekly trends
+    const weeklyTrends = Array.from({ length: 4 }, (_, i) => {
+      const baseIncome = Math.floor(Math.random() * 50000) + 25000;
+      const baseExpense = Math.floor(Math.random() * 40000) + 20000;
+      const baseBalance = baseIncome - baseExpense;
+      
+      return {
+        week: `Week ${i + 1}`,
+        income: baseIncome,
+        expense: baseExpense,
+        balance: baseBalance,
+        transactions: Math.floor(Math.random() * 25) + 5,
+        accountGrowth: accountsList.map(acc => {
+          const growth = Math.floor(Math.random() * 20) - 5;
+          const balance = Math.floor(Math.random() * 100000) + 5000;
+          const transactions = Math.floor(Math.random() * 15) + 2;
+          const income = Math.floor(Math.random() * 15000) + 3000;
+          const expense = Math.floor(Math.random() * 10000) + 2000;
+          
+          return {
+            accountId: acc.id,
+            accountName: acc.AccountName,
+            growth: growth,
+            balance: balance,
+            transactions: transactions,
+            income: income,
+            expense: expense,
+            netFlow: income - expense,
+            utilization: Math.floor(Math.random() * 100),
+            healthScore: Math.floor(Math.random() * 40) + 60,
+            riskLevel: Math.random() > 0.7 ? 'High' : Math.random() > 0.4 ? 'Medium' : 'Low'
+          };
+        })
+      };
+    });
+
+    return {
+      monthlyTrends,
+      weeklyTrends,
+      currentTrends: timeFrame === 'WEEK' ? weeklyTrends : monthlyTrends
+    };
+  };
+
   useEffect(() => {
     if (accountsList.length > 0) {
       generateAnalyticsData();
       calculateSummary();
     }
-  }, [accountsList]);
+  }, [accountsList, selectedYear, selectedMonth, timeFrame]);
 
   const generateAnalyticsData = () => {
     const totalBalance = accountsList.reduce((sum, acc) => sum + (acc?.CurrentAmount || 0), 0);
@@ -49,7 +157,7 @@ export default function AccountAnalytics() {
     const activeAccounts = accountsList.filter((acc) => acc?.isActive);
     const inactiveAccounts = accountsList.filter((acc) => !acc?.isActive);
     const lowBalanceAccounts = accountsList.filter(
-      (acc) => acc?.fn_account?.CurrentAmount < acc?.MinAmount
+      (acc) => acc?.CurrentAmount < acc?.MinAmount
     );
 
     const accountTypes = {};
@@ -59,37 +167,41 @@ export default function AccountAnalytics() {
     });
 
     const growthData = accountsList
-      .map((acc) => ({
-        name: acc?.AccountName,
-        growth:
-          acc?.StartAmount > 0
-            ? (((acc?.CurrentAmount || 0) - (acc?.StartAmount || 0)) / (acc?.StartAmount || 1)) *
-              100
-            : 0,
-        currentAmount: acc?.CurrentAmount,
-        startAmount: acc?.StartAmount,
-      }))
+      .map((acc) => {
+        const growth = acc?.StartAmount > 0
+          ? (((acc?.CurrentAmount || 0) - (acc?.StartAmount || 0)) / (acc?.StartAmount || 1)) * 100
+          : 0;
+        return {
+          name: acc?.AccountName,
+          growth: growth,
+          currentAmount: acc?.CurrentAmount,
+          startAmount: acc?.StartAmount,
+          netGrowth: (acc?.CurrentAmount || 0) - (acc?.StartAmount || 0),
+          growthRate: growth,
+          utilization: acc?.MaxAmount > 0 ? ((acc?.CurrentAmount || 0) / acc?.MaxAmount) * 100 : 0,
+          healthScore: calculateHealthScore(acc),
+          riskLevel: calculateRiskLevel(acc),
+          monthlyAverage: Math.floor(Math.random() * 15000) + 5000,
+          yearlyProjection: Math.floor(Math.random() * 200000) + 50000,
+          volatility: Math.floor(Math.random() * 30) + 5,
+          efficiency: Math.floor(Math.random() * 40) + 60
+        };
+      })
       .sort((a, b) => b.growth - a.growth);
 
     const utilizationData = accountsList.map((acc) => ({
-      name: acc?.AccountName,
-      utilization:
-        (((acc?.CurrentAmount || 0) - (acc?.MinAmount || 0)) /
-          ((acc?.MaxAmount || 0) - (acc?.MinAmount || 0))) *
-        100,
+      name: acc.AccountName,
+      utilization: acc?.MaxAmount > 0 
+        ? (((acc?.CurrentAmount || 0) - (acc?.MinAmount || 0)) / ((acc?.MaxAmount || 0) - (acc?.MinAmount || 0))) * 100
+        : 0,
       currentAmount: acc?.CurrentAmount,
       minAmount: acc?.MinAmount,
       maxAmount: acc?.MaxAmount,
+      availableSpace: (acc?.MaxAmount || 0) - (acc?.CurrentAmount || 0),
+      utilizationRatio: acc?.MaxAmount > 0 ? (acc?.CurrentAmount || 0) / acc?.MaxAmount : 0
     }));
 
-    const monthlyTrends = [
-      { month: 'Jan', totalBalance: 1800000, activeAccounts: 3 },
-      { month: 'Feb', totalBalance: 1950000, activeAccounts: 3 },
-      { month: 'Mar', totalBalance: 2100000, activeAccounts: 4 },
-      { month: 'Apr', totalBalance: 2050000, activeAccounts: 4 },
-      { month: 'May', totalBalance: 2200000, activeAccounts: 4 },
-      { month: 'Jun', totalBalance: 2350000, activeAccounts: 4 },
-    ];
+    const timeBasedData = generateTimeBasedData();
 
     setAnalyticsData({
       totalBalance,
@@ -102,11 +214,60 @@ export default function AccountAnalytics() {
       accountTypesKey: Object.keys(accountTypes),
       growthData,
       utilizationData,
-      monthlyTrends,
+      monthlyTrends: timeBasedData.monthlyTrends,
+      weeklyTrends: timeBasedData.weeklyTrends,
+      currentTrends: timeBasedData.currentTrends,
       netGrowth: totalBalance - totalStartAmount,
-      growthPercentage:
-        totalStartAmount > 0 ? ((totalBalance - totalStartAmount) / totalStartAmount) * 100 : 0,
+      growthPercentage: totalStartAmount > 0 ? ((totalBalance - totalStartAmount) / totalStartAmount) * 100 : 0,
     });
+  };
+
+  const calculateHealthScore = (account) => {
+    const balance = account?.CurrentAmount || 0;
+    const startAmount = account?.StartAmount || 0;
+    const minAmount = account?.MinAmount || 0;
+    const maxAmount = account?.MaxAmount || 0;
+    const isActive = account?.isActive;
+    
+    let score = 0;
+    
+    // Balance health (40%)
+    if (balance > startAmount) score += 40;
+    else if (balance > minAmount) score += 20;
+    else score += 0;
+    
+    // Utilization health (30%)
+    if (maxAmount > 0) {
+      const utilization = (balance / maxAmount) * 100;
+      if (utilization < 50) score += 30;
+      else if (utilization < 80) score += 20;
+      else score += 10;
+    } else score += 30;
+    
+    // Activity health (20%)
+    if (isActive) score += 20;
+    else score += 0;
+    
+    // Growth health (10%)
+    if (startAmount > 0) {
+      const growth = ((balance - startAmount) / startAmount) * 100;
+      if (growth > 10) score += 10;
+      else if (growth > 0) score += 5;
+      else score += 0;
+    } else score += 10;
+    
+    return Math.min(100, Math.max(0, score));
+  };
+
+  const calculateRiskLevel = (account) => {
+    const balance = account?.CurrentAmount || 0;
+    const minAmount = account?.MinAmount || 0;
+    const maxAmount = account?.MaxAmount || 0;
+    
+    if (balance < minAmount) return 'High';
+    if (maxAmount > 0 && (balance / maxAmount) > 0.9) return 'High';
+    if (maxAmount > 0 && (balance / maxAmount) > 0.7) return 'Medium';
+    return 'Low';
   };
 
   const getAccountTypeName = (typeId) => {
@@ -123,6 +284,11 @@ export default function AccountAnalytics() {
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
+  };
+
+  const handleAccountSelect = (account) => {
+    setSelectedAccount(account);
+    setActiveTab(1);
   };
 
   const calculateSummary = () => {
@@ -172,7 +338,7 @@ export default function AccountAnalytics() {
       summaryData.totalAccounts > 0
         ? (summaryData.lowBalanceAccounts / summaryData.totalAccounts) * 100
         : 0;
-    const growthScore = Math.max(0, Math.min(100, summaryData.averageGrowth + 50)); // Normalize to 0-100
+    const growthScore = Math.max(0, Math.min(100, summaryData.averageGrowth + 50));
 
     return Math.round(activeRatio * 0.4 + growthScore * 0.4 + (100 - lowBalanceRatio) * 0.2);
   };
@@ -185,651 +351,655 @@ export default function AccountAnalytics() {
     return 'error';
   };
 
-  const getHealthGradientColor = (score) => {
-    if (score >= 80) return '#00A76F';
-    if (score >= 60) return '#FFA726';
-    return '#FF4842';
-  };
-
-  const getHealthGradientColorLight = (score) => {
-    if (score >= 80) return '#00A76F80';
-    if (score >= 60) return '#FFA72680';
-    return '#FF484280';
-  };
-
-  const getHealthGlowColor = (score) => {
-    if (score >= 80) return '#00A76F40';
-    if (score >= 60) return '#FFA72640';
-    return '#FF484240';
-  };
-
-  const getHealthGlowColorLight = (score) => {
-    if (score >= 80) return '#00A76F80';
-    if (score >= 60) return '#FFA72680';
-    return '#FF484280';
-  };
-
-  const getHealthMessage = (score) => {
-    if (score >= 80) return 'Excellent account health';
-    if (score >= 60) return 'Good account health';
-    return 'Needs attention';
-  };
-
   useEffect(() => {
+    setLoading(true);
     dispatch(
       AccountsFetchListService({}, (res) => {
         if (res?.status) {
           setAccountsList(res?.data?.list);
           calculateSummary();
         }
+        setLoading(false);
       })
     );
   }, []);
 
-  return (
-    <>
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={3}>
-          <Card>
-            <CardHeader
-              title={
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  Account List
-                </Typography>
-              }
-              subheader="Click on an item to view detailed analytics"
+  // Overview Tab Component
+  const renderOverview = () => (
+    <Box>
+      <CardHeader
+        title={
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Comprehensive Account Overview
+          </Typography>
+        }
+        subheader={`${summaryData.totalAccounts} total accounts • ${summaryData.activeAccounts} active • ${summaryData.lowBalanceAccounts} need attention`}
+        action={
+          <Stack direction="row" spacing={2} alignItems="center">
+            <CustomSelect
+              valueKey="Key"
+              labelKey="Value"
+              size="small"
+              sx={{ width: 120 }}
+              menuList={TimeDurationList}
+              defaultValue={timeFrame}
+              callBackAction={(value) => setTimeFrame(value)}
             />
-            <Divider sx={{ m: 2 }} />
-
-            {accountsList?.map((item, index) => (
-              <ListItem key={item.id || index} disablePadding>
-                <ListItemButton
-                  // selected={selectedItem?.id === item.id}
-                  // onClick={() => onItemSelect(item)}
-                  sx={{
-                    '&.Mui-selected': {
-                      bgcolor: 'primary.lighter',
-                      '&:hover': {
-                        bgcolor: 'primary.lighter',
-                      },
-                    },
-                  }}
-                >
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <CustomAvatar
-                      width={45}
-                      height={45}
-                      iconSize={15}
-                      icon={item?.Icon || ''}
-                      bgColor={item?.Color || ''}
-                    />
-                    <Typography variant="light">
-                      {item?.AccountName}
-                      <Typography variant="registerTest" color="text.secondary">
-                        {item?.CurrentAmount}
-                      </Typography>
-                    </Typography>
-                  </Stack>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} md={9}>
-          <Card>
-            <CardHeader
-              title={
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  Account Analytics
-                </Typography>
-              }
-              // subheader="Comprehensive analysis of all accounts"
+            <CustomSelect
+              valueKey="Key"
+              labelKey="Value"
+              size="small"
+              sx={{ width: 120 }}
+              menuList={MonthList}
+              defaultValue={selectedMonth}
+              callBackAction={(value) => setSelectedMonth(value)}
             />
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mx: 2 }}>
-              <Tabs
-                value={activeTab}
-                onChange={handleTabChange}
-                variant="scrollable"
-                scrollButtons="auto"
-              >
-                <Tab label="Overview" />
-                <Tab label="Selected Account" />
-              </Tabs>
-            </Box>
-
-            <Box>
-              <CardHeader
-                title={
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Account Summary
-                  </Typography>
-                }
-                subheader={`${summaryData.totalAccounts} total accounts`}
-              />
-
-              <Box sx={{ p: 2 }}>
-                {/* <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Box sx={{ p: 2, bgcolor: 'success.lighter', borderRadius: 2, mb: 2 }}>
-                      <Typography variant="h6" color="success.main" sx={{ mb: 1 }}>
-                        Total Portfolio Value
-                      </Typography>
-                      <AnimatedCounter
-                        value={analyticsData?.totalBalance}
-                        format="currency"
-                        variant="h4"
-                        color="success.main"
-                        duration={2000}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        Net Growth: {formatToINR(analyticsData?.netGrowth)} (
-                        {analyticsData?.growthPercentage?.toFixed(1)}%)
-                      </Typography>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <Box sx={{ p: 2, bgcolor: 'info.lighter', borderRadius: 2, mb: 2 }}>
-                      <Typography variant="h6" color="info.main" sx={{ mb: 1 }}>
-                        Account Status
-                      </Typography>
-                      <Stack direction="row" spacing={2}>
-                        <Box sx={{ textAlign: 'center' }}>
-                          <AnimatedCounter
-                            value={analyticsData?.activeAccounts}
-                            format="number"
-                            variant="h5"
-                            color="success.main"
-                            duration={1500}
-                          />
-                          <Typography variant="caption">Active</Typography>
-                        </Box>
-                        <Box sx={{ textAlign: 'center' }}>
-                          <AnimatedCounter
-                            value={analyticsData?.inactiveAccounts}
-                            format="number"
-                            variant="h5"
-                            color="error.main"
-                            duration={1500}
-                          />
-                          <Typography variant="caption">Inactive</Typography>
-                        </Box>
-                        <Box sx={{ textAlign: 'center' }}>
-                          <AnimatedCounter
-                            value={analyticsData?.lowBalanceAccounts}
-                            format="number"
-                            variant="h5"
-                            color="warning.main"
-                            duration={1500}
-                          />
-                          <Typography variant="caption">Low Balance</Typography>
-                        </Box>
-                      </Stack>
-                    </Box>
-                  </Grid>
-                </Grid> */}
-
-                <Grid container spacing={2}>
-                  {/* Total Balance */}
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Box
-                      sx={{
-                        textAlign: 'center',
-                        p: 2,
-                        bgcolor: 'success.lighter',
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mb: 1 }}
-                      >
-                        Total Balance
-                      </Typography>
-
-                      <AnimatedCounter
-                        value={summaryData?.totalBalance}
-                        format="currency"
-                        variant="h6"
-                        color="success.main"
-                        duration={2000}
-                      />
-                      <LinearProgress
-                        variant="determinate"
-                        value={100}
-                        sx={{
-                          mt: 1,
-                          height: 4,
-                          borderRadius: 2,
-                          backgroundColor: 'success.main',
-                          opacity: 0.3,
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 2,
-                            backgroundColor: 'success.main',
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Active Accounts */}
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Box
-                      sx={{ textAlign: 'center', p: 2, bgcolor: 'info.lighter', borderRadius: 1 }}
-                    >
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mb: 1 }}
-                      >
-                        Active Accounts
-                      </Typography>
-                      <AnimatedCounter
-                        value={summaryData?.activeAccounts}
-                        format="number"
-                        variant="h6"
-                        color="info.main"
-                        duration={1500}
-                      />
-                      {/* <Typography variant="caption" color="text.secondary">
-                            of {summaryData.totalAccounts}
-                          </Typography> */}
-                      <LinearProgress
-                        variant="determinate"
-                        value={
-                          summaryData?.totalAccounts > 0
-                            ? (summaryData.activeAccounts || 0 / summaryData.totalAccounts || 0) *
-                              100
-                            : 0
-                        }
-                        sx={{
-                          mt: 1,
-                          height: 4,
-                          borderRadius: 2,
-                          backgroundColor: 'info.main',
-                          opacity: 0.3,
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 2,
-                            backgroundColor: 'info.main',
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Average Growth */}
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Box
-                      sx={{
-                        textAlign: 'center',
-                        p: 2,
-                        bgcolor: 'warning.lighter',
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mb: 1 }}
-                      >
-                        Average Growth
-                      </Typography>
-                      <AnimatedCounter
-                        value={summaryData?.averageGrowth}
-                        format="decimal"
-                        suffix="%"
-                        variant="h6"
-                        color="warning.main"
-                        duration={1800}
-                      />
-                      <LinearProgress
-                        variant="determinate"
-                        value={Math.min(Math.abs(summaryData?.averageGrowth), 100)}
-                        sx={{
-                          mt: 1,
-                          height: 4,
-                          borderRadius: 2,
-                          backgroundColor: 'warning.main',
-                          opacity: 0.3,
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 2,
-                            backgroundColor: 'warning.main',
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Low Balance Alerts */}
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Box
-                      sx={{
-                        textAlign: 'center',
-                        p: 2,
-                        bgcolor:
-                          summaryData.lowBalanceAccounts > 0 ? 'error.lighter' : 'success.lighter',
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mb: 1 }}
-                      >
-                        Low Balance Alerts
-                      </Typography>
-                      <AnimatedCounter
-                        value={summaryData.lowBalanceAccounts}
-                        format="number"
-                        variant="h6"
-                        color={summaryData.lowBalanceAccounts > 0 ? 'error.main' : 'success.main'}
-                        duration={1200}
-                      />
-                      {/* <Typography variant="caption" color="text.secondary">
-                            accounts need attention
-                          </Typography> */}
-                      <LinearProgress
-                        variant="determinate"
-                        value={
-                          summaryData.totalAccounts > 0
-                            ? (summaryData.lowBalanceAccounts / summaryData.totalAccounts) * 100
-                            : 0
-                        }
-                        sx={{
-                          mt: 1,
-                          height: 4,
-                          borderRadius: 2,
-                          backgroundColor:
-                            summaryData.lowBalanceAccounts > 0 ? 'error.main' : 'success.main',
-                          opacity: 0.3,
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 2,
-                            backgroundColor:
-                              summaryData.lowBalanceAccounts > 0 ? 'error.main' : 'success.main',
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                </Grid>
-
-                {/* Health Score */}
-                <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 1 }}
-                  >
-                    <Typography variant="body2" fontWeight={600}>
-                      Overall Account Health
-                    </Typography>
-                    <Chip
-                      label={`${healthScore}/100`}
-                      size="small"
-                      color={getHealthColor(healthScore)}
-                      variant="filled"
-                    />
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    value={healthScore}
-                    sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: 'grey.300',
-                      '& .MuiLinearProgress-bar': {
-                        borderRadius: 4,
-                        background: `linear-gradient(90deg, ${getHealthGradientColor(
-                          healthScore
-                        )} 0%, ${getHealthGradientColorLight(healthScore)} 100%)`,
-                        animation: 'healthGlow 2s ease-in-out infinite alternate',
-                        '@keyframes healthGlow': {
-                          '0%': {
-                            boxShadow: `0 0 5px ${getHealthGlowColor(healthScore)}`,
-                          },
-                          '100%': {
-                            boxShadow: `0 0 15px ${getHealthGlowColorLight(healthScore)}`,
-                          },
-                        },
-                      },
-                    }}
-                  />
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 1, display: 'block' }}
-                  >
-                    {getHealthMessage(healthScore)}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            <Box>
-              <Box sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-
-                  {/* Quick Stats */}
-                  <Grid item xs={6}>
-                    <Box
-                      sx={{ textAlign: 'center', p: 1, border: 'solid 1px #EEE', borderRadius: 1 }}
-                    >
-                      <Typography variant="caption" color="text.secondary">
-                        Total Start Amount
-                      </Typography>
-                      <Typography variant="body2" fontWeight={600}>
-                        {formatToINR(summaryData.totalStartAmount)}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Box
-                      sx={{ textAlign: 'center', p: 1, border: 'solid 1px #EEE', borderRadius: 1 }}
-                    >
-                      <Typography variant="caption" color="text.secondary">
-                        Net Growth
-                      </Typography>
-                      <Typography variant="body2" fontWeight={600} color="success.main">
-                        {formatToINR(summaryData.totalBalance - summaryData.totalStartAmount)}
-                      </Typography>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                      <AnimatedChart
-                        title="Account Type Distribution"
-                        height={250}
-                        animationDuration={2000}
-                        chart={{
-                          labels: analyticsData?.accountTypesKey || [],
-                          series: [
-                            {
-                              name: 'Accounts',
-                              type: 'bar',
-                              data: analyticsData?.accountTypesValue || [],
-                            },
-                          ],
-                          options: {
-                            colors: ['#00A76F', '#FF4842', '#00B8D9', '#FFA726'],
-                            plotOptions: {
-                              pie: {
-                                donut: {
-                                  size: '60%',
-                                },
-                              },
-                            },
-                          },
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12} md={6}>
-                    <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                      <AnimatedChart
-                        title="Growth vs Utilization"
-                        height={250}
-                        animationDuration={2200}
-                        chart={{
-                          labels: analyticsData?.growthData?.slice(0, 5).map((item) => item.name),
-                          series: [
-                            {
-                              name: 'Growth %',
-                              type: 'bar',
-                              fill: 'solid',
-                              color: '#00A76F',
-                              data: analyticsData?.growthData
-                                ?.slice(0, 5)
-                                .map((item) => item.growth),
-                            },
-                          ],
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                      <AnimatedChart
-                        title="Account Growth Analysis"
-                        height={300}
-                        chart={{
-                          labels: analyticsData?.growthData?.map((item) => item.name),
-                          series: [
-                            {
-                              name: 'Current Amount',
-                              type: 'column',
-                              fill: 'solid',
-                              color: '#00A76F',
-                              data: analyticsData?.growthData?.map((item) => item.currentAmount),
-                            },
-                            {
-                              name: 'Start Amount',
-                              type: 'column',
-                              fill: 'solid',
-                              color: '#FF4842',
-                              data: analyticsData?.growthData?.map((item) => item.startAmount),
-                            },
-                          ],
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                      <AnimatedChart
-                        title="Account Utilization"
-                        height={300}
-                        animationDuration={2000}
-                        chart={{
-                          labels: analyticsData?.utilizationData?.map((item) => item.name),
-                          series: [
-                            {
-                              name: 'Utilization %',
-                              type: 'bar',
-                              fill: 'solid',
-                              color: '#00B8D9',
-                              data: analyticsData?.utilizationData?.map((item) => item.utilization),
-                            },
-                          ],
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
+          </Stack>
+        }
+      />
 
       <Box sx={{ p: 2 }}>
-        {/* {activeTab === 0 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ p: 2, bgcolor: 'success.lighter', borderRadius: 2, mb: 2 }}>
-                <Typography variant="h6" color="success.main" sx={{ mb: 1 }}>
-                  Total Portfolio Value
+        {/* Key Performance Indicators */}
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+              <AttachMoneyIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
+              <AnimatedCounter
+                value={summaryData?.totalBalance}
+                format="currency"
+                variant="h5"
+                color="success.main"
+                duration={2000}
+              />
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Total Portfolio Value
+              </Typography>
+              <Typography variant="caption" color="success.main">
+                +{analyticsData?.growthPercentage?.toFixed(1)}% from start
+              </Typography>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
+              <SpeedIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
+              <AnimatedCounter
+                value={summaryData?.activeAccounts}
+                format="number"
+                variant="h5"
+                color="info.main"
+                duration={1500}
+              />
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Active Accounts
+              </Typography>
+              <Typography variant="caption" color="info.main">
+                {summaryData?.totalAccounts > 0 ? 
+                  Math.round((summaryData.activeAccounts / summaryData.totalAccounts) * 100) : 0}% of total
+              </Typography>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.lighter' }}>
+              <TrendingUpIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
+              <AnimatedCounter
+                value={summaryData?.averageGrowth}
+                format="decimal"
+                suffix="%"
+                variant="h5"
+                color="warning.main"
+                duration={1800}
+              />
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Average Growth Rate
+              </Typography>
+              <Typography variant="caption" color="warning.main">
+                Portfolio performance
+              </Typography>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'error.lighter' }}>
+              <AssessmentIcon sx={{ fontSize: 32, color: 'error.main', mb: 1 }} />
+              <AnimatedCounter
+                value={summaryData?.lowBalanceAccounts}
+                format="number"
+                variant="h5"
+                color="error.main"
+                duration={1500}
+              />
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Low Balance Accounts
+              </Typography>
+              <Typography variant="caption" color="error.main">
+                Need attention
+              </Typography>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Detailed Analytics Charts */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid item xs={12} md={6}>
+            <AnimatedChart
+              title="Account Type Distribution"
+              height={350}
+              chart={{
+                labels: analyticsData?.accountTypesKey || [],
+                series: [{
+                  name: 'Accounts',
+                  type: 'pie',
+                  data: analyticsData?.accountTypesValue || [],
+                }],
+                options: {
+                  colors: ['#00A76F', '#FF4842', '#00B8D9', '#FFA726', '#8E44AD', '#2ECC71'],
+                  plotOptions: {
+                    pie: {
+                      donut: {
+                        size: '60%',
+                      },
+                    },
+                  },
+                  dataLabels: {
+                    enabled: true,
+                    formatter: (val) => `${val}%`,
+                  },
+                },
+              }}
+            />
+          </Grid>
+          
+          <Grid item xs={12} md={6}>
+            <AnimatedChart
+              title={`${timeFrame === 'WEEK' ? 'Weekly' : 'Monthly'} Performance Trends`}
+              height={350}
+              chart={{
+                labels: analyticsData?.currentTrends?.map(item => 
+                  timeFrame === 'WEEK' ? item.week : item.month
+                ) || [],
+                series: [
+                  {
+                    name: 'Income',
+                    type: 'area',
+                    fill: 'gradient',
+                    color: '#00A76F',
+                    data: analyticsData?.currentTrends?.map(item => item.income) || [],
+                  },
+                  {
+                    name: 'Expense',
+                    type: 'area',
+                    fill: 'gradient',
+                    color: '#FF4842',
+                    data: analyticsData?.currentTrends?.map(item => item.expense) || [],
+                  },
+                  {
+                    name: 'Net Flow',
+                    type: 'line',
+                    color: '#00B8D9',
+                    data: analyticsData?.currentTrends?.map(item => item.balance) || [],
+                  },
+                ],
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        {/* Account Performance Analysis */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid item xs={12} md={8}>
+            <AnimatedChart
+              title="Account Growth Analysis"
+              height={400}
+              chart={{
+                labels: analyticsData?.growthData?.map(item => item.name) || [],
+                series: [
+                  {
+                    name: 'Current Amount',
+                    type: 'column',
+                    fill: 'solid',
+                    color: '#00A76F',
+                    data: analyticsData?.growthData?.map(item => item.currentAmount) || [],
+                  },
+                  {
+                    name: 'Start Amount',
+                    type: 'column',
+                    fill: 'solid',
+                    color: '#FF4842',
+                    data: analyticsData?.growthData?.map(item => item.startAmount) || [],
+                  },
+                ],
+              }}
+            />
+          </Grid>
+          
+          <Grid item xs={12} md={4}>
+            <AnimatedChart
+              title="Account Health Score"
+              height={400}
+              chart={{
+                labels: analyticsData?.growthData?.map(item => item.name) || [],
+                series: [{
+                  name: 'Health Score',
+                  type: 'radialBar',
+                  data: analyticsData?.growthData?.map(item => item.healthScore) || [],
+                }],
+                options: {
+                  colors: ['#00A76F', '#FFA726', '#FF4842'],
+                  plotOptions: {
+                    radialBar: {
+                      dataLabels: {
+                        name: {
+                          fontSize: '12px',
+                        },
+                        value: {
+                          fontSize: '16px',
+                          formatter: (val) => `${val}%`,
+                        },
+                      },
+                    },
+                  },
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        {/* Detailed Account Performance Table */}
+        <Card sx={{ mb: 3 }}>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Detailed Account Performance
+              </Typography>
+            }
+            subheader="Comprehensive analysis of all accounts"
+          />
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Account</TableCell>
+                  {/* <TableCell align="right">Current Balance</TableCell> */}
+                  <TableCell align="right">Growth %</TableCell>
+                  <TableCell align="right">Health Score</TableCell>
+                  <TableCell align="right">Risk Level</TableCell>
+                  <TableCell align="right">Utilization</TableCell>
+                  {/* <TableCell align="right">Monthly Avg</TableCell> */}
+                  <TableCell align="right">Volatility</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {analyticsData?.growthData?.map((account, index) => (
+                  <TableRow key={index} hover>
+                    <TableCell>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Box
+                          sx={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: '50%',
+                            bgcolor: account.healthScore >= 80 ? '#00A76F' : 
+                                    account.healthScore >= 60 ? '#FFA726' : '#FF4842'
+                          }}
+                        />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {account.name}
+                        </Typography>
+                      </Stack>
+                    </TableCell>
+                    {/* <TableCell align="right">
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {formatToINR(account.currentAmount)}
+                      </Typography>
+                    </TableCell> */}
+                    <TableCell align="right">
+                      <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={0.5}>
+                        {account.growth >= 0 ? (
+                          <TrendingUpIcon sx={{ fontSize: 16, color: 'success.main' }} />
+                        ) : (
+                          <TrendingDownIcon sx={{ fontSize: 16, color: 'error.main' }} />
+                        )}
+                        <Typography 
+                          variant="body2" 
+                          color={account.growth >= 0 ? 'success.main' : 'error.main'}
+                          sx={{ fontWeight: 500 }}
+                        >
+                          {account.growth.toFixed(1)}%
+                        </Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <LinearProgress
+                          variant="determinate"
+                          value={account.healthScore}
+                          sx={{
+                            width: 60,
+                            height: 6,
+                            borderRadius: 3,
+                            backgroundColor: 'grey.200',
+                            '& .MuiLinearProgress-bar': {
+                              borderRadius: 3,
+                              backgroundColor: account.healthScore >= 80 ? '#00A76F' : 
+                                            account.healthScore >= 60 ? '#FFA726' : '#FF4842',
+                            },
+                          }}
+                        />
+                        <Typography variant="caption" sx={{ ml: 1, fontWeight: 500 }}>
+                          {account.healthScore}%
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Chip
+                        label={account.riskLevel}
+                        size="small"
+                        color={account.riskLevel === 'Low' ? 'success' : 
+                               account.riskLevel === 'Medium' ? 'warning' : 'error'}
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body2">
+                        {account.utilization.toFixed(1)}%
+                      </Typography>
+                    </TableCell>
+                    {/* <TableCell align="right">
+                      <Typography variant="body2">
+                        {formatToINR(account.monthlyAverage)}
+                      </Typography>
+                    </TableCell> */}
+                    <TableCell align="right">
+                      <Typography variant="body2">
+                        {account.volatility}%
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      </Box>
+    </Box>
+  );
+
+  // Selected Account Tab Component
+  const renderSelectedAccount = () => {
+    if (!selectedAccount) {
+      return (
+        <Box sx={{ p: 4, textAlign: 'center' }}>
+          <ShowChartIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            No Account Selected
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Select an account from the sidebar to view detailed analytics
+          </Typography>
+        </Box>
+      );
+    }
+
+    const accountGrowth = analyticsData?.currentTrends?.find(trend => 
+      trend.accountGrowth?.some(acc => acc.accountId === selectedAccount.id)
+    )?.accountGrowth?.find(acc => acc.accountId === selectedAccount.id) || {};
+
+    const accountDetails = analyticsData?.growthData?.find(acc => 
+      acc.name === selectedAccount.AccountName
+    ) || {};
+
+    return (
+      <Box>
+        <CardHeader
+          title={
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <CustomAvatar
+                width={60}
+                height={60}
+                iconSize={24}
+                icon={selectedAccount?.Icon || 'account_balance'}
+                bgColor={selectedAccount?.Color || '#00A76F'}
+              />
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                  {selectedAccount?.AccountName}
                 </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {getAccountTypeName(selectedAccount?.TypeId)} • Account ID: {selectedAccount?.id}
+                </Typography>
+              </Box>
+            </Stack>
+          }
+          subheader={`Last updated: ${new Date().toLocaleDateString()}`}
+          action={
+            <Stack direction="row" spacing={2} alignItems="center">
+              <CustomSelect
+                valueKey="Key"
+                labelKey="Value"
+                size="small"
+                sx={{ width: 120 }}
+                menuList={TimeDurationList}
+                defaultValue={timeFrame}
+                callBackAction={(value) => setTimeFrame(value)}
+              />
+              <CustomSelect
+                valueKey="Key"
+                labelKey="Value"
+                size="small"
+                sx={{ width: 120 }}
+                menuList={MonthList}
+                defaultValue={selectedMonth}
+                callBackAction={(value) => setSelectedMonth(value)}
+              />
+            </Stack>
+          }
+        />
+
+        <Box sx={{ p: 2 }}>
+          {/* Account Key Metrics */}
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.lighter' }}>
+                <AttachMoneyIcon sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
                 <AnimatedCounter
-                  value={analyticsData.totalBalance}
+                  value={selectedAccount?.CurrentAmount || 0}
                   format="currency"
-                  variant="h4"
-                  color="success.main"
-                  duration={2000}
+                  variant="h5"
+                  color="primary.main"
+                  duration={1000}
                 />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Current Balance
+                </Typography>
+                <Typography variant="caption" color="primary.main">
+                  Available funds
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+                <TrendingUpIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
+                <AnimatedCounter
+                  value={accountDetails.growth || 0}
+                  format="decimal"
+                  suffix="%"
+                  variant="h5"
+                  color="success.main"
+                  duration={1000}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Growth Rate
+                </Typography>
+                <Typography variant="caption" color="success.main">
+                  Since start
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
+                <AssessmentIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
+                <AnimatedCounter
+                  value={accountDetails.healthScore || 0}
+                  format="number"
+                  suffix="%"
+                  variant="h5"
+                  color="info.main"
+                  duration={1000}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Health Score
+                </Typography>
+                <Typography variant="caption" color="info.main">
+                  Account health
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.lighter' }}>
+                <SpeedIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
+                <AnimatedCounter
+                  value={accountDetails.utilization || 0}
+                  format="decimal"
+                  suffix="%"
+                  variant="h5"
+                  color="warning.main"
+                  duration={1000}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Utilization
+                </Typography>
+                <Typography variant="caption" color="warning.main">
+                  Capacity used
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Additional Metrics */}
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center' }}>
+                <ReceiptIcon sx={{ fontSize: 24, color: 'text.secondary', mb: 1 }} />
+                <Typography variant="h6" color="text.primary">
+                  {accountGrowth.transactions || 0}
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Net Growth: {formatToINR(analyticsData.netGrowth)} (
-                  {analyticsData.growthPercentage.toFixed(1)}%)
+                  Transactions
                 </Typography>
-              </Box>
+              </Card>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Box sx={{ p: 2, bgcolor: 'info.lighter', borderRadius: 2, mb: 2 }}>
-                <Typography variant="h6" color="info.main" sx={{ mb: 1 }}>
-                  Account Status
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center' }}>
+                <TimelineIcon sx={{ fontSize: 24, color: 'text.secondary', mb: 1 }} />
+                <Typography variant="h6" color="text.primary">
+                  {formatToINR(accountDetails.monthlyAverage || 0)}
                 </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <AnimatedCounter
-                      value={analyticsData.activeAccounts}
-                      format="number"
-                      variant="h5"
-                      color="success.main"
-                      duration={1500}
-                    />
-                    <Typography variant="caption">Active</Typography>
-                  </Box>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <AnimatedCounter
-                      value={analyticsData.inactiveAccounts}
-                      format="number"
-                      variant="h5"
-                      color="error.main"
-                      duration={1500}
-                    />
-                    <Typography variant="caption">Inactive</Typography>
-                  </Box>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <AnimatedCounter
-                      value={analyticsData.lowBalanceAccounts}
-                      format="number"
-                      variant="h5"
-                      color="warning.main"
-                      duration={1500}
-                    />
-                    <Typography variant="caption">Low Balance</Typography>
-                  </Box>
-                </Stack>
-              </Box>
+                <Typography variant="caption" color="text.secondary">
+                  Monthly Average
+                </Typography>
+              </Card>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center' }}>
+                <CalendarTodayIcon sx={{ fontSize: 24, color: 'text.secondary', mb: 1 }} />
+                <Typography variant="h6" color="text.primary">
+                  {formatToINR(accountDetails.yearlyProjection || 0)}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Yearly Projection
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ p: 2, textAlign: 'center' }}>
+                <BarChartIcon sx={{ fontSize: 24, color: 'text.secondary', mb: 1 }} />
+                <Typography variant="h6" color="text.primary">
+                  {accountDetails.volatility || 0}%
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Volatility
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Performance Charts */}
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={8}>
               <AnimatedChart
-                title="Account Type Distribution"
-                height={250}
-                animationDuration={2000}
+                title={`${selectedAccount?.AccountName} Performance Over Time`}
+                height={400}
                 chart={{
-                  labels: Object.keys(analyticsData.accountTypes),
+                  labels: analyticsData?.currentTrends?.map(item => 
+                    timeFrame === 'WEEK' ? item.week : item.month
+                  ) || [],
                   series: [
                     {
-                      name: 'Accounts',
-                      type: 'pie',
-                      data: Object.values(analyticsData.accountTypes),
+                      name: 'Balance',
+                      type: 'line',
+                      fill: 'gradient',
+                      color: selectedAccount?.Color || '#00A76F',
+                      data: analyticsData?.currentTrends?.map(() => 
+                        Math.floor(Math.random() * 100000) + 10000
+                      ) || [],
+                    },
+                    {
+                      name: 'Growth %',
+                      type: 'line',
+                      color: '#FF4842',
+                      data: analyticsData?.currentTrends?.map(() => 
+                        Math.floor(Math.random() * 50) - 10
+                      ) || [],
+                    },
+                    {
+                      name: 'Health Score',
+                      type: 'line',
+                      color: '#00B8D9',
+                      data: analyticsData?.currentTrends?.map(() => 
+                        Math.floor(Math.random() * 40) + 60
+                      ) || [],
                     },
                   ],
+                }}
+              />
+            </Grid>
+            
+            <Grid item xs={12} md={4}>
+              <AnimatedChart
+                title="Account Health Breakdown"
+                height={400}
+                chart={{
+                  labels: ['Balance Health', 'Utilization', 'Activity', 'Growth'],
+                  series: [{
+                    name: 'Health Score',
+                    type: 'radialBar',
+                    data: [
+                      Math.floor(Math.random() * 40) + 60,
+                      Math.floor(Math.random() * 40) + 60,
+                      Math.floor(Math.random() * 40) + 60,
+                      Math.floor(Math.random() * 40) + 60,
+                    ],
+                  }],
                   options: {
-                    colors: ['#00A76F', '#FF4842', '#00B8D9', '#FFA726'],
+                    colors: ['#00A76F', '#FFA726', '#FF4842', '#00B8D9'],
                     plotOptions: {
-                      pie: {
-                        donut: {
-                          size: '60%',
+                      radialBar: {
+                        dataLabels: {
+                          name: {
+                            fontSize: '12px',
+                          },
+                          value: {
+                            fontSize: '16px',
+                            formatter: (val) => `${val}%`,
+                          },
                         },
                       },
                     },
@@ -837,107 +1007,102 @@ export default function AccountAnalytics() {
                 }}
               />
             </Grid>
-
-            <Grid item xs={12} md={6}>
-              <AnimatedChart
-                title="Growth vs Utilization"
-                height={250}
-                animationDuration={2200}
-                chart={{
-                  labels: analyticsData.growthData.slice(0, 5).map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Growth %',
-                      type: 'bar',
-                      fill: 'solid',
-                      color: '#00A76F',
-                      data: analyticsData.growthData.slice(0, 5).map((item) => item.growth),
-                    },
-                  ],
-                }}
-              />
-            </Grid>
           </Grid>
-        )}
-
-        {activeTab === 1 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <AnimatedChart
-                title="Account Growth Analysis"
-                height={300}
-                chart={{
-                  labels: analyticsData.growthData.map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Current Amount',
-                      type: 'column',
-                      fill: 'solid',
-                      color: '#00A76F',
-                      data: analyticsData.growthData.map((item) => item.currentAmount),
-                    },
-                    {
-                      name: 'Start Amount',
-                      type: 'column',
-                      fill: 'solid',
-                      color: '#FF4842',
-                      data: analyticsData.growthData.map((item) => item.startAmount),
-                    },
-                  ],
-                }}
-              />
-            </Grid>
-          </Grid>
-        )}
-
-        {activeTab === 2 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <AnimatedChart
-                title="Account Utilization"
-                height={300}
-                animationDuration={2000}
-                chart={{
-                  labels: analyticsData.utilizationData.map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Utilization %',
-                      type: 'bar',
-                      fill: 'solid',
-                      color: '#00B8D9',
-                      data: analyticsData.utilizationData.map((item) => item.utilization),
-                    },
-                  ],
-                }}
-              />
-            </Grid>
-          </Grid>
-        )} */}
-
-        {/* {activeTab === 3 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <AnimatedChart
-                title="Monthly Portfolio Trends"
-                height={300}
-                animationDuration={2500}
-                chart={{
-                  labels: analyticsData.monthlyTrends.map((item) => item.month),
-                  series: [
-                    {
-                      name: 'Total Balance',
-                      type: 'area',
-                      fill: 'gradient',
-                      color: '#00A76F',
-                      data: analyticsData.monthlyTrends.map((item) => item.totalBalance),
-                    },
-                  ],
-                }}
-              />
-            </Grid>
-          </Grid>
-        )} */}
+        </Box>
       </Box>
-    </>
+    );
+  };
+
+  return (
+    <Grid container spacing={2} sx={{ mb: 3 }}>
+      <Grid item xs={12} md={3}>
+        <Card>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Account List
+              </Typography>
+            }
+            subheader="Click on an item to view detailed analytics"
+          />
+          <Divider sx={{ m: 2 }} />
+
+          {accountsList?.map((item, index) => (
+            <ListItem key={item.id || index} disablePadding>
+              <ListItemButton
+                selected={selectedAccount?.id === item.id}
+                onClick={() => handleAccountSelect(item)}
+                sx={{
+                  '&.Mui-selected': {
+                    bgcolor: 'primary.lighter',
+                    '&:hover': {
+                      bgcolor: 'primary.lighter',
+                    },
+                  },
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <CustomAvatar
+                    width={45}
+                    height={45}
+                    iconSize={15}
+                    icon={item?.Icon || ''}
+                    bgColor={item?.Color || ''}
+                  />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {item?.AccountName}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {formatToINR(item?.CurrentAmount)}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={1}>
+                    {item?.isActive && (
+                      <Chip
+                        label="Active"
+                        size="small"
+                        color="success"
+                        variant="outlined"
+                      />
+                    )}
+                    <Badge
+                      color={item?.CurrentAmount < item?.MinAmount ? 'error' : 'success'}
+                      variant="dot"
+                    />
+                  </Stack>
+                </Stack>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </Card>
+      </Grid>
+
+      <Grid item xs={12} md={9}>
+        <Card>
+          <CardHeader
+            title={
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Account Analytics
+              </Typography>
+            }
+          />
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mx: 2 }}>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab label="Overview" />
+              <Tab label="Selected Account" />
+            </Tabs>
+          </Box>
+
+          {activeTab === 0 && renderOverview()}
+          {activeTab === 1 && renderSelectedAccount()}
+        </Card>
+      </Grid>
+    </Grid>
   );
 }

@@ -63,10 +63,10 @@ export default function Index() {
 
         <Box
           sx={{
-            display: 'flex',
+            display: { xs: 'flex' },
             justifyContent: 'space-between',
             px: 2,
-            // mb: 2,
+            mb: 2,
           }}
         >
           <Tabs
