@@ -312,7 +312,6 @@ export default function EnhancedAnalytics({
           <Card>
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h4" color="success.main" gutterBottom>
-                {console.log(summaryStats, 'summaryStats summaryStats')}
                 {formatToINR(summaryStats.totalIncome, isAmountVisible)}
               </Typography>
               <Typography variant="body2" color="text.secondary">

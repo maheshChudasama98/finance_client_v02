@@ -44,20 +44,21 @@ export function AnimatedChart({ title, subheader, height, chart, ...other }) {
         show: false,
       },
     },
-    animations: {
-      enabled: false,
-    },
+    // animations: {
+    //   enabled: false,
+    // },
+    
     ...options,
   });
 
   return (
     <Card {...other}>
-      <CardHeader title={<Typography variant="h6">{title}</Typography>} subheader={subheader} />
+      <CardHeader title={<Typography variant="body1" fontWeight={700}>{title}</Typography>} subheader={subheader} />
 
       <Box sx={{ p: 3, pb: 1 }}>
         <Chart
           dir="ltr"
-          type="line"
+          type="bar"
           series={series}
           options={chartOptions}
           width="100%"

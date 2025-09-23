@@ -10,18 +10,12 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-import { MonthList } from 'src/constance';
-
-import { DateRangePicker } from 'src/components/inputs';
-import { CustomSelect } from 'src/components/CustomComponents';
-
-// Import our custom components
 import AccountAnalytics from './AccountAnalytics';
+import EnhancedAnalytics from './EnhancedAnalytics';
+import CategoriesAnalytics from './CategoriesAnalytics';
 
 export default function Index() {
-  const [categorySelectedDate, setCategorySelectedDate] = useState(new Date());
-  const [tabValue, setTabValue] = useState(1);
-  const [duration, setDuration] = useState('JAN');
+  const [tabValue, setTabValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -29,42 +23,21 @@ export default function Index() {
 
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      {/* Header Card */}
       <Card>
         <CardHeader
           title={
             <Stack direction="row" alignItems="center" spacing={2}>
-              <Typography variant="h5">Financial Analytics</Typography>
-              <Chip
-                label={`${new Date(categorySelectedDate).getFullYear()}`}
-                color="primary"
-                variant="outlined"
-              />
+              <Typography variant="h5">Financial</Typography>
+              <Chip label="Analytics" color="primary" variant="outlined" />
             </Stack>
           }
           sx={{ mb: 2 }}
-          action={
-            <DateRangePicker
-              disableFuture
-              label=""
-              openTo="year"
-              format="YYYY"
-              views={['year']}
-              value={categorySelectedDate}
-              onChange={(event) => {
-                setCategorySelectedDate(event);
-              }}
-              sx={{ width: 150 }}
-            />
-          }
         />
 
         <Divider sx={{ mx: 2 }} />
 
         <Box
           sx={{
-            display: { xs: 'flex' },
-            justifyContent: 'space-between',
             px: 2,
             mb: 2,
           }}
@@ -76,60 +49,19 @@ export default function Index() {
             value={tabValue}
             onChange={handleChange}
           >
+            <Tab value={0} label="Enhanced Analytics" />
             <Tab value={1} label="Accounts" />
             <Tab value={2} label="Parties" />
             <Tab value={3} label="Categories" />
             <Tab value={4} label="Sub Categories" />
             <Tab value={5} label="Labels" />
           </Tabs>
-
-          <Box>
-            <CustomSelect
-              valueKey="Key"
-              labelKey="Value"
-              size="small"
-              sx={{ width: 120, placeItems: 'end', mt: 2 }}
-              menuList={MonthList}
-              defaultValue={duration}
-              callBackAction={(value) => setDuration(value)}
-            />
-          </Box>
         </Box>
       </Card>
 
+      <Box sx={{ mt: 2 }}>{tabValue === 0 && <EnhancedAnalytics />}</Box>
       <Box sx={{ mt: 2 }}>{tabValue === 1 && <AccountAnalytics />}</Box>
-
-      {/* Main Content */}
-      {/* <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-       
-        <AnalyticsSidebar
-          title={`All ${getTabTitle()}`}
-          icon={getTabIcon(tabValue)}
-          items={currentData}
-          selectedItem={selectedItem}
-          onItemSelect={handleItemSelect}
-          showTrends
-        />
-
-       
-        <Box sx={{ flex: 1 }}>
-          <AnalyticsOverview data={currentData} title={getTabTitle()} />
-
-          <AnalyticsCharts
-            data={currentData}
-            title={getTabTitle()}
-            monthlyTrends={analyticsData.monthlyTrends || []}
-            selectedItem={selectedItem}
-          />
-
-          <ItemDetails
-            selectedItem={selectedItem}
-            tabTitle={getTabTitle()}
-            monthlyTrends={analyticsData.monthlyTrends || []}
-            getTabIcon={() => getTabIcon(tabValue)}
-          />
-        </Box>
-      </Box> */}
+      <Box sx={{ mt: 2 }}>{tabValue === 3 && <CategoriesAnalytics />}</Box>
     </Box>
   );
 }
