@@ -259,7 +259,7 @@ export default function FilterComponent({ backAction, defaultValue, dataList }) 
                       // resetForm();
                       backAction({});
                     }}
-                    color="CancelButton"
+                    color="darker"
                   >
                     Clear
                   </Button>
@@ -269,7 +269,7 @@ export default function FilterComponent({ backAction, defaultValue, dataList }) 
                     type="submit"
                     disabled={!dirty}
                     onClick={handleSubmit}
-                    color="success"
+                    color="primary"
                   >
                     Apply
                   </Button>

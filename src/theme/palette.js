@@ -1,4 +1,4 @@
-import { alpha } from '@mui/material/styles';
+import { alpha, darken, lighten } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +53,15 @@ export const tabsColors = {
   cancelledBgActive: '#ff5630',
 };
 
+// export const primary = {
+// lighter: '#D0ECFE',
+// light: '#73BAFB',
+// main: '#1877F2',
+// dark: '#0C44AE',
+// darker: '#042174',
+// contrastText: '#FFFFFF',
+// };
+
 export const primary = {
   lighter: '#C8FAD0', // Lightest shade
   light: '#7BE86B', // Lighter shade
@@ -60,13 +69,6 @@ export const primary = {
   dark: '#3A8F2A', // Darker shade
   darker: '#1F5A18', // Darkest shade
   contrastText: '#FFFFFF', // Contrast text color
-  
-  // lighter: '#D0ECFE',
-  // light: '#73BAFB',
-  // main: '#1877F2',
-  // dark: '#0C44AE',
-  // darker: '#042174',
-  // contrastText: '#FFFFFF',
 };
 
 export const secondary = {
@@ -97,10 +99,10 @@ export const success = {
 
 export const darker = {
   lighter: '#F4F6F8', // Lightest shade
-  light: '#C4CDD5',   // Lighter shade
-  main: '#919EAB',    // Base color
-  dark: '#637381',    // Darker shade
-  darker: '#212B36',  // Darkest shade
+  light: '#C4CDD5', // Lighter shade
+  main: '#919EAB', // Base color
+  dark: '#637381', // Darker shade
+  darker: '#212B36', // Darkest shade
   contrastText: '#FFFFFF', // Contrast text color
 };
 
@@ -152,6 +154,44 @@ export const action = {
   disabledOpacity: 0.48,
 };
 
+function normalizeHex(hex) {
+  const h = hex.replace('#', '').trim();
+  if (h.length === 3) {
+    return h.split('').map((c) => c + c).join('');
+  }
+  return h.padEnd(6, '0').slice(0, 6);
+}
+
+function hexToRgb(hex) {
+  const h = normalizeHex(hex);
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return { r, g, b };
+}
+
+function getContrastText(hex) {
+  try {
+    const { r, g, b } = hexToRgb(hex);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? '#000000' : '#FFFFFF';
+  } catch (e) {
+    return '#FFFFFF';
+  }
+}
+
+function buildPrimaryScale(base) {
+  const main = base;
+  return {
+    lighter: lighten(main, 0.52),
+    light: lighten(main, 0.28),
+    main,
+    dark: darken(main, 0.18),
+    darker: darken(main, 0.32),
+    contrastText: getContrastText(main),
+  };
+}
+
 const base = {
   primary,
   secondary,
@@ -167,7 +207,7 @@ const base = {
   CancelButton,
 };
 
-const nav = {
+const navBase = {
   navColor: success?.light,
   navActiveColor: success?.light,
   navHoverColor: success?.light,
@@ -178,26 +218,42 @@ const nav = {
 
 // ----------------------------------------------------------------------
 
-export function palette() {
+export function palette(mode = 'light', primaryColor) {
+  const isLight = mode === 'light';
+
+  const computedPrimary = primaryColor ? buildPrimaryScale(primaryColor) : primary;
+  const computedSuccess = primaryColor
+    ? { ...success, main: computedPrimary.main }
+    : success;
+
   return {
     ...base,
+    primary: computedPrimary,
+    success: computedSuccess,
     ...RoleAs,
-    ...nav,
-    mode: 'light',
+    ...navBase,
+    // override nav colors with selected brand color
+    navColor: computedSuccess.main,
+    navActiveColor: computedSuccess.main,
+    navHoverColor: computedSuccess.main,
+    navBgcolor: alpha(computedSuccess.main, 0.08),
+    navActiveBgcolor: alpha(computedSuccess.main, 0.16),
+    navHoverBgcolor: alpha(computedSuccess.main, 0.12),
+    mode,
     text: {
-      success: success?.main,
-      primary: grey[800],
-      secondary: grey[600],
+      success: computedSuccess?.main,
+      primary: isLight ? grey[800] : '#FFFFFF',
+      secondary: isLight ? grey[600] : grey[400],
       disabled: grey[500],
     },
     background: {
-      paper: '#FFFFFF',
-      default: grey[100],
-      neutral: grey[200],
+      paper: isLight ? '#FFFFFF' : grey[900],
+      default: isLight ? grey[100] : grey[800],
+      neutral: isLight ? '#E5E7EB' : grey[700],
     },
     action: {
       ...base.action,
-      active: grey[600],
+      active: isLight ? grey[600] : grey[400],
     },
   };
 }

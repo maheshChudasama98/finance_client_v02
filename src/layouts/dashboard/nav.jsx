@@ -195,12 +195,12 @@ function NavMobileItem({ item }) {
           display: 'grid',
           placeContent: 'center',
           ...(active && {
-            color: 'success.main',
+            color: 'primary.main',
             fontWeight: 'fontWeightSemiBold',
-            // border: (theme) => `dashed 1px ${theme.palette.success.main}`,
-            bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+            // border: (theme) => `dashed 1px ${theme.palette.primary.main}`,
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
             '&:hover': {
-              bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
             },
           }),
         }}

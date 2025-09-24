@@ -9,6 +9,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
@@ -20,6 +21,7 @@ import { setDisplayFlag } from 'src/redux/actions/common';
 
 import Iconify from 'src/components/iconify';
 import AmountVisibilityToggle from 'src/components/CustomComponents/AmountVisibilityToggle';
+import { useThemeSettings } from 'src/theme';
 
 import { NAV, HEADER } from './config-layout';
 import BranchPopover from './common/branch-popover';
@@ -35,6 +37,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { mode, toggleMode } = useThemeSettings();
 
   const lgUp = useResponsive('up', 'lg');
   const upLg = useResponsive('up', 'lg');
@@ -68,7 +71,13 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
         {/* <TransactionsPopover /> */}
         {/* <NotificationsPopover /> */}
         <AmountVisibilityToggle />
-        <Button onClick={handleRecordClick} variant="outlined" color="success">
+        
+        <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
+          <IconButton onClick={toggleMode} color={mode === 'light' ? 'darker' : 'warning'}>
+            <Iconify icon={mode === 'light' ? 'mdi:weather-night' : 'mdi:white-balance-sunny'} />
+          </IconButton>
+        </Tooltip>
+        <Button onClick={handleRecordClick} variant="outlined" color="primary">
           Record
         </Button>
         <AccountPopover />
@@ -92,6 +101,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
           width: `calc(100% - ${isActive ? NAV.SORT_WIDTH : NAV.WIDTH + 1}px)`,
           height: HEADER.H_DESKTOP,
         }),
+        background: theme.palette.background.default,
       }}
     >
       <Toolbar
@@ -113,7 +123,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
             top: 15,
             border: `dashed 1px ${theme.palette.divider}`,
             borderRadius: 10,
-            background: grey[100],
+            background: theme.palette.background.default,
             // background: "#f9fafb",
             // zIndex: 999999
           }}

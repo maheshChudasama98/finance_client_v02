@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 
 const Loader = ({ loaderNumber }) => {
   const theme = useTheme();
-  const PRIMARY_LIGHT = theme.palette.success.main;
+  const PRIMARY_LIGHT = theme.palette.primary.main;
   if (loaderNumber === 2) {
     return (
       <Box sx={{ textAlign: 'center', p: 3, m: 'auto' }}>

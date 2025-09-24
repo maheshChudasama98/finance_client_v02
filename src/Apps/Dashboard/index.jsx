@@ -143,7 +143,7 @@ export default function Index() {
             {!downloadFlag && (
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 startIcon={<i className="fa-solid fa-download" />}
                 onClick={() => setDownloadFlag(true)}
                 disabled={currentYearBaseLoader}

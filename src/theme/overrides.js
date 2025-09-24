@@ -246,7 +246,7 @@ export function overrides(theme) {
           },
           border: 'none',
           '& .MuiTabs-indicator': {
-            backgroundColor: theme.palette.success.main,
+            backgroundColor: theme.palette.primary.main,
           },
         },
       },
@@ -261,11 +261,11 @@ export function overrides(theme) {
           minWidth: 0,
           padding: '6px 12px',
           '&:hover': {
-            color: theme.palette.success.main,
+            color: theme.palette.primary.main,
             backgroundColor: 'transparent',
           },
           '&.Mui-selected': {
-            color: theme.palette.success.main,
+            color: theme.palette.primary.main,
             fontWeight: 'bold',
             backgroundColor: 'transparent',
           },
@@ -354,15 +354,15 @@ export function overrides(theme) {
           marginBottom: 1,
           fontSize: 13,
           fontWeight: 100,
-          color: theme.palette.grey[900],
+          color: theme.palette.text?.primary,
           '&.Mui-focused': {
-            color: theme.palette.grey[900],
+            color: theme.palette.text?.primary,
           },
           '&.Mui-error': {
             color: theme.palette.error.main,
           },
           '&.Mui-error.Mui-focused': {
-            color: theme.palette.grey[900],
+            color: theme.palette.text?.primary,
           },
         },
       },
@@ -374,7 +374,8 @@ export function overrides(theme) {
           '& .MuiOutlinedInput-root': {
             fontSize: 14,
             borderRadius: 5,
-            backgroundColor: theme.palette.grey[200],
+            // backgroundColor: theme.palette.grey[200],
+            backgroundColor: theme.palette.background.neutral,
             padding: '6px 8px',
             '& .MuiOutlinedInput-input': {
               padding: '6px 8px',
@@ -418,7 +419,7 @@ export function overrides(theme) {
           '& .MuiOutlinedInput-root': {
             fontSize: 14,
             borderRadius: 5,
-            backgroundColor: theme.palette.grey[200],
+            backgroundColor: theme.palette.background.neutral,
             padding: '6px 8px',
             // padding: '4px 5px',
             // minHeight: 55,
@@ -473,7 +474,7 @@ export function overrides(theme) {
         root: {
           fontSize: 14,
           borderRadius: 5,
-          backgroundColor: theme.palette.grey[200],
+          backgroundColor: theme.palette.background.neutral,
         },
         select: {
           padding: '8px 10px',

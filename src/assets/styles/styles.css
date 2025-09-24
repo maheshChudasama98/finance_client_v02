@@ -412,6 +412,7 @@
 
 }
 
+/* Ant Table tweaks */
 .custom-ant-table .ant-table-expanded-row>.ant-table-cell {
   padding: 0 !important;
   margin: 0 !important;
@@ -424,9 +425,53 @@
 
 .custom-ant-table .ant-table-tbody>tr>td {
   border-bottom: 1px dashed #EEE !important;
+  border-bottom: 1px dashed #EEE !important;
   padding: 10px;
 }
 
 .custom-ant-table .ant-table-tbody>tr:last-child>td {
   border-bottom: none !important;
+}
+
+/* Remove border radius for table container and cells */
+.custom-ant-table .ant-table,
+.custom-ant-table .ant-table-container,
+.custom-ant-table .ant-table-thead > tr:first-child > th:first-child,
+.custom-ant-table .ant-table-thead > tr:first-child > th:last-child,
+.custom-ant-table .ant-table-tbody > tr:last-child > td:first-child,
+.custom-ant-table .ant-table-tbody > tr:last-child > td:last-child {
+  border-radius: 0 !important;
+}
+
+/* Theme-aware styles for Ant Table */
+html[data-theme-mode='light'] .custom-ant-table .ant-table-container {
+  background-color: #ffffff !important;
+  color: #1f2937 !important; /* gray-800 */
+}
+
+html[data-theme-mode='light'] .custom-ant-table .ant-table-thead > tr > th {
+  background-color: #f3f4f6 !important; /* gray-100 */
+  color: #374151 !important; /* gray-700 */
+}
+
+html[data-theme-mode='light'] .custom-ant-table .ant-table-tbody > tr:hover > td {
+  background-color: #f9fafb !important; /* gray-50 */
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-container {
+  background-color: #111827 !important; /* gray-900 */
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-thead > tr > th {
+  background-color: #1f2937 !important; /* gray-800 */
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-tbody > tr > td {
+  border-bottom-color: rgba(229,231,235,0.12) !important;
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-tbody > tr:hover > td {
+  background-color: #1f2937 !important; /* gray-800 */
 }

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { success } from 'src/theme/palette';
+import { useTheme } from '@mui/material/styles';
 
 import { Tooltip } from 'antd';
 
 export const CustomTooltip = ({ label, Placement, children, ...props }) => {
+
+  const theme = useTheme();
   // Check if label is a string or JSX
   const renderLabel = typeof label === 'string' ? <span>{label}</span> : label;
 
@@ -13,7 +15,7 @@ export const CustomTooltip = ({ label, Placement, children, ...props }) => {
     <Tooltip
       placement={Placement}
       title={renderLabel} 
-      color={success?.main}
+      color={theme.palette.primary.main}
       overlayInnerStyle={{ fontSize: '16px' }}
       {...props}
     >

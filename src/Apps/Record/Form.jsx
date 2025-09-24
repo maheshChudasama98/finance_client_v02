@@ -403,7 +403,7 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
               <Col span={6}>
                 <CalculatorButton
                   onClick={() => onCalculate(parseFloat(display))}
-                  color="success"
+                  color="primary"
                   variant="contained"
                   fullWidth
                 >
@@ -423,7 +423,7 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
                 </CalculatorButton>
               </Col>
               <Col span={6}>
-                <CalculatorButton onClick={handleEquals} color="success" variant="contained">
+                <CalculatorButton onClick={handleEquals} color="primary" variant="contained">
                   =
                 </CalculatorButton>
               </Col>
@@ -1114,7 +1114,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                         onClick={() => {
                           resetForm();
                         }}
-                        color="CancelButton"
+                        color="darker"
                       >
                         Cancel
                       </Button>
@@ -1126,7 +1126,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                         type="submit"
                         disabled={!dirty}
                         onClick={handleSubmit}
-                        color="success"
+                        color="primary"
                       >
                         Save
                       </Button>

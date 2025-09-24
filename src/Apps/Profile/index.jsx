@@ -7,14 +7,16 @@ import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
-// import Paper from '@mui/material/Paper';
+import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Unstable_Grid2';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { ImgUrl } from 'src/constance';
+import { useThemeSettings } from 'src/theme';
 import {
   UserModifyService,
   SettingGetService,
@@ -22,6 +24,7 @@ import {
 } from 'src/Services/User.Services';
 
 import Iconify from 'src/components/iconify';
+import { ColorPicker } from 'src/components/color-utils';
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
 import { ImagePicker, TextFieldForm, AutoCompleteSelectMenu } from 'src/components/inputs';
 
@@ -94,6 +97,73 @@ function ProfileStats({ userDetails }) {
   );
 }
 
+function ThemePreferences() {
+  const theme = useTheme();
+  const { mode, setMode, primaryColor, setPrimaryColor } = useThemeSettings();
+
+  const colorOptions = [
+    '#5BC43A',
+    '#1877F2',
+    '#00B8D9',
+    '#8E33FF',
+    '#FF5630',
+    '#FFAB00',
+    '#22C55E',
+    '#10B981',
+    '#06B6D4',
+    '#3B82F6',
+    '#6366F1',
+    '#A855F7',
+  ];
+
+  return (
+    <Box sx={{ mt: 4 }}>
+      <Divider sx={{ my: 3 }} />
+      <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+        <Iconify icon="eva:color-palette-fill" width={20} height={20} sx={{ mr: 1 }} />
+        Theme Preferences
+      </Typography>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          <Card sx={{ p: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Appearance
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Iconify icon="mdi:white-balance-sunny" />
+              <Switch
+                checked={mode === 'dark'}
+                onChange={(e) => setMode(e.target.checked ? 'dark' : 'light')}
+              />
+              <Iconify icon="mdi:weather-night" />
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                {mode === 'dark' ? 'Dark' : 'Light'} mode
+              </Typography>
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card sx={{ p: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Primary Color
+            </Typography>
+            <ColorPicker
+              colors={colorOptions}
+              selected={primaryColor || theme.palette.primary.main}
+              onSelectColor={(c) => setPrimaryColor(c)}
+              limit={8}
+            />
+            <Button size="small" sx={{ mt: 1 }} onClick={() => setPrimaryColor('')}>
+              Reset to default
+            </Button>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+}
+
 // Activity Timeline Component
 function ActivityTimeline({ activities = [] }) {
   const defaultActivities = [
@@ -151,6 +221,8 @@ export default function Index({ backAction, editObject }) {
   const [settings, setSettings] = useState({});
   const [settingsLoading, setSettingsLoading] = useState(false);
 
+  const { mode, primaryColor, setMode, setPrimaryColor } = useThemeSettings();
+
   const { userDetails = {} } = useSelector((state) => state?.auth);
 
   // Fetch roles and settings on component mount
@@ -159,6 +231,11 @@ export default function Index({ backAction, editObject }) {
       SettingGetService((res) => {
         if (res?.status) {
           setSettings(res?.data || {});
+          // Apply persisted theme settings to context
+          const persistedMode = res?.data?.ThemeMode;
+          const persistedPrimary = res?.data?.ThemePrimary;
+          if (persistedMode) setMode(persistedMode);
+          if (typeof persistedPrimary !== 'undefined') setPrimaryColor(persistedPrimary || '');
         }
         setSettingsLoading(false);
       })
@@ -198,11 +275,17 @@ export default function Index({ backAction, editObject }) {
 
   const SettingsSubmit = (values) => {
     setSettingsLoading(true);
+    // include theme state from context
+    const payload = {
+      ...values,
+      ThemeMode: mode,
+      ThemePrimary: primaryColor || null,
+    };
     dispatch(
-      SettingModifyService(values, (res) => {
+      SettingModifyService(payload, (res) => {
         setSettingsLoading(false);
         if (res?.status) {
-          // Handle success
+          // saved
         }
       })
     );
@@ -491,6 +574,8 @@ export default function Index({ backAction, editObject }) {
               DefaultDateFormat: settings?.DefaultDateFormat || 'DD/MM/YYYY',
               DefaultCurrency: settings?.DefaultCurrency || 'INR',
               AmountHide: settings?.AmountHide || false,
+              ThemeMode: settings?.ThemeMode || 'light',
+              ThemePrimary: settings?.ThemePrimary || '',
             }}
             onSubmit={SettingsSubmit}
           >
@@ -566,6 +651,9 @@ export default function Index({ backAction, editObject }) {
                       />
                     </Grid>
                   </Grid>
+
+                  {/* Theme Preferences */}
+                  <ThemePreferences />
 
                   <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                     {!settingsLoading ? (

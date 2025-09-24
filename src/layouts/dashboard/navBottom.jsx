@@ -130,11 +130,11 @@ export default function Nav({ isActive, setIsActive }) {
                   justifyContent: 'center',
                   minWidth: 80,
                   ...(active && {
-                    color: 'success.main',
+                    color: 'primary.main',
                     fontWeight: 'fontWeightSemiBold',
-                    bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
                     '&:hover': {
-                      bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
+                      bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
                     },
                   }),
                 }}
