@@ -23,6 +23,7 @@ import {
 import Loader from 'src/components/Loaders/Loader';
 import Chart, { useChart } from 'src/components/chart';
 import { DateRangePicker } from 'src/components/inputs';
+import { AnimatedChart } from 'src/components/Animated';
 
 export default function EnhancedAnalytics() {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ export default function EnhancedAnalytics() {
   const [selectYear, setSelectYear] = useState(new Date());
   const [monthlyData, setMonthlyData] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
-  // const [subCategoriesList, setSubCategoriesList] = useState([]);
+  const [subCategoriesList, setSubCategoriesList] = useState([]);
   const [isDrilldown, setIsDrilldown] = useState(false);
   const [drillCategory, setDrillCategory] = useState(null);
   const [drillSubCategories, setDrillSubCategories] = useState([]);
@@ -171,6 +172,57 @@ export default function EnhancedAnalytics() {
     ],
   };
 
+  // Top Categories (Out) - Bar
+  const topCategoriesBarData = {
+    labels: categoriesList.slice(0, 10).map((item) => item?.CategoryName),
+    series: [
+      {
+        name: 'Expense',
+        data: categoriesList.slice(0, 10).map((item) => item?.totalOut || 0),
+      },
+    ],
+  };
+
+  // Top Sub Categories (Out) - Bar
+  const topSubCategoriesBarData = {
+    labels: subCategoriesList.slice(0, 10).map((item) => item?.SubCategoryName),
+    series: [
+      {
+        name: 'Expense',
+        data: subCategoriesList.slice(0, 10).map((item) => item?.totalOut || 0),
+      },
+    ],
+  };
+
+  // Growth rate MoM (Income and Expense)
+  const growthLabels = (monthlyData || []).slice(1).map((m) => m?.monthName);
+  const calcGrowth = (current, previous) => {
+    const prev = Number(previous || 0);
+    const curr = Number(current || 0);
+    if (prev === 0) return 0;
+    return ((curr - prev) / prev) * 100;
+  };
+  const incomeGrowthSeries = (monthlyData || [])
+    .map((m) => Number(m?.totalIn || 0))
+    .map((val, idx, arr) => (idx === 0 ? null : calcGrowth(val, arr[idx - 1])))
+    .filter((v) => v !== null);
+  const expenseGrowthSeries = (monthlyData || [])
+    .map((m) => Number(m?.totalOut || 0))
+    .map((val, idx, arr) => (idx === 0 ? null : calcGrowth(val, arr[idx - 1])))
+    .filter((v) => v !== null);
+
+  // Investment Overview (Year) - Column
+  const investmentOverviewData = {
+    labels: monthlyData.map((m) => m?.monthName),
+    series: [
+      {
+        name: 'Investment',
+        data: monthlyData.map((m) => Number(m?.totalInvestment || 0)),
+      },
+    ],
+  };
+
+
   const handleCategorySliceClick = (dataPointIndex) => {
     if (isDrilldown) return;
     const list = categoriesList.slice(0, 8);
@@ -206,6 +258,7 @@ export default function EnhancedAnalytics() {
     setDrillLoading(false);
   };
 
+  // Fetch dashboard, categories, subcategories
   useEffect(() => {
     dispatch(
       DashboardService({ SelectedYear: new Date(selectYear).getFullYear() }, (res) => {
@@ -224,13 +277,13 @@ export default function EnhancedAnalytics() {
       })
     );
 
-    // dispatch(
-    //   TopSubCategoriesService({ Duration: 'YEAR', SelectedDate: new Date(selectYear) }, (res) => {
-    //     if (res.status) {
-    //       setSubCategoriesList(res?.data?.list?.[0]?.topTenOut || []);
-    //     }
-    //   })
-    // );
+    dispatch(
+      TopSubCategoriesService({ Duration: 'YEAR', SelectedDate: new Date(selectYear) }, (res) => {
+        if (res.status) {
+          setSubCategoriesList(res?.data?.list?.[0]?.topTenOut || []);
+        }
+      })
+    );
   }, [selectYear]);
 
   return (
@@ -474,20 +527,116 @@ export default function EnhancedAnalytics() {
 
         <Grid item xs={12}>
           <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
+            <AnimatedChart
+              title="Investment vs Savings"
+              subheader="Monthly investment and savings comparison"
+              height={300}
+              animationDuration={2000}
+              chart={{
+                labels: investmentSavingsData.labels || [],
+                series: investmentSavingsData.series,
+                options: {
+                  ...chartOptions,
+                  xaxis: {
+                    categories: investmentSavingsData.labels,
+                    labels: {
+                      rotate: -45,
+                      style: {
+                        fontSize: '12px',
+                      },
+                    },
+                  },
+                  yaxis: {
+                    labels: {
+                      show: true,
+                    },
+                  },
+                },
+              }}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+
+      {/* New Charts Rows */}
+      <Grid container spacing={3} sx={{ px: 2, mb: 2 }}>
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
             <Card>
-              <CardHeader
-                title="Investment vs Savings"
-                subheader="Monthly investment and savings comparison"
-              />
-              <Box sx={{ p: 3, pb: 1 }}>
+              <CardHeader title="Top Categories (Out)" subheader="Highest spending categories" />
+              <Box sx={{ p: 3, pt: 1 }}>
                 <Chart
                   dir="ltr"
                   type="bar"
-                  series={investmentSavingsData.series}
+                  series={topCategoriesBarData.series}
                   options={{
                     ...chartOptions,
-                    xaxis: {
-                      categories: investmentSavingsData.labels,
+                    plotOptions: {
+                      ...chartOptions.plotOptions,
+                      bar: { ...chartOptions.plotOptions?.bar, horizontal: true },
+                    },
+                    xaxis: { categories: topCategoriesBarData.labels },
+                    colors: categoryColors,
+                  }}
+                  width="100%"
+                  height={380}
+                />
+              </Box>
+            </Card>
+          </Box>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
+            <Card>
+              <CardHeader title="Top Sub Categories (Out)" subheader="Highest spending subcategories" />
+              <Box sx={{ p: 3, pt: 1 }}>
+                <Chart
+                  dir="ltr"
+                  type="bar"
+                  series={topSubCategoriesBarData.series}
+                  options={{
+                    ...chartOptions,
+                    plotOptions: {
+                      ...chartOptions.plotOptions,
+                      bar: { ...chartOptions.plotOptions?.bar, horizontal: true },
+                    },
+                    xaxis: { categories: topSubCategoriesBarData.labels },
+                  }}
+                  width="100%"
+                  height={380}
+                />
+              </Box>
+            </Card>
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3} sx={{ px: 2, mb: 2 }}>
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
+            <Card>
+              <CardHeader title="Growth Rate MoM (Year)" subheader="Income and Expense growth %" />
+              <Box sx={{ p: 3, pt: 1 }}>
+                <Chart
+                  dir="ltr"
+                  type="line"
+                  series={[
+                    { name: 'Income Growth %', data: incomeGrowthSeries },
+                    { name: 'Expense Growth %', data: expenseGrowthSeries },
+                  ]}
+                  options={{
+                    ...chartOptions,
+                    xaxis: { categories: growthLabels },
+                    yaxis: {
+                      labels: {
+                        formatter: (val) => `${Number(val || 0).toFixed(1)}%`,
+                      },
+                    },
+                    tooltip: {
+                      shared: true,
+                      y: {
+                        formatter: (val) => `${Number(val || 0).toFixed(1)}%`,
+                      },
                     },
                   }}
                   width="100%"
@@ -497,7 +646,29 @@ export default function EnhancedAnalytics() {
             </Card>
           </Box>
         </Grid>
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
+            <Card>
+              <CardHeader title="Investment Overview (Year)" subheader="Monthly investments" />
+              <Box sx={{ p: 3, pt: 1 }}>
+                <Chart
+                  dir="ltr"
+                  type="bar"
+                  series={investmentOverviewData.series}
+                  options={{
+                    ...chartOptions,
+                    xaxis: { categories: investmentOverviewData.labels },
+                    colors: ['#00B8D9'],
+                  }}
+                  width="100%"
+                  height={300}
+                />
+              </Box>
+            </Card>
+          </Box>
+        </Grid>
       </Grid>
+
     </Card>
   );
 }
