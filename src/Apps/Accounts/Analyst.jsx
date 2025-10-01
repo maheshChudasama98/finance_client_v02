@@ -52,7 +52,7 @@ export default function Analyst({ AccountId }) {
         <Button
           variant="contained"
           sx={{ ml: 1 }}
-          color="success"
+          color="primary"
           onClick={() => setDownloadFlag(true)}
         >
           <i className="fa-solid fa-download" />

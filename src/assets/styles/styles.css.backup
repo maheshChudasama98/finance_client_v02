@@ -402,20 +402,21 @@
 }
 
 .custom-info-icon-css {
-  background: var(--palette-primary-main, #5bc43a);
-  color: var(--palette-primary-contrastText, #ffffff);
+  background: #5bc43a;
+  color: white;
   padding: 4px 7px;
   margin-right: 25px;
   font-size: 9px;
   border-radius: 10px;
   place-self: anchor-center;
+
 }
 
 /* Ant Table tweaks */
 .custom-ant-table .ant-table-expanded-row>.ant-table-cell {
-  /* padding: 0 !important; */
-  /* margin: 0 !important; */
-  background-color: var(--palette-background-paper, #fff) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #fff !important;
 }
 
 .twitter-picker {
@@ -423,8 +424,9 @@
 }
 
 .custom-ant-table .ant-table-tbody>tr>td {
-  border-bottom: 1px dashed var(--palette-divider, #EEE) !important;
-  /* padding: 10px; */
+  border-bottom: 1px dashed #EEE !important;
+  border-bottom: 1px dashed #EEE !important;
+  padding: 10px;
 }
 
 .custom-ant-table .ant-table-tbody>tr:last-child>td {
@@ -442,8 +444,8 @@
 }
 
 .custom-ant-table .ant-table-thead>tr>th {
-  border-top: 1px solid var(--palette-divider, #e5e7eb) !important;
-  border-bottom: 1px solid var(--palette-divider, #e5e7eb) !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
 .custom-ant-table .ant-table-thead>tr>th {
@@ -459,55 +461,96 @@
   display: none !important;
 }
 
-/* Theme-aware styles for Ant Table using CSS custom properties */
-.custom-ant-table .ant-table-container {
-  background-color: var(--palette-background-paper, #ffffff) !important;
-  color: var(--palette-text-primary, #1f2937) !important;
+html[data-theme-mode='light'] .custom-ant-table .ant-table-container {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
 }
 
-.custom-ant-table .ant-table-thead>tr>th {
-  background-color: var(--palette-background-table-header, #f3f4f6) !important;
-  color: var(--palette-text-primary, #374151) !important;
+html[data-theme-mode='light'] .custom-ant-table .ant-table-thead>tr>th {
+  background-color: #f3f4f6 !important;
+  color: #374151 !important;
 }
 
-.custom-ant-table .ant-table-tbody>tr:hover>td {
-  background-color: var(--palette-action-hover, #f9fafb) !important;
+html[data-theme-mode='light'] .custom-ant-table .ant-table-tbody>tr:hover>td {
+  background-color: #f9fafb !important;
 }
 
-.custom-ant-table .ant-table-tbody>tr>td {
-  border-bottom-color: var(--palette-divider, rgba(229, 231, 235, 0.12)) !important;
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-container {
+  background-color: #111827 !important;
+  color: #e5e7eb !important;
 }
 
-.custom-ant-table .ant-table-thead>tr>th {
-  border-top: 1px solid var(--palette-divider, #e5e7eb) !important;
-  border-bottom: 1px solid var(--palette-divider, #e5e7eb) !important;
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-thead>tr>th {
+  background-color: #1f2937 !important;
+  color: #e5e7eb !important;
 }
 
-/* Expand button styling using CSS custom properties */
-.custom-ant-table .ant-table-row-expand-icon {
-  background-color: var(--palette-background-paper, #ffffff) !important;
-  border: 1px solid var(--palette-divider, #d1d5db) !important;
-  color: var(--palette-text-primary, #374151) !important;
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-tbody>tr>td {
+  border-bottom-color: rgba(229, 231, 235, 0.12) !important;
 }
 
-.custom-ant-table .ant-table-row-expand-icon:hover {
-  background-color: var(--palette-action-hover, #f3f4f6) !important;
-  border-color: var(--palette-text-secondary, #9ca3af) !important;
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-tbody>tr:hover>td {
+  background-color: #1f2937 !important;
 }
 
-.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded {
-  background-color: var(--palette-primary-main, #5bc43a) !important;
-  border-color: var(--palette-primary-main, #5bc43a) !important;
-  color: var(--palette-primary-contrastText, #ffffff) !important;
+html[data-theme-mode='light'] .custom-ant-table .ant-table-thead>tr>th {
+  border-top: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-thead>tr>th {
+  border-top: 1px solid rgba(229, 231, 235, 0.12) !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.12) !important;
+}
+/* Expand button styling for light and dark themes */
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon {
+  background-color: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #374151 !important;
+}
+
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon:hover {
+  background-color: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+}
+
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded {
+  background-color: #5bc43a !important;
+  border-color: #5bc43a !important;
+  color: #ffffff !important;
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon {
+  background-color: #1f2937 !important;
+  border: 1px solid rgba(229, 231, 235, 0.2) !important;
+  color: #e5e7eb !important;
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon:hover {
+  background-color: #374151 !important;
+  border-color: rgba(229, 231, 235, 0.4) !important;
+}
+
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded {
+  background-color: #5bc43a !important;
+  border-color: #5bc43a !important;
+  color: #ffffff !important;
 }
 
 /* Expand icon content styling */
-.custom-ant-table .ant-table-row-expand-icon::before,
-.custom-ant-table .ant-table-row-expand-icon::after {
-  color: var(--palette-text-primary, #374151) !important;
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon::before,
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon::after {
+  color: #374151 !important;
 }
 
-.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::before,
-.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::after {
-  color: var(--palette-primary-contrastText, #ffffff) !important;
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon::before,
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon::after {
+  color: #e5e7eb !important;
+}
+
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::before,
+html[data-theme-mode='light'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::after,
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::before,
+html[data-theme-mode='dark'] .custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::after {
+  color: #ffffff !important;
 }

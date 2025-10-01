@@ -571,7 +571,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >

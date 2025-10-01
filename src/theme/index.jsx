@@ -87,6 +87,72 @@ export default function ThemeProvider({ children }) {
     }
   }, [mode]);
 
+  // Inject CSS custom properties into document root
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const currentPalette = palette(mode, primaryColor || undefined);
+      // const currentShadows = shadows(mode);
+      const currentCustomShadows = customShadows(mode, primaryColor || undefined);
+      const root = document.documentElement;
+      
+      // Set palette colors as CSS custom properties
+      root.style.setProperty('--palette-primary-main', currentPalette.primary.main);
+      root.style.setProperty('--palette-primary-contrastText', currentPalette.primary.contrastText);
+      root.style.setProperty('--palette-primary-light', currentPalette.primary.light);
+      root.style.setProperty('--palette-primary-dark', currentPalette.primary.dark);
+      root.style.setProperty('--palette-primary-lighter', currentPalette.primary.lighter);
+      root.style.setProperty('--palette-primary-darker', currentPalette.primary.darker);
+      
+      root.style.setProperty('--palette-text-primary', currentPalette.text.primary);
+      root.style.setProperty('--palette-text-secondary', currentPalette.text.secondary);
+      root.style.setProperty('--palette-text-disabled', currentPalette.text.disabled);
+      
+      root.style.setProperty('--palette-background-paper', currentPalette.background.paper);
+      root.style.setProperty('--palette-background-default', currentPalette.background.default);
+      root.style.setProperty('--palette-background-neutral', currentPalette.background.neutral);
+      root.style.setProperty('--palette-background-table-header', currentPalette.background?.tableHeader);
+      
+      root.style.setProperty('--palette-action-hover', currentPalette.action.hover);
+      root.style.setProperty('--palette-action-selected', currentPalette.action.selected);
+      root.style.setProperty('--palette-action-disabled', currentPalette.action.disabled);
+      root.style.setProperty('--palette-action-focus', currentPalette.action.focus);
+      
+      root.style.setProperty('--palette-divider', currentPalette.divider);
+      
+      root.style.setProperty('--palette-success-main', currentPalette.success.main);
+      root.style.setProperty('--palette-success-contrastText', currentPalette.success.contrastText);
+      
+      root.style.setProperty('--palette-error-main', currentPalette.error.main);
+      root.style.setProperty('--palette-error-contrastText', currentPalette.error.contrastText);
+      
+      root.style.setProperty('--palette-warning-main', currentPalette.warning.main);
+      root.style.setProperty('--palette-warning-contrastText', currentPalette.warning.contrastText);
+      
+      root.style.setProperty('--palette-info-main', currentPalette.info.main);
+      root.style.setProperty('--palette-info-contrastText', currentPalette.info.contrastText);
+      
+      // Set shadow CSS custom properties
+      root.style.setProperty('--shadow-z1', currentCustomShadows.z1);
+      root.style.setProperty('--shadow-z4', currentCustomShadows.z4);
+      root.style.setProperty('--shadow-z8', currentCustomShadows.z8);
+      root.style.setProperty('--shadow-z12', currentCustomShadows.z12);
+      root.style.setProperty('--shadow-z16', currentCustomShadows.z16);
+      root.style.setProperty('--shadow-z20', currentCustomShadows.z20);
+      root.style.setProperty('--shadow-z24', currentCustomShadows.z24);
+      
+      root.style.setProperty('--shadow-card', currentCustomShadows.card);
+      root.style.setProperty('--shadow-dropdown', currentCustomShadows.dropdown);
+      root.style.setProperty('--shadow-dialog', currentCustomShadows.dialog);
+      
+      root.style.setProperty('--shadow-primary', currentCustomShadows.primary);
+      root.style.setProperty('--shadow-info', currentCustomShadows.info);
+      root.style.setProperty('--shadow-secondary', currentCustomShadows.secondary);
+      root.style.setProperty('--shadow-success', currentCustomShadows.success);
+      root.style.setProperty('--shadow-warning', currentCustomShadows.warning);
+      root.style.setProperty('--shadow-error', currentCustomShadows.error);
+    }
+  }, [mode, primaryColor]);
+
   const setPrimaryColor = useCallback((color) => {
     setPrimaryColorState(color || '');
     if (color) {
@@ -113,8 +179,8 @@ export default function ThemeProvider({ children }) {
     () => ({
       palette: palette(mode, primaryColor || undefined),
       typography,
-      shadows: shadows(),
-      customShadows: customShadows(),
+      shadows: shadows(mode),
+      customShadows: customShadows(mode, primaryColor || undefined),
       shape: { borderRadius: 8 },
     }),
     [mode, primaryColor]

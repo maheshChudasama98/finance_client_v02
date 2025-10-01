@@ -12,7 +12,7 @@ import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
 import { fDate } from 'src/utils/format-time';
 import { fText } from 'src/utils/format-text';
-import { lightenColor } from 'src/utils/utils';
+import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
@@ -27,7 +27,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     fontSize: { xs: 10, sm: 11 },
     borderRadius: 1,
     fontWeight: 700,
-    // height: { xs: 24, sm: 28 },
   };
 
   const ChipFun = (status) => {
@@ -35,15 +34,13 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
     return (
       <Chip
-        // onClick={() => filterHeader('Actions', Action?.key)}
         size="small"
         sx={{
           ...chipStyles,
           color: Action?.textColor ? Action?.textColor : '#000',
-          backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
-          // cursor: 'pointer',
+          backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
           '&:hover': {
-            backgroundColor: lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5),
+            backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5),
           },
         }}
         label={Action?.value || status}
@@ -122,9 +119,9 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 fontSize: 10,
                 height: 20,
                 borderRadius: 1,
-                borderColor: 'success.main',
+                borderColor: 'primary.main',
                 color: 'white',
-                backgroundColor: 'success.main',
+                backgroundColor: 'primary.main',
               }}
               label={tag.LabelName}
             />
@@ -148,11 +145,10 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
   return (
     <Box sx={{ mb: 2 }}>
-      {/* Date Header */}
       <Card
         sx={{
           mb: 1,
-          backgroundColor: (theme) => theme.palette.grey[100],
+          backgroundColor: (theme) => theme.palette.background.neutral2,
           borderRadius: 2,
         }}
       >
@@ -169,7 +165,8 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 sx={{
                   textAlign: 'end',
                   fontWeight: 700,
-                  color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
+                  color: (theme) =>
+                    item?.dayTotal >= 0 ? theme.palette.success.main : theme.palette.error.main,
                 }}
               >
                 {formatToINR(item?.dayTotal)}
@@ -190,7 +187,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
             borderColor: 'divider',
             '&:hover': {
               boxShadow: 2,
-              borderColor: 'success.main',
+              borderColor: 'primary.main',
             },
           }}
         >
@@ -240,10 +237,13 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   sx={{
                     ...chipStyles,
                     color: record?.AccountDetails?.Color || '#1b925e',
-                    backgroundColor: lightenColor(record?.AccountDetails?.Color || '#1b925e', 0.85),
+                    backgroundColor: getThemeColor(
+                      record?.AccountDetails?.Color || '#1b925e',
+                      0.85
+                    ),
                     cursor: 'pointer',
                     '&:hover': {
-                      backgroundColor: lightenColor(
+                      backgroundColor: getThemeColor(
                         record?.AccountDetails?.Color || '#1b925e',
                         0.85
                       ),
@@ -260,7 +260,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                     sx={{
                       ...chipStyles,
                       color: record?.TransferDetails?.Color || '#1b925e',
-                      backgroundColor: lightenColor(
+                      backgroundColor: getThemeColor(
                         record?.TransferDetails?.Color || '#00A76F',
                         0.92
                       ),
@@ -292,7 +292,10 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   sx={{
                     textAlign: 'end',
                     fontWeight: 700,
-                    color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
+                    color: (theme) =>
+                      record?.AccountAmount > 0
+                        ? theme.palette.success.main
+                        : theme.palette.error.main,
                   }}
                 >
                   {formatToINR(record?.AccountAmount, isAmountVisible)}
@@ -304,7 +307,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                   <Button
                     size="small"
                     color="success"
-                    // variant="outlined"
                     onClick={() => editAction(record)}
                     sx={{
                       minWidth: 'auto',
@@ -355,7 +357,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                         >
                           Tags:
                         </Typography>
-                        {record.TagList.map((tag, index) => (
+                        {record?.TagList?.map((tag, index) => (
                           <Chip
                             key={index}
                             size="small"
@@ -364,9 +366,9 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                               fontSize: 10,
                               height: 20,
                               borderRadius: 1,
-                              borderColor: 'success.main',
+                              borderColor: 'primary.main',
                               color: 'white',
-                              backgroundColor: 'success.main',
+                              backgroundColor: 'primary.main',
                             }}
                             label={tag.LabelName}
                           />
@@ -422,7 +424,7 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                             fontSize: 10,
                             height: 20,
                             color: record?.AccountDetails?.Color || '#1b925e',
-                            backgroundColor: lightenColor(
+                            backgroundColor: getThemeColor(
                               record?.AccountDetails?.Color || '#1b925e',
                               0.92
                             ),
@@ -441,7 +443,10 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                     variant="subtitle2"
                     sx={{
                       fontWeight: 700,
-                      color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
+                      color: (theme) =>
+                        record?.AccountAmount > 0
+                          ? theme.palette.success.main
+                          : theme.palette.error.main,
                       mb: 0.5,
                     }}
                   >
@@ -455,13 +460,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                 </Box>
               </Grid>
             </Grid>
-
-            {/* Tags and Description for Mobile */}
-            {/* {record?.TagList?.length > 0 && (
-              <Box sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
-                {renderTags(record)}
-              </Box>
-            )} */}
 
             {(record?.TagList?.length > 0 || record?.Description) && (
               <>

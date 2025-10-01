@@ -105,7 +105,7 @@ export default function SubForm({ backAction, editObject, CategoryId, Color, del
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       {' '}
                       Cancel{' '}

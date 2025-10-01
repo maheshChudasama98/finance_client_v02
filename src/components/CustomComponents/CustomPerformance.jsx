@@ -11,7 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
 import { fDate } from 'src/utils/format-time';
-import { lightenColor } from 'src/utils/utils';
+import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
 import { TransactionActions } from 'src/constance';
@@ -75,11 +75,11 @@ export const CustomPerformance = ({ list }) => {
         sx={{
           color: Action?.textColor ? Action?.textColor : '#000',
           backgroundColor: !isMobile
-            ? lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85)
+            ? getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85)
             : 'transparent',
           '&:hover': {
             backgroundColor: !isMobile
-              ? lightenColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5)
+              ? getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5)
               : null,
           },
           ...styes,
@@ -99,7 +99,7 @@ export const CustomPerformance = ({ list }) => {
         size="small"
         sx={{
           color: item?.AccountColor || '#1b925e',
-          backgroundColor: lightenColor(item?.AccountColor || '#00A76F', 0.92),
+          backgroundColor: getThemeColor(item?.AccountColor || '#00A76F', 0.92),
           fontSize: { xs: 10, sm: 11 },
           height: 20,
           borderRadius: 0.5,
@@ -200,7 +200,9 @@ export const CustomPerformance = ({ list }) => {
                 </Box>
 
                 {item?.Description && (
-                  <Box sx={{ mt: 0.5, p: 0.5, backgroundColor: 'grey.50', borderRadius: 0.5 }}>
+                  <Box
+                    sx={{ mt: 0.5, p: 0.5, backgroundColor: 'background.neutral2', borderRadius: 0.5 }}
+                  >
                     <Typography
                       variant="caption"
                       color="text.secondary"
@@ -223,6 +225,7 @@ export const CustomPerformance = ({ list }) => {
       <MobileTransactionsGrid />
     ) : (
       <Table
+        className="custom-ant-table"
         pagination={false}
         columns={columns}
         dataSource={tableSetData}

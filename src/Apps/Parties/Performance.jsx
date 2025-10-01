@@ -75,7 +75,7 @@ export default function Performance({ PartyId }) {
           setLoadingLoader(false);
           setList(res?.data?.list);
           setExpandedRowKeys([]);
-        } 
+        }
       })
     );
   }, [PartyId, duration]);
@@ -123,6 +123,7 @@ export default function Performance({ PartyId }) {
               '& .MuiAccordionSummary-content': {
                 margin: 0,
               },
+              borderRadius: 1,
             }}
           >
             <Box
@@ -134,7 +135,7 @@ export default function Performance({ PartyId }) {
                 pr: 2,
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary' }}>
                 {item?.duration}
               </Typography>
 
@@ -168,10 +169,11 @@ export default function Performance({ PartyId }) {
             </Box>
           </AccordionSummary>
 
-          <AccordionDetails sx={{ backgroundColor: 'grey.50', pt: 2 }}>
+          <AccordionDetails sx={{ background: 'background.neutral' }}>
             <Box sx={{ mb: 2 }}>
               <Typography
                 variant="subtitle2"
+                color="text.primary"
                 sx={{ fontWeight: 600, mb: 1, color: 'text.primary' }}
               >
                 Financial Summary
@@ -260,7 +262,7 @@ export default function Performance({ PartyId }) {
             <>
               {isMobile && <MobilePerformanceAccordion />}
               {!isMobile && (
-                <Box sx={{ mx: { xs: 1, sm: 2 }, overflow: 'auto' }}>
+                <Box sx={{ overflow: 'auto' }}>
                   <Table
                     columns={columns}
                     dataSource={tableSetData}
@@ -271,6 +273,7 @@ export default function Performance({ PartyId }) {
                       expandedRowRender: (record) => record.child,
                     }}
                     scroll={{ x: 'max-content' }}
+                    className="custom-ant-table"
                   />
                 </Box>
               )}

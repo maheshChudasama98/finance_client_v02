@@ -151,11 +151,11 @@ function NavItem({ item }) {
         textTransform: 'capitalize',
         fontWeight: 'fontWeightMedium',
         ...(active && {
-          color: 'success.main',
+          color: 'primary.main',
           fontWeight: 'fontWeightSemiBold',
-          bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
           '&:hover': {
-            bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
           },
         }),
       }}
@@ -207,7 +207,6 @@ function NavMobileItem({ item }) {
       >
         <Box component="span" sx={{ width: 20, height: 20, margin: 'auto', mb: 0.5 }}>
           <i className={item?.Icon} style={{ fontSize: 20 }} />
-          {/* {item.icon} */}
         </Box>
 
         <Box component="span" sx={{ textAlign: 'center' }}>

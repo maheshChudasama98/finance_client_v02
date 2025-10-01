@@ -6,6 +6,7 @@ import Tab from '@mui/material/Tab';
 import Chip from '@mui/material/Chip';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
+import { useTheme } from '@mui/system';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -27,6 +28,8 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
+import { formatToINR } from 'src/utils/format-number';
 
 import { MonthList } from 'src/constance';
 import { CategoriesFetchListService } from 'src/Services/Meter.Services';
@@ -300,7 +303,9 @@ const getMonthPerformanceForAllCategories = (categories, selectedMonth) => {
 };
 
 export default function CategoriesAnalytics() {
+  const theme = useTheme();
   const dispatch = useDispatch();
+
   const [activeTab, setActiveTab] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -449,92 +454,44 @@ export default function CategoriesAnalytics() {
         <Box sx={{ p: 2 }}>
           <Grid container spacing={3} sx={{ mb: 3 }}>
             <Grid item xs={12} md={12}>
-              <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                <AnimatedChart
-                  title="Top Categories Performance by Expense 2025"
-                  height={300}
-                  animationDuration={2000}
-                  chart={{
-                    labels: performanceData.slice(0, 8).map((item) => item.CategoryName),
-                    series: [
-                      {
-                        name: 'Expense',
-                        type: 'bar',
-                        fill: 'solid',
-                        color: '#00B8D9',
-                        data: performanceData.slice(0, 8).map((item) => item.totalExpense),
+              <AnimatedChart
+                title="Top Categories Performance by Expense 2025"
+                height={300}
+                animationDuration={2000}
+                chart={{
+                  labels: performanceData.slice(0, 8).map((item) => item.CategoryName),
+                  series: [
+                    {
+                      name: 'Expense',
+                      type: 'bar',
+                      fill: 'solid',
+                      color: '#00B8D9',
+                      data: performanceData.slice(0, 8).map((item) => item.totalExpense),
+                    },
+                  ],
+                  options: {
+                    yaxis: {
+                      labels: {
+                        show: true,
                       },
-                    ],
-                    options: {
-                      yaxis: {
-                        labels: {
-                          show: true,
-                        },
+                    },
+                    plotOptions: {
+                      bar: {
+                        columnWidth: '60%',
+                        borderRadius: 4,
                       },
-                      plotOptions: {
-                        bar: {
-                          columnWidth: '60%',
-                          borderRadius: 4,
-                        },
-                      },
-                      xaxis: {
-                        labels: {
-                          rotate: -45,
-                          style: {
-                            fontSize: '12px',
-                          },
+                    },
+                    xaxis: {
+                      labels: {
+                        rotate: -45,
+                        style: {
+                          fontSize: '12px',
                         },
                       },
                     },
-                  }}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={12}>
-              <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                <AnimatedChart
-                  // title={
-                  //   'Top Categories Performance by Expense - ' + performanceData[0]?.monthName ||
-                  //   selectedMonth
-                  // }
-                  height={300}
-                  animationDuration={2000}
-                  chart={{
-                    labels: performanceData.slice(0, 8).map((item) => item.CategoryName),
-                    series: [
-                      {
-                        name: 'Expense',
-                        type: 'bar',
-                        fill: 'solid',
-                        color: '#00B8D9',
-                        data: performanceData.slice(0, 8).map((item) => item.totalExpense),
-                      },
-                    ],
-                    options: {
-                      yaxis: {
-                        labels: {
-                          show: true,
-                        },
-                      },
-                      plotOptions: {
-                        bar: {
-                          columnWidth: '60%',
-                          borderRadius: 4,
-                        },
-                      },
-                      xaxis: {
-                        labels: {
-                          rotate: -45,
-                          style: {
-                            fontSize: '12px',
-                          },
-                        },
-                      },
-                    },
-                  }}
-                />
-              </Box>
+                  },
+                }}
+              />
             </Grid>
 
             {/* <Grid item xs={12} md={6}>
@@ -594,172 +551,157 @@ export default function CategoriesAnalytics() {
             </Grid> */}
 
             <Grid item xs={12} md={12}>
-              <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                <AnimatedChart
-                  title="Monthly Average Comparison"
-                  height={300}
-                  animationDuration={2000}
-                  chart={{
-                    labels: performanceData.slice(0, 10).map((item) => item.CategoryName),
-                    series: [
-                      {
-                        name: 'Monthly Average',
-                        type: 'line',
-                        fill: 'gradient',
-                        color: '#8E44AD',
-                        data: performanceData.slice(0, 10).map((item) => item.monthlyAverage),
-                      },
-                    ],
-                  }}
-                />
-              </Box>
+              <AnimatedChart
+                title="Monthly Average Comparison"
+                height={300}
+                animationDuration={2000}
+                chart={{
+                  labels: performanceData.slice(0, 10).map((item) => item.CategoryName),
+                  series: [
+                    {
+                      name: 'Monthly Average',
+                      type: 'line',
+                      fill: 'gradient',
+                      color: '#8E44AD',
+                      data: performanceData.slice(0, 10).map((item) => item.monthlyAverage),
+                    },
+                  ],
+                }}
+              />
             </Grid>
           </Grid>
-          <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-            <Card sx={{}}>
-              <CardHeader
-                title={
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Detailed Category Performance - {selectedMonth}
-                  </Typography>
-                }
-                action={
-                  <ButtonGroup
-                    variant="outlined"
-                    color="success"
-                    size="small"
-                    aria-label="Income Expense toggle"
+
+          <Card>
+            <CardHeader
+              title={
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Detailed Category Performance - {selectedMonth}
+                </Typography>
+              }
+              action={
+                <ButtonGroup
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  aria-label="Income Expense toggle"
+                >
+                  <Button
+                    variant={selectedBtn === 'Income' ? 'contained' : 'outlined'}
+                    onClick={() => setSelectedBtn('Income')}
                   >
-                    <Button
-                      variant={selectedBtn === 'Income' ? 'contained' : 'outlined'}
-                      onClick={() => setSelectedBtn('Income')}
-                    >
-                      Income
-                    </Button>
-                    <Button
-                      variant={selectedBtn === 'Expense' ? 'contained' : 'outlined'}
-                      onClick={() => setSelectedBtn('Expense')}
-                    >
-                      Expense
-                    </Button>
-                  </ButtonGroup>
-                }
-                subheader="Comprehensive monthly performance analysis with averages and value ranges"
-              />
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Category</TableCell>
-                      <TableCell align="right">Income</TableCell>
-                      <TableCell align="right">Expense</TableCell>
-                      <TableCell align="right">Net Flow</TableCell>
-                      <TableCell align="right">Monthly Avg</TableCell>
-                      <TableCell align="right">Transactions</TableCell>
-                      <TableCell align="center">Performance</TableCell>
-                      <TableCell align="center">Status</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {performanceData.map((category, index) => (
-                      <TableRow key={index} hover>
-                        <TableCell>
-                          <Stack direction="row" alignItems="center" spacing={1}>
-                            <CustomAvatar
-                              width={45}
-                              height={45}
-                              iconSize={15}
-                              icon={category?.Icon || ''}
-                              bgColor={category?.Color || ''}
-                            />
-                            <Typography variant="light">
-                              {category?.CategoryName}
-                              <Typography variant="registerTest" color="text.secondary">
-                                {category?.isActive ? 'Active' : 'Inactive'} •{' '}
-                                {category?.isUsing ? 'Using' : 'Not Using'}
-                              </Typography>
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
-                            ₹{category.totalIncome.toFixed(2)}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <Typography variant="body2" color="error.main" sx={{ fontWeight: 500 }}>
-                            ₹{category.totalExpense.toFixed(2)}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="flex-end"
-                            spacing={0.5}
-                          >
-                            {category.netFlow >= 0 ? (
-                              <TrendingUpIcon sx={{ fontSize: 16, color: 'success.main' }} />
-                            ) : (
-                              <TrendingDownIcon sx={{ fontSize: 16, color: 'error.main' }} />
-                            )}
-                            <Typography
-                              variant="body2"
-                              color={category.netFlow >= 0 ? 'success.main' : 'error.main'}
-                              sx={{ fontWeight: 500 }}
-                            >
-                              ₹{category.netFlow.toFixed(2)}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            ₹{category.monthlyAverage.toFixed(2)}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {category.transactionCount}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="center">
-                          <Chip
-                            label={category.performance}
-                            size="small"
-                            // color={
-                            //   category.performance === 'High'
-                            //     ? 'success'
-                            //     : category.performance === 'Medium'
-                            //     ? 'warning'
-                            //     : 'error'
-                            // }
-                            variant="outlined"
+                    Income
+                  </Button>
+                  <Button
+                    variant={selectedBtn === 'Expense' ? 'contained' : 'outlined'}
+                    onClick={() => setSelectedBtn('Expense')}
+                  >
+                    Expense
+                  </Button>
+                </ButtonGroup>
+              }
+              subheader="Comprehensive monthly performance analysis with averages and value ranges"
+            />
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Category</TableCell>
+                    <TableCell align="right">Income</TableCell>
+                    <TableCell align="right">Expense</TableCell>
+                    <TableCell align="right">Net Flow</TableCell>
+                    <TableCell align="right">Monthly Avg</TableCell>
+                    <TableCell align="right">Transactions</TableCell>
+                    <TableCell align="center">Performance</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {performanceData.map((category, index) => (
+                    <TableRow key={index} hover>
+                      <TableCell>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <CustomAvatar
+                            width={45}
+                            height={45}
+                            iconSize={15}
+                            icon={category?.Icon || ''}
+                            bgColor={category?.Color || ''}
                           />
-                        </TableCell>
+                          <Typography variant="light">
+                            {category?.CategoryName}
+                            <Typography variant="registerTest" color="text.secondary">
+                              {category?.isActive ? 'Active' : 'Inactive'} •{' '}
+                              {category?.isUsing ? 'Using' : 'Not Using'}
+                            </Typography>
+                          </Typography>
+                        </Stack>
+                      </TableCell>
 
-                        <TableCell align="center">
-                          <Stack direction="row" spacing={1} justifyContent="center">
-                            <Chip
-                              label={category.isActive ? 'Active' : 'Inactive'}
-                              size="small"
-                              color={category.isActive ? 'success' : 'default'}
-                              variant="outlined"
-                            />
-                          </Stack>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Card>
-          </Box>
+                      <TableCell align="right">
+                        <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
+                          {formatToINR(category.totalIncome)}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant="body2" color="error.main" sx={{ fontWeight: 500 }}>
+                          {formatToINR(category.totalExpense)}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="flex-end"
+                          spacing={0.5}
+                        >
+                          {category.netFlow >= 0 ? (
+                            <TrendingUpIcon sx={{ fontSize: 16, color: 'success.main' }} />
+                          ) : (
+                            <TrendingDownIcon sx={{ fontSize: 16, color: 'error.main' }} />
+                          )}
+                          <Typography
+                            variant="body2"
+                            color={category.netFlow >= 0 ? 'success.main' : 'error.main'}
+                            sx={{ fontWeight: 500 }}
+                          >
+                            {formatToINR(category.netFlow)}
+                          </Typography>
+                        </Stack>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {formatToINR(category.monthlyAverage)}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {category.transactionCount}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <Chip
+                          label={category.performance}
+                          size="small"
+                          // color={
+                          //   category.performance === 'High'
+                          //     ? 'success'
+                          //     : category.performance === 'Medium'
+                          //     ? 'warning'
+                          //     : 'error'
+                          // }
+                          variant="outlined"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
         </Box>
       </Box>
     );
@@ -816,11 +758,17 @@ export default function CategoriesAnalytics() {
         />
 
         <Box sx={{ p: 2 }}>
-          {/* Yearly Summary Cards */}
           {allMonthsData?.yearlySummary && (
             <Grid container spacing={2} sx={{ mb: 1.5 }}>
               <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.success}`,
+                    background: `${theme.palette.gradients?.success}`,
+                  }}
+                >
                   <AttachMoneyIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
                   <AnimatedCounter
                     value={allMonthsData.yearlySummary.totalIncome}
@@ -839,7 +787,14 @@ export default function CategoriesAnalytics() {
               </Grid>
 
               <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'error.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.error}`,
+                    background: `${theme.palette.gradients?.error}`,
+                  }}
+                >
                   <TrendingDownIcon sx={{ fontSize: 32, color: 'error.main', mb: 1 }} />
                   <AnimatedCounter
                     value={allMonthsData.yearlySummary.totalExpense}
@@ -858,7 +813,14 @@ export default function CategoriesAnalytics() {
               </Grid>
 
               <Grid item xs={12} sm={6} md={4}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.info}`,
+                    background: `${theme.palette.gradients?.info}`,
+                  }}
+                >
                   <CalendarTodayIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
                   <AnimatedCounter
                     value={allMonthsData.yearlySummary.totalTransactions}
@@ -878,11 +840,17 @@ export default function CategoriesAnalytics() {
             </Grid>
           )}
 
-          {/* Best/Worst Month and High/Low Values */}
           {allMonthsData?.yearlySummary && (
             <Grid container spacing={2} sx={{ mb: 3 }}>
               <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.success}`,
+                    background: `${theme.palette.gradients?.success}`,
+                  }}
+                >
                   <TrendingUpIcon sx={{ fontSize: 24, color: 'success.main', mb: 1 }} />
                   <Typography variant="h6" color="success.main">
                     {allMonthsData.yearlySummary.bestMonth?.month || 'N/A'}
@@ -897,7 +865,14 @@ export default function CategoriesAnalytics() {
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'error.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.error}`,
+                    background: `${theme.palette.gradients?.error}`,
+                  }}
+                >
                   <TrendingDownIcon sx={{ fontSize: 24, color: 'error.main', mb: 1 }} />
                   <Typography variant="h6" color="error.main">
                     {allMonthsData.yearlySummary.worstMonth?.month || 'N/A'}
@@ -912,7 +887,14 @@ export default function CategoriesAnalytics() {
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.warning}`,
+                    background: `${theme.palette.gradients?.warning}`,
+                  }}
+                >
                   <TrendingUpIcon sx={{ fontSize: 24, color: 'warning.main', mb: 1 }} />
                   <Typography variant="h6" color="warning.main">
                     ₹{allMonthsData.yearlySummary.highValue?.toFixed(2) || 0}
@@ -927,7 +909,14 @@ export default function CategoriesAnalytics() {
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
+                <Card
+                  sx={{
+                    p: 2,
+                    textAlign: 'center',
+                    border: `solid 1px ${theme.palette.border?.info}`,
+                    background: `${theme.palette.gradients?.info}`,
+                  }}
+                >
                   <TrendingDownIcon sx={{ fontSize: 24, color: 'info.main', mb: 1 }} />
                   <Typography variant="h6" color="info.main">
                     ₹{allMonthsData.yearlySummary.lowValue?.toFixed(2) || 0}
@@ -948,101 +937,93 @@ export default function CategoriesAnalytics() {
             <Grid container spacing={3} sx={{ mb: 3 }}>
               {/* Monthly Income vs Expense - All Months */}
               <Grid item xs={12} md={12}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Monthly Income vs Expense - All Months"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: allMonthsData.monthlyData.map((month) => month.month),
-                      series: [
-                        {
-                          name: 'Income',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#00A76F',
-                          data: allMonthsData.monthlyData.map((month) => month.income),
-                        },
-                        {
-                          name: 'Expense',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#FF4842',
-                          data: allMonthsData.monthlyData.map((month) => month.expense),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Monthly Income vs Expense - All Months"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: allMonthsData.monthlyData.map((month) => month.month),
+                    series: [
+                      {
+                        name: 'Income',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#00A76F',
+                        data: allMonthsData.monthlyData.map((month) => month.income),
+                      },
+                      {
+                        name: 'Expense',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#FF4842',
+                        data: allMonthsData.monthlyData.map((month) => month.expense),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
 
               {/* Monthly Transaction Count */}
               <Grid item xs={12} md={6}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Monthly Transaction Count"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: allMonthsData.monthlyData.map((month) => month.month),
-                      series: [
-                        {
-                          name: 'Transactions',
-                          type: 'column',
-                          fill: 'solid',
-                          color: '#00B8D9',
-                          data: allMonthsData.monthlyData.map((month) => month.transactionCount),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Monthly Transaction Count"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: allMonthsData.monthlyData.map((month) => month.month),
+                    series: [
+                      {
+                        name: 'Transactions',
+                        type: 'column',
+                        fill: 'solid',
+                        color: '#00B8D9',
+                        data: allMonthsData.monthlyData.map((month) => month.transactionCount),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
 
               {/* Monthly Net Flow Trends */}
               <Grid item xs={12} md={6}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Monthly Net Flow Trends"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: allMonthsData.monthlyData.map((month) => month.month),
-                      series: [
-                        {
-                          name: 'Net Flow',
-                          type: 'line',
-                          // fill: 'gradient',
-                          color: '#8E44AD',
-                          data: allMonthsData.monthlyData.map((month) => month.netFlow),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Monthly Net Flow Trends"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: allMonthsData.monthlyData.map((month) => month.month),
+                    series: [
+                      {
+                        name: 'Net Flow',
+                        type: 'line',
+                        fill: 'gradient',
+                        color: '#8E44AD',
+                        data: allMonthsData.monthlyData.map((month) => month.netFlow),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
 
               {/* Monthly Averages */}
               <Grid item xs={12} md={6}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Monthly Averages"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: allMonthsData.monthlyData.map((month) => month.month),
-                      series: [
-                        {
-                          name: 'Monthly Average',
-                          type: 'area',
-                          fill: 'gradient',
-                          color: '#FFA726',
-                          data: allMonthsData.monthlyData.map((month) => month.monthlyAverage),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Monthly Averages"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: allMonthsData.monthlyData.map((month) => month.month),
+                    series: [
+                      {
+                        name: 'Monthly Average',
+                        type: 'area',
+                        fill: 'gradient',
+                        color: '#FFA726',
+                        data: allMonthsData.monthlyData.map((month) => month.monthlyAverage),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
             </Grid>
           )}
@@ -1052,72 +1033,68 @@ export default function CategoriesAnalytics() {
             <Grid container spacing={3} sx={{ mb: 3 }}>
               {/* Daily Spending Pattern (1-31) */}
               <Grid item xs={12} md={6}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Daily Spending Pattern (1-31)"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: Object.keys(allMonthsData.yearlySummary.dayBreakdown || {}).map(
-                        (day) => `Day ${day}`
-                      ),
-                      series: [
-                        {
-                          name: 'Income',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#00A76F',
-                          data: Object.values(allMonthsData.yearlySummary.dayBreakdown || {}).map(
-                            (day) => day.income
-                          ),
-                        },
-                        {
-                          name: 'Expense',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#FF4842',
-                          data: Object.values(allMonthsData.yearlySummary.dayBreakdown || {}).map(
-                            (day) => day.expense
-                          ),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Daily Spending Pattern (1-31)"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: Object.keys(allMonthsData.yearlySummary.dayBreakdown || {}).map(
+                      (day) => `Day ${day}`
+                    ),
+                    series: [
+                      {
+                        name: 'Income',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#00A76F',
+                        data: Object.values(allMonthsData.yearlySummary.dayBreakdown || {}).map(
+                          (day) => day.income
+                        ),
+                      },
+                      {
+                        name: 'Expense',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#FF4842',
+                        data: Object.values(allMonthsData.yearlySummary.dayBreakdown || {}).map(
+                          (day) => day.expense
+                        ),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
 
               {/* Weekly Spending Pattern (Mon-Sun) */}
               <Grid item xs={12} md={6}>
-                <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                  <AnimatedChart
-                    title="Weekly Spending Pattern (Mon-Sun)"
-                    height={300}
-                    animationDuration={2000}
-                    chart={{
-                      labels: Object.keys(allMonthsData.yearlySummary.weekdayBreakdown || {}),
-                      series: [
-                        {
-                          name: 'Income',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#00A76F',
-                          data: Object.values(
-                            allMonthsData.yearlySummary.weekdayBreakdown || {}
-                          ).map((day) => day.income),
-                        },
-                        {
-                          name: 'Expense',
-                          type: 'bar',
-                          fill: 'solid',
-                          color: '#FF4842',
-                          data: Object.values(
-                            allMonthsData.yearlySummary.weekdayBreakdown || {}
-                          ).map((day) => day.expense),
-                        },
-                      ],
-                    }}
-                  />
-                </Box>
+                <AnimatedChart
+                  title="Weekly Spending Pattern (Mon-Sun)"
+                  height={300}
+                  animationDuration={2000}
+                  chart={{
+                    labels: Object.keys(allMonthsData.yearlySummary.weekdayBreakdown || {}),
+                    series: [
+                      {
+                        name: 'Income',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#00A76F',
+                        data: Object.values(allMonthsData.yearlySummary.weekdayBreakdown || {}).map(
+                          (day) => day.income
+                        ),
+                      },
+                      {
+                        name: 'Expense',
+                        type: 'bar',
+                        fill: 'solid',
+                        color: '#FF4842',
+                        data: Object.values(allMonthsData.yearlySummary.weekdayBreakdown || {}).map(
+                          (day) => day.expense
+                        ),
+                      },
+                    ],
+                  }}
+                />
               </Grid>
             </Grid>
           )}
@@ -1340,7 +1317,7 @@ export default function CategoriesAnalytics() {
 
           {loadingList ? (
             <Grid container spacing={2} sx={{ py: 1 }}>
-              {[1, 2, 3, 4].map((item) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <Grid item xs={12} key={item}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2.5 }}>
                     <Skeleton variant="circular" width={40} height={40} />
@@ -1375,13 +1352,16 @@ export default function CategoriesAnalytics() {
                         icon={item?.Icon || ''}
                         bgColor={item?.Color || ''}
                       />
-                      <Typography variant="light">
-                        {item?.CategoryName}
+
+                      <Box>
+                        <Typography variant="body2" fontWeight={600}>
+                          {item?.CategoryName}
+                        </Typography>
                         <Typography variant="registerTest" color="text.secondary">
                           {item?.isActive ? 'Active' : 'Inactive'} •{' '}
                           {item?.isUsing ? 'Using' : 'Not Using'}
                         </Typography>
-                      </Typography>
+                      </Box>
                     </Stack>
                   </ListItemButton>
                 </ListItem>

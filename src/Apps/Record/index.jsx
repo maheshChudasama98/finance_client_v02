@@ -182,7 +182,6 @@ export default function Index() {
     }));
   };
 
-  // Calculate summary totals
   const summaryTotals = arrayObject.reduce(
     (acc, item) => {
       acc.totalIn += item.totalIn;
@@ -202,153 +201,149 @@ export default function Index() {
   }, []);
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 0 } }}>
-      <Card sx={{ borderRadius: 2, boxShadow: 'none' }}>
-        <CardHeader
-          title={
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              {titleAction(!displayFlag)}
-            </Typography>
-          }
-          sx={{
-            marginBottom: 2,
-          }}
-          action={
-            <Button
-              onClick={showDisplayAction}
-              variant="contained"
-              color="primary"
-              size={isMobile ? 'small' : 'medium'}
-              startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
-            >
-              {!displayFlag ? 'Add New' : 'Back'}
-            </Button>
-          }
-        />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
-        {displayFlag ? (
-          <Form
-            backAction={showDisplayAction}
-            editObject={editObject}
-            deleteAction={deleteAction}
-          />
-        ) : (
-          <Box>
-            {/* Summary Cards */}
-            <Box
+    <Card>
+      <CardHeader
+        title={
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            {titleAction(!displayFlag)}
+          </Typography>
+        }
+        sx={{
+          marginBottom: 2,
+        }}
+        action={
+          <Button
+            onClick={showDisplayAction}
+            variant="contained"
+            color="primary"
+            size={isMobile ? 'small' : 'medium'}
+            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+          >
+            {!displayFlag ? 'Add New' : 'Back'}
+          </Button>
+        }
+      />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+      {displayFlag ? (
+        <Form backAction={showDisplayAction} editObject={editObject} deleteAction={deleteAction} />
+      ) : (
+        <Box>
+          {/* Summary Cards */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 2,
+              paddingX: { xs: 1, sm: 3 },
+              paddingY: 2,
+              borderBottom: 1,
+              borderColor: 'divider',
+            }}
+          >
+            <Card
               sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 2,
-                paddingX: { xs: 1, sm: 3 },
-                paddingY: 2,
-                borderBottom: 1,
-                borderColor: 'divider',
+                p: 2,
+                textAlign: 'center',
+                border: `1px solid ${theme.palette.border.success}`,
+                background: theme.palette.gradients.success,
               }}
             >
-              <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#e8f5e8' }}>
-                <Typography variant="body2" color="text.secondary">
-                  Total In
-                </Typography>
-                <Typography variant="body1" color="success.main" sx={{ fontWeight: 700 }}>
-                  {formatToINR(summaryTotals.totalIn, isAmountVisible)}
-                </Typography>
-              </Card>
+              <Typography variant="body2" color="text.secondary">
+                Total In
+              </Typography>
+              <Typography variant="body1" color="success.main" sx={{ fontWeight: 700 }}>
+                {formatToINR(summaryTotals.totalIn, isAmountVisible)}
+              </Typography>
+            </Card>
 
-              <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#ffeaea' }}>
-                <Typography variant="body2" color="text.secondary">
-                  Total Out
-                </Typography>
-                <Typography variant="body1" color="error.main" sx={{ fontWeight: 700 }}>
-                  {formatToINR(summaryTotals.totalOut, isAmountVisible)}
-                </Typography>
-              </Card>
+            <Card
+              sx={{
+                p: 2,
+                textAlign: 'center',
+                border: `1px solid ${theme.palette.border.error}`,
+                background: theme.palette.gradients.error,
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                Total Out
+              </Typography>
+              <Typography variant="body1" color="error.main" sx={{ fontWeight: 700 }}>
+                {formatToINR(summaryTotals.totalOut, isAmountVisible)}
+              </Typography>
+            </Card>
+          </Box>
 
-              {/* <Card sx={{ p: 2, textAlign: 'center', backgroundColor: '#f0f8ff' }}>
-                <Typography variant="body2" color="text.secondary">
-                  Net Total
-                </Typography>
-                <Typography
-                  variant="body1"
-                  color={summaryTotals.netTotal >= 0 ? 'success.main' : 'error.main'}
-                  sx={{ fontWeight: 700 }}
-                >
-                  {formatToINR(summaryTotals.netTotal, isAmountVisible)}
-                </Typography>
-              </Card> */}
+          {/* Search and Filter Section */}
+          <Box
+            sx={{
+              paddingX: { xs: 2, sm: 3 },
+              paddingY: 2,
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 2,
+              alignItems: { xs: 'stretch', md: 'center' },
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <CustomSearchInput
+                callBack={setSearchValue}
+                sx={{ width: { xs: '100%', md: 300 } }}
+              />
             </Box>
 
-            {/* Search and Filter Section */}
             <Box
               sx={{
-                paddingX: { xs: 2, sm: 3 },
-                paddingY: 2,
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: 2,
-                alignItems: { xs: 'stretch', md: 'center' },
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'stretch', sm: 'center' },
+                gap: 1.5,
+                display: { xs: 'flex', sm: 'flex' },
                 justifyContent: 'space-between',
               }}
             >
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <CustomSearchInput
-                  callBack={setSearchValue}
-                  sx={{ width: { xs: '100%', md: 300 } }}
-                />
-              </Box>
-
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<i className="fa-solid fa-download" style={{ fontSize: 14 }} />}
+                onClick={() => setDownloadFlag(true)}
+                disabled={loadingLoader || arrayObject.length === 0}
+              >
+                Download
+              </Button>
               <Box
                 sx={{
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  alignItems: { xs: 'stretch', sm: 'center' },
                   gap: 1.5,
-                  display: { xs: 'flex', sm: 'flex' },
+                  display: 'flex',
                   justifyContent: 'space-between',
                 }}
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  startIcon={<i className="fa-solid fa-download" style={{ fontSize: 14 }} />}
-                  onClick={() => setDownloadFlag(true)}
-                  disabled={loadingLoader || arrayObject.length === 0}
-                >
-                  Download
-                </Button>
-                <Box
-                  sx={{
-                    gap: 1.5,
-                    display: 'flex',
-                    justifyContent: 'space-between',
+                <CustomButtonGroup
+                  defaultValue={Duration}
+                  onSelect={(value) => {
+                    setDuration(value);
                   }}
-                >
-                  <CustomButtonGroup
-                    defaultValue={Duration}
-                    onSelect={(value) => {
-                      setDuration(value);
-                    }}
-                  />
+                />
 
-                  <Box sx={{}}>
-                    <Badge badgeContent={count > 0 ? count : null} color="error">
-                      <Button
-                        ref={anchorRef}
-                        size="small"
-                        color="success"
-                        variant="outlined"
-                        onClick={handleToggle}
-                        startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
-                      >
-                        Filter
-                      </Button>
-                    </Badge>
-                  </Box>
+                <Box sx={{}}>
+                  <Badge badgeContent={count > 0 ? count : null} color="error">
+                    <Button
+                      ref={anchorRef}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                      onClick={handleToggle}
+                      startIcon={<i className="fa-solid fa-filter" style={{ fontSize: 14 }} />}
+                    >
+                      Filter
+                    </Button>
+                  </Badge>
                 </Box>
               </Box>
             </Box>
+          </Box>
 
-            {/* <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
+          {/* <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end">
               <ClickAwayListener onClickAway={handleClickAway}>
                 <Box
                   sx={{
@@ -371,90 +366,89 @@ export default function Index() {
               </ClickAwayListener>
             </Popper> */}
 
-            <Drawer anchor="right" open={open} onClose={handleClickAway}>
-              <Box
+          <Drawer anchor="right" open={open} onClose={handleClickAway}>
+            <Box
+              sx={{
+                width: { xs: '90vw', sm: 400, md: 600 },
+              }}
+            >
+              <Typography
+                variant="h5"
                 sx={{
-                  width: { xs: '90vw', sm: 400, md: 600 },
+                  fontWeight: 600,
+                  py: 2.5,
+                  px: 2.5,
+                  background: theme.palette.primary.main,
+                  color: '#FFF',
                 }}
               >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 600,
-                    py: 2.5,
-                    px: 2.5,
-                    background: theme.palette.success.main,
-                    color: '#FFF',
+                Filter
+              </Typography>
+              <Box
+                sx={{
+                  p: 0.5,
+                }}
+              >
+                <FilterComponent
+                  dataList={dataList}
+                  defaultValue={FilterBy}
+                  backAction={(e) => {
+                    setFilterBy(e);
+                    handleClickAway();
                   }}
-                >
-                  Filter
-                </Typography>
-                <Box
-                  sx={{
-                    p: 1,
-                  }}
-                >
-                  <FilterComponent
-                    dataList={dataList}
-                    defaultValue={FilterBy}
-                    backAction={(e) => {
-                      setFilterBy(e);
-                      handleClickAway();
-                    }}
-                  />
+                />
+              </Box>
+            </Box>
+          </Drawer>
+
+          {/* Content Area */}
+          {loadingLoader ? (
+            <Box
+              sx={{
+                display: 'flex',
+                height: '50vh',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Loader />
+            </Box>
+          ) : (
+            <Box sx={{ paddingX: { xs: 1, sm: 2 } }}>
+              {arrayObject && arrayObject?.length > 0 ? (
+                <Box>
+                  {arrayObject?.map((item, index) => (
+                    <RecordList
+                      key={index}
+                      item={item}
+                      index={index}
+                      deleteAction={deleteAction}
+                      editAction={editAction}
+                      filterHeader={filterHeader}
+                    />
+                  ))}
                 </Box>
-              </Box>
-            </Drawer>
+              ) : (
+                <Box sx={{ py: 8 }}>
+                  <DataNotFound />
+                </Box>
+              )}
+            </Box>
+          )}
+        </Box>
+      )}
 
-            {/* Content Area */}
-            {loadingLoader ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  height: '50vh',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Loader />
-              </Box>
-            ) : (
-              <Box sx={{ paddingX: { xs: 1, sm: 2 } }}>
-                {arrayObject && arrayObject?.length > 0 ? (
-                  <Box>
-                    {arrayObject?.map((item, index) => (
-                      <RecordList
-                        key={index}
-                        item={item}
-                        index={index}
-                        deleteAction={deleteAction}
-                        editAction={editAction}
-                        filterHeader={filterHeader}
-                      />
-                    ))}
-                  </Box>
-                ) : (
-                  <Box sx={{ py: 8 }}>
-                    <DataNotFound />
-                  </Box>
-                )}
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {/* PDF Download Component */}
-        {downloadFlag && (
-          <RecordPDF
-            transactionList={transactionList}
-            FilterBy={FilterBy}
-            Duration={Duration}
-            searchValue={searchValue}
-            setFlag={setDownloadFlag}
-          />
-        )}
-      </Card>
-    </Box>
+      {/* PDF Download Component */}
+      {downloadFlag && (
+        <RecordPDF
+          transactionList={transactionList}
+          FilterBy={FilterBy}
+          Duration={Duration}
+          searchValue={searchValue}
+          setFlag={setDownloadFlag}
+        />
+      )}
+    </Card>
   );
 }
 

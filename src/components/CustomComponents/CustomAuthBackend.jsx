@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -41,10 +43,10 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
               justifyContent: 'center',
             }}
           >
-            <Typography variant="h3" align="" sx={{}}>
+            <Typography variant="h3">
               Hi, Welcome back
             </Typography>
-            <Typography variant="body2" align="" sx={{ mt: 2, mb: 5 }} color="text.secondary">
+            <Typography variant="body2" sx={{ mt: 2, mb: 5 }} color="text.secondary">
               More effectively with optimized workflows.
             </Typography>
             <img
@@ -82,8 +84,8 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
                     alignItems: 'center',
                   }}
                 >
-                  <Stack justifyContent="" sx={{ height: 1 }}>
-                    <Typography variant="h5" align="" sx={{ mt: 2, mb: 5 }}>
+                  <Stack sx={{ height: 1 }}>
+                    <Typography variant="h5" sx={{ mt: 2, mb: 5 }}>
                       {titleString}
                       <Box mt={1.5}>{endString}</Box>
                     </Typography>
@@ -100,4 +102,9 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
   );
 };
 
-CustomAuthBackend.propTypes = {};
+CustomAuthBackend.propTypes = {
+  ChildComponent: PropTypes.node,
+  titleString: PropTypes.string,
+  endString: PropTypes.node,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};

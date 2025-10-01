@@ -12,7 +12,7 @@ import CardContent from '@mui/material/CardContent';
 
 import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
-import { lightenColor } from 'src/utils/utils';
+import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
 import { AccountTypes } from 'src/constance';
@@ -127,7 +127,7 @@ export default function AccountList({ setCurrentBalance }) {
                     navigate('/accounts', { state: { accountId: account.AccountId } });
                   }}
                   sx={{
-                    backgroundColor: lightenColor(account?.Color, 0.2),
+                    backgroundColor: getThemeColor(account?.Color, 0.2),
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     // '&:hover': {

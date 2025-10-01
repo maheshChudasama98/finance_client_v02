@@ -188,13 +188,13 @@ export default function Index() {
       dataIndex: 'CategoryName',
       key: 'CategoryName',
     },
-    {
-      title: 'Action',
-      dataIndex: 'Action',
-      key: 'Action',
-      align: 'right',
-      width: '15%',
-    },
+    // {
+    //   title: 'Action',
+    //   dataIndex: 'Action',
+    //   key: 'Action',
+    //   align: 'right',
+    //   width: '15%',
+    // },
     // {
     //   title: 'Income',
     //   dataIndex: 'Income',
@@ -247,7 +247,7 @@ export default function Index() {
             bgColor={item?.Color || ''}
           />
         </CustomTooltip>
-        <Typography variant="light">
+        <Typography variant="body2" fontWeight={600}>
           {item?.CategoryName}
           <Typography
             color="text.secondary"
@@ -873,7 +873,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
@@ -991,7 +991,7 @@ export default function Index() {
                       setSubEditObject({});
                     }}
                     variant="contained"
-                    color="success"
+                    color="primary"
                   >
                     Add
                   </Button>
@@ -1015,7 +1015,7 @@ export default function Index() {
                   rowKey={(record) => record.key}
                   expandable={{
                     expandedRowRender: (record) =>
-                      record?.item?.isPrimitive === 1 && (
+                      record?.item?.isPrimitive === 1 ? (
                         <Box
                           sx={{
                             m: 2,
@@ -1032,6 +1032,8 @@ export default function Index() {
                             deleteAction={deleteSubAction}
                           />
                         </Box>
+                      ) : (
+                        <Box> Your are not owner this Category</Box>
                       ),
                     expandRowByClick: true,
                     showExpandColumn: false,

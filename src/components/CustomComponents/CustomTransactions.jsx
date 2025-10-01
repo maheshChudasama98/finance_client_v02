@@ -181,6 +181,7 @@ export const CustomTransactions = ({ list, flag }) => {
           <MobileTransactionsGrid />
         ) : (
           <Table
+            className="custom-ant-table"
             columns={columns}
             dataSource={tableSetData}
             pagination={false}

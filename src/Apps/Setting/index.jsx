@@ -184,7 +184,7 @@ export default function Index() {
                           onClick={() => {
                             resetForm();
                           }}
-                          color="CancelButton"
+                          color="darker"
                         >
                           Cancel
                         </Button>

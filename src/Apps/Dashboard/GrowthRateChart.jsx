@@ -132,7 +132,6 @@ export default function GrowthRateChart({
       },
     },
     grid: {
-      borderColor: '#F4F6F8',
       strokeDashArray: 3,
     },
   });

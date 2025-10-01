@@ -246,7 +246,7 @@ export default function AccountPopover() {
               size="small"
               onClick={() => { setOpen(false); setDeleteObject({}) }}
               variant="outlined"
-              color="CancelButton">
+              color="darker">
               Cancel
             </Button>
           </Box>

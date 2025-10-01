@@ -41,11 +41,9 @@ export const AutoCompleteSelectMenu = ({ formik, label, field, menuList = [], va
                 <TextField
                     {...params}
                     label={label}
-                    // label={t(label)}
                     required={required}
                     onBlur={formik.handleBlur}
                     error={formik.touched[field] && Boolean(formik.errors[field])}
-                    // helperText={formik.touched[field] && formik.errors[field] ? t(formik.errors[field]) : ""
                     helperText={formik.touched[field] && formik.errors[field] ? formik.errors[field] : ""
                     }
                     InputProps={{

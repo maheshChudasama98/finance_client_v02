@@ -6,6 +6,7 @@ import Tab from '@mui/material/Tab';
 import Chip from '@mui/material/Chip';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
+import { useTheme } from '@mui/system';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Divider from '@mui/material/Divider';
@@ -28,6 +29,11 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { fDate } from 'src/utils/format-time';
+import { formatToINR } from 'src/utils/format-number';
+
 import { MonthList, TransactionActions } from 'src/constance';
 import { AccountsFetchListService } from 'src/Services/Meter.Services';
 import { TransactionFetchListService } from 'src/Services/Transaction.Services';
@@ -35,6 +41,7 @@ import { TransactionFetchListService } from 'src/Services/Transaction.Services';
 import Loader from 'src/components/Loaders/Loader';
 import { AnimatedChart, AnimatedCounter } from 'src/components/Animated';
 import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
+
 
 const calculateHealthScore = (account) => {
   const balance = Number(account?.CurrentAmount) || 0;
@@ -293,6 +300,9 @@ const riskColorMap = {
 
 export default function AccountAnalytics() {
   const dispatch = useDispatch();
+  const theme = useTheme();
+
+  const { isAmountVisible } = useAmountVisibility();
   const [activeTab, setActiveTab] = useState(0);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [accountsList, setAccountsList] = useState([]);
@@ -535,7 +545,14 @@ export default function AccountAnalytics() {
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+            <Card
+              sx={{
+                p: 2,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.success}`,
+                background: `${theme.palette.gradients?.success}`,
+              }}
+            >
               <AttachMoneyIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
               <AnimatedCounter
                 value={summaryData?.totalBalance}
@@ -554,7 +571,14 @@ export default function AccountAnalytics() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
+            <Card
+              sx={{
+                p: 2,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.info}`,
+                background: `${theme.palette.gradients?.info}`,
+              }}
+            >
               <SpeedIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
               <AnimatedCounter
                 value={summaryData?.activeAccounts}
@@ -576,7 +600,14 @@ export default function AccountAnalytics() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.lighter' }}>
+            <Card
+              sx={{
+                p: 2,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.warning}`,
+                background: `${theme.palette.gradients?.warning}`,
+              }}
+            >
               <TrendingUpIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
               <AnimatedCounter
                 value={summaryData?.averageGrowth}
@@ -596,7 +627,14 @@ export default function AccountAnalytics() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'error.lighter' }}>
+            <Card
+              sx={{
+                p: 2,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.error}`,
+                background: `${theme.palette.gradients?.error}`,
+              }}
+            >
               <AssessmentIcon sx={{ fontSize: 32, color: 'error.main', mb: 1 }} />
               <AnimatedCounter
                 value={summaryData?.lowBalanceAccounts}
@@ -615,7 +653,7 @@ export default function AccountAnalytics() {
           </Grid>
 
           <Grid item xs={12}>
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'background.tableHeader', borderRadius: 2 }}>
               <Stack
                 direction="row"
                 justifyContent="space-between"
@@ -666,105 +704,97 @@ export default function AccountAnalytics() {
         {/* Detailed Analytics Charts */}
         <Grid container spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} md={6}>
-            <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-              <AnimatedChart
-                title="Account Type Distribution"
-                height={250}
-                animationDuration={2000}
-                chart={{
-                  labels: analyticsData?.accountTypesKey || [],
-                  series: [
-                    {
-                      name: 'Accounts',
-                      type: 'bar',
-                      data: analyticsData?.accountTypesValue || [],
-                    },
-                  ],
-                  options: {
-                    colors: ['#00A76F', '#FF4842', '#00B8D9', '#FFA726'],
-                    plotOptions: {
-                      pie: {
-                        donut: {
-                          size: '60%',
-                        },
+            <AnimatedChart
+              title="Account Type Distribution"
+              height={250}
+              animationDuration={2000}
+              chart={{
+                labels: analyticsData?.accountTypesKey || [],
+                series: [
+                  {
+                    name: 'Accounts',
+                    type: 'bar',
+                    data: analyticsData?.accountTypesValue || [],
+                  },
+                ],
+                options: {
+                  colors: ['#00A76F', '#FF4842', '#00B8D9', '#FFA726'],
+                  plotOptions: {
+                    pie: {
+                      donut: {
+                        size: '60%',
                       },
                     },
                   },
-                }}
-              />
-            </Box>
+                },
+              }}
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-              <AnimatedChart
-                title="Growth vs Utilization"
-                height={250}
-                animationDuration={2200}
-                chart={{
-                  labels: analyticsData?.growthData?.slice(0, 5).map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Growth %',
-                      type: 'bar',
-                      fill: 'solid',
-                      color: '#00A76F',
-                      data: analyticsData?.growthData?.slice(0, 5).map((item) => item.growth),
-                    },
-                  ],
-                }}
-              />
-            </Box>
+            <AnimatedChart
+              title="Growth vs Utilization"
+              height={250}
+              animationDuration={2200}
+              chart={{
+                labels: analyticsData?.growthData?.slice(0, 5).map((item) => item.name),
+                series: [
+                  {
+                    name: 'Growth %',
+                    type: 'bar',
+                    fill: 'solid',
+                    color: '#00A76F',
+                    data: analyticsData?.growthData?.slice(0, 5).map((item) => item.growth),
+                  },
+                ],
+              }}
+            />
           </Grid>
 
           <Grid item xs={12} sm={12}>
-            <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-              <AnimatedChart
-                title="Account Growth Analysis"
-                height={300}
-                chart={{
-                  labels: analyticsData?.growthData?.map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Current Amount',
-                      type: 'column',
-                      fill: 'solid',
-                      color: '#00A76F',
-                      data: analyticsData?.growthData?.map((item) => item.currentAmount),
-                    },
-                    {
-                      name: 'Start Amount',
-                      type: 'column',
-                      fill: 'solid',
-                      color: '#FF4842',
-                      data: analyticsData?.growthData?.map((item) => item.startAmount),
-                    },
-                  ],
-                }}
-              />
-            </Box>
+            <AnimatedChart
+              title="Account Growth Analysis"
+              height={300}
+              chart={{
+                labels: analyticsData?.growthData?.map((item) => item.name),
+                series: [
+                  {
+                    name: 'Current Amount',
+                    type: 'column',
+                    fill: 'solid',
+                    color: '#00A76F',
+                    data: analyticsData?.growthData?.map((item) => item.currentAmount),
+                  },
+                  {
+                    name: 'Start Amount',
+                    type: 'column',
+                    fill: 'solid',
+                    color: '#FF4842',
+                    data: analyticsData?.growthData?.map((item) => item.startAmount),
+                  },
+                ],
+              }}
+            />
           </Grid>
 
           <Grid item xs={12} sm={12}>
-            <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-              <AnimatedChart
-                title="Account Utilization"
-                height={300}
-                animationDuration={2000}
-                chart={{
-                  labels: analyticsData?.utilizationData?.map((item) => item.name),
-                  series: [
-                    {
-                      name: 'Utilization %',
-                      type: 'bar',
-                      fill: 'solid',
-                      color: '#00B8D9',
-                      data: analyticsData?.utilizationData?.map((item) => item.utilization),
-                    },
-                  ],
-                }}
-              />
-            </Box>
+            <AnimatedChart
+              title="Account Utilization"
+              height={300}
+              animationDuration={2000}
+              chart={{
+                labels: analyticsData?.utilizationData?.map((item) => item.name),
+                series: [
+                  {
+                    name: 'Utilization %',
+                    type: 'bar',
+                    fill: 'solid',
+                    color: '#00B8D9',
+                    data: analyticsData?.utilizationData?.map((item) => item.utilization),
+                  },
+                ],
+              }}
+            />
           </Grid>
         </Grid>
 
@@ -937,7 +967,14 @@ export default function AccountAnalytics() {
           {/* Account Key Metrics */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.lighter' }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: 'center',
+                  border: `solid 1px ${theme.palette.border?.info}`,
+                  background: `${theme.palette.gradients?.info}`,
+                }}
+              >
                 <AttachMoneyIcon sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
                 <AnimatedCounter
                   value={selectedAccount?.CurrentAmount || 0}
@@ -956,7 +993,14 @@ export default function AccountAnalytics() {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'success.lighter' }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: 'center',
+                  border: `solid 1px ${theme.palette.border?.success}`,
+                  background: `${theme.palette.gradients?.success}`,
+                }}
+              >
                 <TrendingUpIcon sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
                 <AnimatedCounter
                   value={accountDetails.growth || 0}
@@ -976,27 +1020,14 @@ export default function AccountAnalytics() {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'info.lighter' }}>
-                <AssessmentIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
-                <AnimatedCounter
-                  value={accountDetails.healthScore || 0}
-                  format="number"
-                  suffix="%"
-                  variant="h5"
-                  color="info.main"
-                  duration={1000}
-                />
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Health Score
-                </Typography>
-                <Typography variant="caption" color="info.main">
-                  Account Health
-                </Typography>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.lighter' }}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: 'center',
+                  border: `solid 1px ${theme.palette.border?.warning}`,
+                  background: `${theme.palette.gradients?.warning}`,
+                }}
+              >
                 <SpeedIcon sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
                 <AnimatedCounter
                   value={accountDetails.utilization || 0}
@@ -1011,6 +1042,33 @@ export default function AccountAnalytics() {
                 </Typography>
                 <Typography variant="caption" color="warning.main">
                   Capacity Used
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Card
+                sx={{
+                  p: 2,
+                  textAlign: 'center',
+                  border: `solid 1px ${theme.palette.border?.secondary}`,
+                  background: `${theme.palette.gradients?.secondary}`,
+                }}
+              >
+                <AssessmentIcon sx={{ fontSize: 32, color: 'info.main', mb: 1 }} />
+                <AnimatedCounter
+                  value={accountDetails.healthScore || 0}
+                  format="number"
+                  suffix="%"
+                  variant="h5"
+                  color="info.main"
+                  duration={1000}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Health Score
+                </Typography>
+                <Typography variant="caption" color="info.main">
+                  Account Health
                 </Typography>
               </Card>
             </Grid>
@@ -1100,98 +1158,90 @@ export default function AccountAnalytics() {
               {/* Transaction Charts */}
               <Grid container spacing={3} sx={{ mb: 3 }}>
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                    <AnimatedChart
-                      title="Monthly In vs Out"
-                      height={300}
-                      animationDuration={2000}
-                      chart={{
-                        labels: transactionAnalytics.monthlyBreakdown.map((item) => item.month),
-                        series: [
-                          {
-                            name: 'In',
-                            type: 'column',
-                            fill: 'solid',
-                            color: '#00A76F',
-                            data: transactionAnalytics.monthlyIncome,
-                          },
-                          {
-                            name: 'Out',
-                            type: 'column',
-                            fill: 'solid',
-                            color: '#FF4842',
-                            data: transactionAnalytics.monthlyExpense,
-                          },
-                        ],
-                      }}
-                    />
-                  </Box>
+                  <AnimatedChart
+                    title="Monthly In vs Out"
+                    height={300}
+                    animationDuration={2000}
+                    chart={{
+                      labels: transactionAnalytics.monthlyBreakdown.map((item) => item.month),
+                      series: [
+                        {
+                          name: 'In',
+                          type: 'column',
+                          fill: 'solid',
+                          color: '#00A76F',
+                          data: transactionAnalytics.monthlyIncome,
+                        },
+                        {
+                          name: 'Out',
+                          type: 'column',
+                          fill: 'solid',
+                          color: '#FF4842',
+                          data: transactionAnalytics.monthlyExpense,
+                        },
+                      ],
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                    <AnimatedChart
-                      title="Top Spending Categories"
-                      height={300}
-                      animationDuration={2000}
-                      chart={{
-                        labels: transactionAnalytics.topCategories.map((item) => item.name),
-                        series: [
-                          {
-                            name: 'Amount',
-                            type: 'bar',
-                            fill: 'solid',
-                            color: '#00B8D9',
-                            data: transactionAnalytics.topCategories.map((item) => item.amount),
-                          },
-                        ],
-                      }}
-                    />
-                  </Box>
+                  <AnimatedChart
+                    title="Top Spending Categories"
+                    height={300}
+                    animationDuration={2000}
+                    chart={{
+                      labels: transactionAnalytics.topCategories.map((item) => item.name),
+                      series: [
+                        {
+                          name: 'Amount',
+                          type: 'bar',
+                          fill: 'solid',
+                          color: '#00B8D9',
+                          data: transactionAnalytics.topCategories.map((item) => item.amount),
+                        },
+                      ],
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                    <AnimatedChart
-                      title="Transaction Trends"
-                      height={300}
-                      animationDuration={2000}
-                      chart={{
-                        labels: transactionAnalytics.monthlyBreakdown.map((item) => item.month),
-                        series: [
-                          {
-                            name: 'Transaction Count',
-                            type: 'line',
-                            fill: 'gradient',
-                            color: '#8E44AD',
-                            data: transactionAnalytics.transactionTrends,
-                          },
-                        ],
-                      }}
-                    />
-                  </Box>
+                  <AnimatedChart
+                    title="Transaction Trends"
+                    height={300}
+                    animationDuration={2000}
+                    chart={{
+                      labels: transactionAnalytics.monthlyBreakdown.map((item) => item.month),
+                      series: [
+                        {
+                          name: 'Transaction Count',
+                          type: 'line',
+                          fill: 'gradient',
+                          color: '#8E44AD',
+                          data: transactionAnalytics.transactionTrends,
+                        },
+                      ],
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ border: 'solid 1px #EEE', borderRadius: 1 }}>
-                    <AnimatedChart
-                      title="Weekly Spending Pattern"
-                      height={300}
-                      animationDuration={2000}
-                      chart={{
-                        labels: transactionAnalytics.weeklySpending.map((item) => item.day),
-                        series: [
-                          {
-                            name: 'Amount',
-                            type: 'bar',
-                            fill: 'solid',
-                            color: '#FFA726',
-                            data: transactionAnalytics.weeklySpending.map((item) => item.amount),
-                          },
-                        ],
-                      }}
-                    />
-                  </Box>
+                  <AnimatedChart
+                    title="Weekly Spending Pattern"
+                    height={300}
+                    animationDuration={2000}
+                    chart={{
+                      labels: transactionAnalytics.weeklySpending.map((item) => item.day),
+                      series: [
+                        {
+                          name: 'Amount',
+                          type: 'bar',
+                          fill: 'solid',
+                          color: '#FFA726',
+                          data: transactionAnalytics.weeklySpending.map((item) => item.amount),
+                        },
+                      ],
+                    }}
+                  />
                 </Grid>
               </Grid>
 
@@ -1226,12 +1276,16 @@ export default function AccountAnalytics() {
                         return (
                           <TableRow key={transaction.TransactionId || index} hover>
                             <TableCell>
-                              <Typography variant="body2">
-                                {new Date(transaction.Date).toLocaleDateString()}
+                              <Typography variant="body2" color="text.secondary">
+                                {fDate(transaction.Date)}
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ fontWeight: 500 }}
+                              >
                                 {transaction.Description || 'No description'}
                               </Typography>
                             </TableCell>
@@ -1247,7 +1301,7 @@ export default function AccountAnalytics() {
                                 sx={{ fontWeight: 500 }}
                               >
                                 {isPositive ? '+' : ''}
-                                {parseFloat(transaction.AccountAmount).toFixed(2)}
+                                {formatToINR(transaction.AccountAmount, isAmountVisible)}
                               </Typography>
                             </TableCell>
                             <TableCell align="center">
@@ -1280,25 +1334,33 @@ export default function AccountAnalytics() {
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="body2">Average Transaction:</Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          ₹{transactionAnalytics.averageTransaction.toFixed(2)}
+                          {formatToINR(transactionAnalytics.averageTransaction, isAmountVisible)}
                         </Typography>
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="body2">Largest Transaction:</Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          ₹
-                          {Math.abs(
-                            parseFloat(transactionAnalytics.largestTransaction?.AccountAmount || 0)
-                          ).toFixed(2)}
+                          {formatToINR(
+                            Math.abs(
+                              parseFloat(
+                                transactionAnalytics.largestTransaction?.AccountAmount || 0
+                              )
+                            ).toFixed(2),
+                            isAmountVisible
+                          )}
                         </Typography>
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="body2">Smallest Transaction:</Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          ₹
-                          {Math.abs(
-                            parseFloat(transactionAnalytics.smallestTransaction?.AccountAmount || 0)
-                          ).toFixed(2)}
+                          {formatToINR(
+                            Math.abs(
+                              parseFloat(
+                                transactionAnalytics.smallestTransaction?.AccountAmount || 0
+                              )
+                            ).toFixed(2),
+                            isAmountVisible
+                          )}
                         </Typography>
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -1316,6 +1378,7 @@ export default function AccountAnalytics() {
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                       Action Breakdown
                     </Typography>
+
                     <Grid container spacing={2}>
                       {Object.entries(transactionAnalytics.actionBreakdown).map(
                         ([action, amount]) => (
@@ -1324,7 +1387,7 @@ export default function AccountAnalytics() {
                               sx={{
                                 textAlign: 'center',
                                 p: 1,
-                                bgcolor: 'grey.50',
+                                bgcolor: 'background.textbox',
                                 borderRadius: 1,
                               }}
                             >
@@ -1332,7 +1395,7 @@ export default function AccountAnalytics() {
                                 {action}
                               </Typography>
                               <Typography variant="h6" color="primary.main">
-                                ₹{amount.toFixed(2)}
+                                {formatToINR(amount.toFixed(2), isAmountVisible)}
                               </Typography>
                             </Box>
                           </Grid>
@@ -1361,11 +1424,12 @@ export default function AccountAnalytics() {
             }
             subheader="Click on an item to view detailed analytics"
           />
+
           <Divider sx={{ m: 2 }} />
 
           {loadingList ? (
             <Grid container spacing={2} sx={{ py: 1 }}>
-              {[1, 2, 3, 4].map((item) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <Grid item xs={12} key={item}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2.5 }}>
                     <Skeleton variant="circular" width={40} height={40} />
@@ -1400,12 +1464,14 @@ export default function AccountAnalytics() {
                         icon={item?.Icon || ''}
                         bgColor={item?.Color || ''}
                       />
-                      <Typography variant="light">
-                        {item?.AccountName}
-                        <Typography variant="registerTest" color="text.secondary">
-                          {item?.CurrentAmount}
+                      <Box>
+                        <Typography variant="body2" fontWeight={600}>
+                          {item?.AccountName}
                         </Typography>
-                      </Typography>
+                        <Typography variant="registerTest" color="text.secondary">
+                          {formatToINR(item?.CurrentAmount, isAmountVisible)}
+                        </Typography>
+                      </Box>
                     </Stack>
                   </ListItemButton>
                 </ListItem>

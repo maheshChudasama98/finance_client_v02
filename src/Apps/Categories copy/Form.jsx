@@ -116,7 +116,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       Cancel
                     </Button>
@@ -148,7 +148,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       {' '}
                       Cancel{' '}

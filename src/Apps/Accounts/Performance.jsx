@@ -127,6 +127,7 @@ export default function Performance({ AccountId }) {
               '& .MuiAccordionSummary-content': {
                 margin: 0,
               },
+               borderRadius: 1,
             }}
           >
             <Box
@@ -138,7 +139,7 @@ export default function Performance({ AccountId }) {
                 pr: 2,
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary' }}>
                 {item?.duration}
               </Typography>
 
@@ -172,7 +173,7 @@ export default function Performance({ AccountId }) {
             </Box>
           </AccordionSummary>
 
-          <AccordionDetails sx={{ backgroundColor: 'grey.50', pt: 2 }}>
+          <AccordionDetails sx={{ backgroundColor: '', pt: 2 ,  borderRadius: 1, }}>
             <Box sx={{ mb: 2 }}>
               <Typography
                 variant="subtitle2"
@@ -264,8 +265,9 @@ export default function Performance({ AccountId }) {
             <>
               {isMobile && <MobilePerformanceAccordion />}
               {!isMobile && (
-                <Box sx={{ mx: { xs: 1, sm: 2 }, overflow: 'auto' }}>
+                <Box sx={{ overflow: 'auto' }}>
                   <Table
+                    className="custom-ant-table"
                     columns={columns}
                     dataSource={tableSetData}
                     pagination={false}

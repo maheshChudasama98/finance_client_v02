@@ -202,7 +202,7 @@ export default function ResetPasswordView() {
                       size="large"
                       type="submit"
                       variant="contained"
-                      color="success"
+                      color="primary"
                       disabled={isLoading || isSubmitting || !props.isValid}
                       startIcon={
                         isSubmitting ? <CircularProgress size={20} color="inherit" /> : null
@@ -319,7 +319,7 @@ export default function ResetPasswordView() {
                       size="large"
                       type="submit"
                       variant="contained"
-                      color="success"
+                      color="primary"
                       disabled={isOTPLoading || isOTPSubmitting || !props.isValid}
                       startIcon={
                         isOTPSubmitting ? <CircularProgress size={20} color="inherit" /> : null

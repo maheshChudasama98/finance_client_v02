@@ -152,6 +152,7 @@ export default function Index() {
         <Button
           size="small"
           variant="outlined"
+          color='success'
           onClick={(e) => {
             e.stopPropagation();
             setDisplayFlag(true);
@@ -381,6 +382,7 @@ export default function Index() {
                   <Button
                     size="small"
                     variant="outlined"
+                    color='success'
                     onClick={(e) => {
                       e.stopPropagation();
                       setDisplayFlag(true);
@@ -443,7 +445,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >

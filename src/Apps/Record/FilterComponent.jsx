@@ -88,7 +88,7 @@ export default function FilterComponent({ backAction, defaultValue, dataList }) 
 
         <Grid xs={12}>
           <Box sx={{ float: 'right', display: 'flex' }}>
-            <Button variant="outlined" sx={{ marginRight: 1 }} color="CancelButton">
+            <Button variant="outlined" sx={{ marginRight: 1 }} color="darker">
               Clear
             </Button>
 

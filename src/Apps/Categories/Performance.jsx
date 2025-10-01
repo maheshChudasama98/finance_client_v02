@@ -116,6 +116,7 @@ export default function Performance({ CategoryId }) {
         <>
           {list && list?.length > 0 ? (
             <Table
+              className="custom-ant-table"
               columns={columns}
               dataSource={tableSetData}
               pagination={false}

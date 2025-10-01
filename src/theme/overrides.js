@@ -342,7 +342,6 @@ export function overrides(theme) {
         },
       },
     },
-
     MuiInputLabel: {
       defaultProps: {
         shrink: true,
@@ -353,7 +352,7 @@ export function overrides(theme) {
           transform: 'none',
           marginBottom: 1,
           fontSize: 13,
-          fontWeight: 100,
+          fontWeight: 600,
           color: theme.palette.text?.primary,
           '&.Mui-focused': {
             color: theme.palette.text?.primary,
@@ -367,7 +366,6 @@ export function overrides(theme) {
         },
       },
     },
-
     MuiTextField: {
       styleOverrides: {
         root: {
@@ -375,7 +373,7 @@ export function overrides(theme) {
             fontSize: 14,
             borderRadius: 5,
             // backgroundColor: theme.palette.grey[200],
-            backgroundColor: theme.palette.background.neutral,
+            backgroundColor: theme.palette.background.textbox,
             padding: '6px 8px',
             '& .MuiOutlinedInput-input': {
               padding: '6px 8px',
@@ -412,14 +410,13 @@ export function overrides(theme) {
         },
       },
     },
-
     MuiAutocomplete: {
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
             fontSize: 14,
             borderRadius: 5,
-            backgroundColor: theme.palette.background.neutral,
+            backgroundColor: theme.palette.background.textbox,
             padding: '6px 8px',
             // padding: '4px 5px',
             // minHeight: 55,
@@ -446,13 +443,12 @@ export function overrides(theme) {
         },
       },
     },
-
     MuiCard: {
       styleOverrides: {
         root: {
           boxShadow: 'none',
-          // boxShadow: theme.customShadows.card,
           borderRadius: Number(theme.shape.borderRadius) * 1,
+          border: `1px solid ${theme.palette.border?.default} `,
           position: 'relative',
           zIndex: 0,
         },
@@ -474,7 +470,7 @@ export function overrides(theme) {
         root: {
           fontSize: 14,
           borderRadius: 5,
-          backgroundColor: theme.palette.background.neutral,
+          backgroundColor: theme.palette.background.textbox,
         },
         select: {
           padding: '8px 10px',

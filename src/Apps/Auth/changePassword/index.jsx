@@ -87,7 +87,7 @@ export default function AccountPopover() {
                   size="large"
                   type="submit"
                   variant="contained"
-                  color="success"
+                  color="primary"
                   onClick={props.handleSubmit}
                 >
                   Change Password

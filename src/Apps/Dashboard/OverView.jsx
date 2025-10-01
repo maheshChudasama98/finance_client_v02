@@ -59,7 +59,6 @@ export default function OverView({ chart, height, subheader, title, ...other }) 
       },
     },
     grid: {
-      borderColor: '#f1f1f1',
       strokeDashArray: 3,
     },
     legend: {

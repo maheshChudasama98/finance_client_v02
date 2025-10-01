@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import { useTheme } from '@mui/system';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
@@ -20,6 +21,7 @@ export default function QuickInsights({
   currentBalance = 0,
 }) {
   const { isAmountVisible } = useAmountVisibility();
+  const theme = useTheme();
 
   const calculatePercentageChange = (current, previous) => {
     if (!previous || previous === 0) return 0;
@@ -31,8 +33,14 @@ export default function QuickInsights({
   const currentMonthData = Array.isArray(currentMonth) ? currentMonth[0] || {} : currentMonth;
 
   const netIncome = (currentYearData?.totalIn || 0) - (currentYearData?.totalOut || 0);
-  const monthlyChange = calculatePercentageChange(currentMonthData?.totalIn, lastMonthData?.totalIn);
-  const expenseChange = calculatePercentageChange(currentMonthData?.totalOut, lastMonthData?.totalOut);
+  const monthlyChange = calculatePercentageChange(
+    currentMonthData?.totalIn,
+    lastMonthData?.totalIn
+  );
+  const expenseChange = calculatePercentageChange(
+    currentMonthData?.totalOut,
+    lastMonthData?.totalOut
+  );
 
   const insights = [
     {
@@ -40,6 +48,8 @@ export default function QuickInsights({
       value: netIncome,
       change: monthlyChange - expenseChange,
       color: netIncome >= 0 ? 'success.main' : 'error.main',
+      border: theme.palette.border.success,
+      background: theme.palette.gradients.success,
       icon:
         netIncome >= 0 ? (
           <i className="fa-solid fa-arrow-trend-up" style={{ color: '#00A76F' }} />
@@ -52,6 +62,8 @@ export default function QuickInsights({
       value: currentBalance,
       change: topCategories?.[0]?.totalOut || 0,
       color: 'warning.main',
+      border: theme.palette.border.warning,
+      background: theme.palette.gradients.warning,
       icon: '💰',
     },
     {
@@ -59,7 +71,9 @@ export default function QuickInsights({
       value: currentYearData?.totalIn > 0 ? (netIncome / currentYearData.totalIn) * 100 : 0,
       change: 0,
       color: 'info.main',
-      icon: <i className="fa-solid fa-piggy-bank" style={{ color: '#FFAB00' }} />,
+      border: theme.palette.border.info,
+      background: theme.palette.gradients.info,
+      icon: <i className="fa-solid fa-piggy-bank" style={{ color: theme.palette.info.main }} />,
       format: 'percentage',
     },
   ];
@@ -90,10 +104,9 @@ export default function QuickInsights({
               <Box
                 sx={{
                   p: 2,
-                  borderRadius: 2,
-                  bgcolor: 'grey.50',
-                  border: 1,
-                  borderColor: 'grey.200',
+                  borderRadius: 1.5,
+                  background: insight?.background,
+                  border: `1px solid ${insight?.border}`,
                 }}
               >
                 <Stack direction="row" spacing={2} sx={{ mb: 1 }}>

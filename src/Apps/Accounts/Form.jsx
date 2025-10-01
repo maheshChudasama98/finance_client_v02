@@ -154,11 +154,10 @@ export default function Index({ backAction, editObject, deleteAction }) {
                     <Button
                       variant="outlined"
                       sx={{ marginLeft: 1 }}
-                      // disabled={!dirty}
                       onClick={() => {
                         resetForm();
                       }}
-                      // color="darker"
+                      color="darker"
                     >
                       {' '}
                       Cancel{' '}

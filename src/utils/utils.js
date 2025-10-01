@@ -21,10 +21,32 @@ export function lightenColor(hexColor, factor) {
   return newHexColor;
 }
 
+export function darkenColor(hexColor, factor) {
+  hexColor = hexColor.replace('#', '');
+
+  const red = parseInt(hexColor.slice(0, 2), 16);
+  const green = parseInt(hexColor.slice(2, 4), 16);
+  const blue = parseInt(hexColor.slice(4, 6), 16);
+
+  const newRed = Math.round(red * (1 - factor));
+  const newGreen = Math.round(green * (1 - factor));
+  const newBlue = Math.round(blue * (1 - factor));
+
+  return `#${[newRed, newGreen, newBlue]
+    .map((val) => val.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase()}`;
+}
+
+export function getThemeColor(baseColor, factor = 0.2) {
+  const mode = localStorage.getItem('themeMode') || 'light';
+
+  return mode === 'dark' ? darkenColor(baseColor, factor) : lightenColor(baseColor, factor); 
+}
+
 export function calculatePercentageChange(c, p) {
   const current = Number(c);
   const previous = Number(p);
   if (!previous || previous === 0) return current ? 100 : 0;
   return ((current - previous) / previous) * 100;
 }
-

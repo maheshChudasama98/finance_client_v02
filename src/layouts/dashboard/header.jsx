@@ -7,21 +7,20 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
-import { grey } from 'src/theme/palette';
+import { useThemeSettings } from 'src/theme';
 import { setDisplayFlag } from 'src/redux/actions/common';
 
 import Iconify from 'src/components/iconify';
 import AmountVisibilityToggle from 'src/components/CustomComponents/AmountVisibilityToggle';
-import { useThemeSettings } from 'src/theme';
 
 import { NAV, HEADER } from './config-layout';
 import BranchPopover from './common/branch-popover';

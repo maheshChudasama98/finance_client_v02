@@ -108,7 +108,7 @@ export default function Index({ backAction, editObject, deletedAction, apiCallAc
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       Cancel
                     </Button>
@@ -119,7 +119,7 @@ export default function Index({ backAction, editObject, deletedAction, apiCallAc
                       type="submit"
                       disabled={!dirty}
                       onClick={handleSubmit}
-                      color="success"
+                      color="primary"
                     >
                       Save
                     </Button>

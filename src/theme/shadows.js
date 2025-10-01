@@ -4,10 +4,14 @@ import { grey } from './palette';
 
 // ----------------------------------------------------------------------
 
-export function shadows() {
-  const transparent1 = alpha(grey[500], 0.2);
-  const transparent2 = alpha(grey[500], 0.14);
-  const transparent3 = alpha(grey[500], 0.12);
+export function shadows(mode = 'light') {
+  const isLight = mode === 'light';
+  
+  // Use different shadow colors for light and dark modes
+  const shadowColor = isLight ? grey[500] : grey[900];
+  const transparent1 = alpha(shadowColor, isLight ? 0.2 : 0.3);
+  const transparent2 = alpha(shadowColor, isLight ? 0.14 : 0.2);
+  const transparent3 = alpha(shadowColor, isLight ? 0.12 : 0.18);
 
   return [
     'none',
