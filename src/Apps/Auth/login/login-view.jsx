@@ -64,7 +64,7 @@ export default function LoginView() {
 
           if (response?.status) {
             setErrorMsg(null);
-            setSuccessMsg('Login successful! Redirecting to dashboard...');
+            setSuccessMsg('Login successful!');
             dispatch(
               InfoApiActionService((res) => {
                 router.push('/dashboard');

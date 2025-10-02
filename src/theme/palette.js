@@ -137,7 +137,7 @@ export const secondary = {
 };
 
 export const info = {
-  lighter: '#CAFDF5',
+  lighter: '#292b2bff',
   light: '#61F3F3',
   main: '#00B8D9',
   dark: '#006C9C',
@@ -311,7 +311,8 @@ function buildPrimaryScale(base) {
     main,
     dark: darken(main, 0.18),
     darker: darken(main, 0.32),
-    contrastText: getContrastText(main),
+    contrastText2: getContrastText(main),
+    contrastText:'#FFFFFF'  ,
   };
 }
 
@@ -363,6 +364,7 @@ export function palette(mode = 'light', primaryColor) {
     mode,
     text: {
       success: computedSuccess?.main,
+      primarytext: computedPrimary?.main,
       primary: isLight ? grey[800] : grey[0],
       secondary: isLight ? grey[600] : grey[400],
       disabled: grey[500],
@@ -372,7 +374,7 @@ export function palette(mode = 'light', primaryColor) {
       default: isLight ? grey[100] : grey[800],
       neutral: isLight ? grey[100] : grey[700],
       neutral2: isLight ? grey[200] : grey[700],
-      textbox: isLight ? grey[100] : grey[800],
+      textbox: isLight ? grey[200] : grey[800],
       tableHeader: isLight ? grey[200] : grey[700],
       ...backgroundVariants(isLight),
     },

@@ -85,7 +85,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         },
       }}
     >
-      {isActive ? <Logo sx={{ m: 'auto', my: 1.5 }} /> : <Logo sx={{ ml: 3.3, my: 1.5 }} />}
+      {isActive ? <Logo sx={{ m: 'auto', my: 1.5 , mb:3 }} /> : <Logo sx={{ ml: 3, my: 1.5 ,mb:5 }} />}
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

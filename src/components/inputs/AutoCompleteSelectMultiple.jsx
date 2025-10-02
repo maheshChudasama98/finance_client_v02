@@ -35,7 +35,7 @@ export const AutoCompleteSelectMultiple = ({ formik, label, field, menuList, val
             renderTags={(selected, getTagProps) =>
                 selected.map((option, index) => (
                     <Chip
-                        color="success" 
+                        color="primary" 
                         key={option[valueKey]}
                         label={option[labelKey]}
                         {...getTagProps({ index })}

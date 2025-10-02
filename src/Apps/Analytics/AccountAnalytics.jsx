@@ -653,7 +653,7 @@ export default function AccountAnalytics() {
           </Grid>
 
           <Grid item xs={12}>
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'background.tableHeader', borderRadius: 2 }}>
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'background.tableHeader', borderRadius: 1 }}>
               <Stack
                 direction="row"
                 justifyContent="space-between"

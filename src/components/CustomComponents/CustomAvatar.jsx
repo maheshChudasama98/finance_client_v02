@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { ImgUrl } from 'src/constance';
-import { primary } from 'src/theme/palette';
 
 export const CustomAvatar = ({
   open,
@@ -16,7 +15,7 @@ export const CustomAvatar = ({
   imgDefault = true,
   displayName,
   iconSize = 20,
-  bgColor = primary.main,
+  bgColor,
   photoURL,
   handleOpen,
   width = { xs: 40, md: 45, lg: 56 }, // default width

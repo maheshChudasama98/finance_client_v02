@@ -177,8 +177,10 @@ export function overrides(theme) {
       styleOverrides: {
         root: {
           color: theme.palette.grey[500],
+          fontSize: 13,
+          fontWeight: 600,
           '&.Mui-checked': {
-            color: theme.palette.success.main,
+            // color: theme.palette.primary.main,
           },
           '&:hover': {
             // backgroundColor: theme.palette.grey[300], // hover background

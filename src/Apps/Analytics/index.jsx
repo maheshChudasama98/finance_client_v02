@@ -10,9 +10,12 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
+import LabelsAnalytics from './LabelsAnalytics';
+import PartiesAnalytics from './PartiesAnalytics';
 import AccountAnalytics from './AccountAnalytics';
 import EnhancedAnalytics from './EnhancedAnalytics';
 import CategoriesAnalytics from './CategoriesAnalytics';
+import SubCategoriesAnalytics from './SubCategoriesAnalytics';
 
 export default function Index() {
   const [tabValue, setTabValue] = useState(0);
@@ -59,9 +62,14 @@ export default function Index() {
         </Box>
       </Card>
 
-      <Box sx={{ mt: 2 }}>{tabValue === 0 && <EnhancedAnalytics />}</Box>
-      <Box sx={{ mt: 2 }}>{tabValue === 1 && <AccountAnalytics />}</Box>
-      <Box sx={{ mt: 2 }}>{tabValue === 3 && <CategoriesAnalytics />}</Box>
+      <Box sx={{ mt: 2 }}>
+        {tabValue === 0 && <EnhancedAnalytics />}
+        {tabValue === 1 && <AccountAnalytics />}
+        {tabValue === 2 && <PartiesAnalytics />}
+        {tabValue === 3 && <CategoriesAnalytics />}
+        {tabValue === 4 && <SubCategoriesAnalytics />}
+        {tabValue === 5 && <LabelsAnalytics />}
+      </Box>
     </Box>
   );
 }

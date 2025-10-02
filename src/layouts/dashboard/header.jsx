@@ -8,8 +8,8 @@ import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
-import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import { alpha, useTheme } from '@mui/material/styles';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
@@ -70,12 +70,24 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
         {/* <TransactionsPopover /> */}
         {/* <NotificationsPopover /> */}
         <AmountVisibilityToggle />
-        
+
         <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
-          <IconButton onClick={toggleMode} color={mode === 'light' ? 'darker' : 'warning'}>
+          <IconButton
+            onClick={toggleMode}
+            color={mode === 'light' ? 'darker' : 'warning'}
+            sx={{
+              width: 40,
+              height: 40,
+              background: () => alpha(theme.palette.grey[500], 0.08),
+              '&:hover': {
+                background: () => alpha(theme.palette.primary.main, 0.08),
+              },
+            }}
+          >
             <Iconify icon={mode === 'light' ? 'mdi:weather-night' : 'mdi:white-balance-sunny'} />
           </IconButton>
         </Tooltip>
+
         <Button onClick={handleRecordClick} variant="outlined" color="primary">
           Record
         </Button>

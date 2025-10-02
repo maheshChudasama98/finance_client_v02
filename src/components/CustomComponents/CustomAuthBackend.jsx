@@ -8,16 +8,27 @@ import Typography from '@mui/material/Typography';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import { bgGradient } from 'src/theme/css';
+import { useThemeSettings } from 'src/theme';
+
+import Logo from '../logo';
 
 export const CustomAuthBackend = ({ ChildComponent, titleString, endString, height }) => {
   const theme = useTheme();
+
+  const { setMode, setPrimaryColor } = useThemeSettings();
+
+  const persistedMode = 'light';
+  const persistedPrimary = '#5BC43A';
+  if (persistedMode) setMode(persistedMode);
+  if (typeof persistedPrimary !== 'undefined') setPrimaryColor(persistedPrimary || '');
+
   return (
     <Box
       sx={{
         ...bgGradient({
           color: alpha(theme.palette.background.default, 0.9),
           imgUrl: '/assets/background/overlay_1.jpg',
-          startColor: alpha(theme.palette.primary.main, 0.2),
+          startColor: alpha(theme.palette.success.main, 0.2),
           endColor: alpha(theme.palette.background.default, 0.1),
         }),
         height: 1,
@@ -29,7 +40,7 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
         <Grid
           xs={12}
           md={6}
-          lg={8}
+          lg={7}
           sx={{
             overflow: 'hidden',
             display: { xs: 'none', md: 'block' },
@@ -43,9 +54,7 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
               justifyContent: 'center',
             }}
           >
-            <Typography variant="h3">
-              Hi, Welcome back
-            </Typography>
+            <Typography variant="h3">Hi, Welcome back</Typography>
             <Typography variant="body2" sx={{ mt: 2, mb: 5 }} color="text.secondary">
               More effectively with optimized workflows.
             </Typography>
@@ -56,7 +65,7 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
             />
           </Stack>
         </Grid>
-        <Grid xs={12} md={6} lg={4}>
+        <Grid xs={12} md={6} lg={5}>
           <Box sx={{ height: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
             <Stack
               sx={{
@@ -75,8 +84,10 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
                   borderRadius: 0,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  border: 'none',
                 }}
               >
+                <Logo />
                 <Box
                   sx={{
                     height: { xs: '90%', md: '90%' },

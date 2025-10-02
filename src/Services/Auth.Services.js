@@ -153,50 +153,35 @@ export function InfoApiActionService(cb) {
       .get('/user/info')
       .then((res) => {
         if (res.data.status) {
+          
           dispatch({ type: 'FETCH_SUCCESS' });
 
-          dispatch({
-            type: 'ORGS_LIST',
-            OrgsList: res?.data?.data?.Org || {},
-          });
+          dispatch({ type: 'ORGS_LIST', OrgsList: res?.data?.data?.Org || {}});
 
-          dispatch({
-            type: 'BRANCHES_LIST',
-            BranchesList: res?.data?.data?.Branch || {},
-          });
+          dispatch({ type: 'BRANCHES_LIST', BranchesList: res?.data?.data?.Branch || {}});
 
-          dispatch({
-            type: 'USER_DETAILS',
-            UserDetails: res?.data?.data?.UserInfo || {},
-          });
+          dispatch({ type: 'USER_DETAILS', UserDetails: res?.data?.data?.UserInfo || {}});
 
-          dispatch({
-            type: 'USER_PERMISSION',
-            PermissionList: res?.data?.data?.PermissionList || [],
-          });
+          dispatch({ type: 'USER_PERMISSION', PermissionList: res?.data?.data?.PermissionList || []});
 
-          localStorage.setItem(
-            'DefaultTimeFrame',
-            res?.data?.data?.UserInfo?.DefaultTimeFrame || 'MONTH'
-          );
-          localStorage.setItem(
-            'DefaultDuration',
-            res?.data?.data?.UserInfo?.DefaultDuration || 'Last_Thirty_Days'
-          );
-          localStorage.setItem(
-            'DefaultDateFormat',
-            res?.data?.data?.UserInfo?.DefaultDateFormat || 'DD/MM/YYYY'
-          );
-          localStorage.setItem(
-            'DefaultCurrency',
-            res?.data?.data?.UserInfo?.DefaultCurrency || 'INR'
-          );
+          dispatch({ type: 'THEME_MODE_SET', payload: res?.data?.data?.UserInfo?.ThemeMode || 'light'});
 
-          dispatch({
-            type: 'AMOUNT_VISIBILITY_CHANGE',
-            payload: !!res?.data?.data?.UserInfo?.AmountHide,
-          });
+          dispatch({ type: 'THEME_PRIMARY_SET', payload: res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A'});
+
+          dispatch({ type: 'AMOUNT_VISIBILITY_CHANGE', payload: !!res?.data?.data?.UserInfo?.AmountHide});
+
+          localStorage.setItem('DefaultTimeFrame', res?.data?.data?.UserInfo?.DefaultTimeFrame || 'MONTH');
+
+          localStorage.setItem('DefaultDuration', res?.data?.data?.UserInfo?.DefaultDuration || 'Last_Thirty_Days');
           
+          localStorage.setItem('DefaultDateFormat', res?.data?.data?.UserInfo?.DefaultDateFormat || 'DD/MM/YYYY');
+          
+          localStorage.setItem('DefaultCurrency', res?.data?.data?.UserInfo?.DefaultCurrency || 'INR');
+
+          localStorage.setItem('themeMode', res?.data?.data?.UserInfo?.ThemeMode || 'light');
+          
+          localStorage.setItem('themePrimary', res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A');
+
           localStorage.setItem('AmountHide', res?.data?.data?.UserInfo?.AmountHide);
 
           if (cb) cb(res.data);

@@ -15,3 +15,4 @@ export { CustomSearchInput } from './CustomSearchInput';
 export { CustomPerformance } from './CustomPerformance';
 export { CustomTransactions } from './CustomTransactions';
 export { CustomLabelComponent } from './CustomLabelComponent';
+export { Dynamic404Illustration } from './Dynamic404Illustration';

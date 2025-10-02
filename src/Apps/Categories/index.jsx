@@ -188,13 +188,13 @@ export default function Index() {
       dataIndex: 'CategoryName',
       key: 'CategoryName',
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'Action',
-    //   key: 'Action',
-    //   align: 'right',
-    //   width: '15%',
-    // },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      align: 'right',
+      width: '15%',
+    },
     // {
     //   title: 'Income',
     //   dataIndex: 'Income',

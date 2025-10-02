@@ -159,8 +159,13 @@ export default function Index() {
                       labelKey="Key"
                     />
                   </Grid>
-                  <Grid xs={12} md={4}>
-                    <CheckboxForm formik={props} label="Amount Hide" field="AmountHide" />
+                  <Grid xs={12} md={4} sx={{ alignContent: 'end' }}>
+                    <CheckboxForm
+                      formik={props}
+                      color="primary"
+                      label="Amount Hide"
+                      field="AmountHide"
+                    />
                   </Grid>
 
                   <Grid item xs={12} md={12}>
@@ -196,7 +201,7 @@ export default function Index() {
                           type="submit"
                           disabled={!dirty}
                           onClick={handleSubmit}
-                          color="success"
+                          color="primary"
                         >
                           Save
                         </Button>
