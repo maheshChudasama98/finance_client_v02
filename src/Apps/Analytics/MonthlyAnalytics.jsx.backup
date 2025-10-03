@@ -1,0 +1,1488 @@
+import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
+import Fade from '@mui/material/Fade';
+import { useTheme } from '@mui/system';
+import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
+import Collapse from '@mui/material/Collapse';
+import InfoIcon from '@mui/icons-material/Info';
+import Grid from '@mui/material/Unstable_Grid2';
+import Accordion from '@mui/material/Accordion';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import CardHeader from '@mui/material/CardHeader';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { formatToINR } from 'src/utils/format-number';
+import { fDate } from 'src/utils/format-time';
+
+import { MonthList } from 'src/constance';
+import { MonthlyDataService } from 'src/Services/AnalystData.Services';
+
+import { CustomSelect } from 'src/components/CustomComponents';
+
+import Table from 'antd/lib/table';
+
+export default function EnhancedAnalytics() {
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const { isAmountVisible } = useAmountVisibility();
+
+  const startYear = 2021;
+  const currentYear = new Date().getFullYear();
+  const currentMonthIndex = new Date().getMonth();
+
+  const yearsArray = Array.from({ length: currentYear - startYear + 1 }, (_, i) => ({
+    key: startYear + i,
+    value: startYear + i,
+  }));
+
+  const [selectYear, setSelectYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(MonthList[currentMonthIndex].Key);
+  const [actionSummary, setActionSummary] = useState({});
+  const [monthlyData, setMonthlyData] = useState({});
+  const [activeTab, setActiveTab] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [expandedCards, setExpandedCards] = useState({});
+  const [showDetails, setShowDetails] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [showTransactionDetails, setShowTransactionDetails] = useState(false);
+
+  useEffect(() => {
+    if (!selectYear || !selectedMonth) return;
+
+    setLoading(true);
+    const monthIndex = MonthList.findIndex((m) => m.Key === selectedMonth);
+    if (monthIndex === -1) return;
+    const selectedDate = new Date(selectYear, monthIndex, 1);
+
+    dispatch(
+      MonthlyDataService(
+        {
+          SelectedDate: selectedDate,
+        },
+        (res) => {
+          setLoading(false);
+          if (res.status) {
+            setActionSummary(res?.data?.overView);
+            setMonthlyData(res?.data);
+          }
+        }
+      )
+    );
+  }, [selectYear, selectedMonth]);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+  const handleCardExpand = (cardId) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [cardId]: !prev[cardId],
+    }));
+  };
+
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
+
+  // Helper functions for data processing
+
+
+  const getActionColor = (action) => {
+    switch (action) {
+      case 'In':
+        return 'success.main';
+      case 'Out':
+        return 'error.main';
+      case 'To':
+        return 'info.main';
+      case 'From':
+        return 'info.main';
+      case 'Installment':
+        return 'warning.main';
+      case 'Refund':
+        return 'success.main';
+      case 'Return':
+        return 'error.main';
+      default:
+        return 'text.secondary';
+    }
+  };
+
+  const filteredTransactions =
+    monthlyData?.transactions?.filter((transaction) => {
+      const matchesSearch =
+        transaction.details?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filterType === 'all' || transaction.action === filterType;
+      return matchesSearch && matchesFilter;
+    }) || [];
+
+  const dailyTransactions = monthlyData?.dailySummary || [];
+
+  // Prepare chart data
+  const prepareChartData = () => {
+    const dailyData = monthlyData?.dailySummary || [];
+    const categoryData = monthlyData?.categorySummary || [];
+    const subCategoryData = monthlyData?.subCategorySummary || [];
+
+    return {
+      dailyLabels: dailyData.map((item) => fDate(item.date)),
+      dailyIncome: dailyData.map((item) => item.income || 0),
+      dailyExpense: dailyData.map((item) => item.expense || 0),
+      categoryLabels: categoryData.map((item) => item.name),
+      categoryIncome: categoryData.map((item) => item.income || 0),
+      categoryExpense: categoryData.map((item) => item.expense || 0),
+      subCategoryLabels: subCategoryData.slice(0, 10).map((item) => item.name),
+      subCategoryIncome: subCategoryData.slice(0, 10).map((item) => item.income || 0),
+      subCategoryExpense: subCategoryData.slice(0, 10).map((item) => item.expense || 0),
+    };
+  };
+
+  const chartData = prepareChartData();
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Card sx={{ mb: 3 }}>
+        <CardHeader
+          title={
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>
+              Monthly Financial Analytics -{' '}
+              {monthlyData?.monthName || MonthList.find((m) => m.Key === selectedMonth)?.Value}{' '}
+              {selectYear}
+            </Typography>
+          }
+          action={
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <CustomSelect
+                valueKey="Key"
+                labelKey="Value"
+                sx={{ width: 120 }}
+                menuList={MonthList}
+                defaultValue={selectedMonth}
+                callBackAction={(value) => setSelectedMonth(value)}
+              />
+              <CustomSelect
+                valueKey="key"
+                labelKey="value"
+                sx={{ width: 120 }}
+                menuList={yearsArray}
+                defaultValue={selectYear}
+                callBackAction={(value) => setSelectYear(value)}
+              />
+            </Box>
+          }
+        />
+
+        {/* Enhanced Summary Cards with Expandable Details */}
+        <Grid container spacing={3} sx={{ mt: 3, mb: 1, px: 2 }}>
+          {/* Total Income Card */}
+          <Grid item xs={6} sm={6} md={3}>
+            <Card
+              sx={{
+                p: 3,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.success}`,
+                background: `${theme.palette.gradients?.success}`,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                },
+              }}
+              onClick={() => handleCardExpand('income')}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                {/* <TrendingUpIcon sx={{ color: 'success.main', mr: 1 }} /> */}
+                <Typography variant="h4" color="success.main" gutterBottom>
+                  {formatToINR(actionSummary?.totalIn, isAmountVisible)}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Total Income
+              </Typography>
+              <Chip
+                label={`${(
+                  (Number(actionSummary?.totalIn || 0) / Number(actionSummary?.totalIn || 1)) *
+                    100 || 0
+                ).toFixed(1)}% income rate`}
+                color="success"
+                size="small"
+                sx={{ mt: 1 }}
+              />
+
+              <Collapse in={expandedCards.income}>
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Daily Average: {formatToINR(actionSummary?.totalIn / 30, isAmountVisible)}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Transactions: {monthlyData?.statistics?.incomeTransactions || 0}
+                  </Typography>
+                </Box>
+              </Collapse>
+            </Card>
+          </Grid>
+
+          {/* Total Expense Card */}
+          <Grid item xs={6} sm={6} md={3}>
+            <Card
+              sx={{
+                p: 3,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.error}`,
+                background: `${theme.palette.gradients?.error}`,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                },
+              }}
+              onClick={() => handleCardExpand('expense')}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                <Typography variant="h4" color="error.main" gutterBottom>
+                  {formatToINR(actionSummary?.totalExpense, isAmountVisible)}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Total Expense
+              </Typography>
+              <Chip
+                label={`${(
+                  (Number(actionSummary?.totalExpense || 0) / Number(actionSummary?.totalIn || 0)) *
+                    100 || 0
+                ).toFixed(1)}% of income`}
+                color="error"
+                size="small"
+                sx={{ mt: 1 }}
+              />
+
+              <Collapse in={expandedCards.expense}>
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Daily Average: {formatToINR(actionSummary?.totalExpense / 30, isAmountVisible)}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Transactions: {monthlyData?.statistics?.expenseTransactions || 0}
+                  </Typography>
+                </Box>
+              </Collapse>
+            </Card>
+          </Grid>
+
+          {/* Net Savings Card */}
+          <Grid item xs={6} sm={6} md={3}>
+            <Card
+              sx={{
+                p: 3,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.warning}`,
+                background: `${theme.palette.gradients?.warning}`,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                },
+              }}
+              onClick={() => handleCardExpand('savings')}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                <Typography variant="h4" color="warning.main" gutterBottom>
+                  {formatToINR(actionSummary?.netSavings, isAmountVisible)}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Net Savings
+              </Typography>
+              <Chip
+                label={actionSummary?.netSavings >= 0 ? 'Positive' : 'Negative'}
+                color="warning"
+                size="small"
+                sx={{ mt: 1 }}
+              />
+
+              <Collapse in={expandedCards.savings}>
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Savings Rate: {monthlyData?.analytics?.savingsRate?.toFixed(1)}%
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Target: {formatToINR(actionSummary?.totalIn * 0.2, isAmountVisible)}
+                  </Typography>
+                </Box>
+              </Collapse>
+            </Card>
+          </Grid>
+
+          {/* Total Investment Card */}
+          <Grid item xs={6} sm={6} md={3}>
+            <Card
+              sx={{
+                p: 3,
+                textAlign: 'center',
+                border: `solid 1px ${theme.palette.border?.info}`,
+                background: `${theme.palette.gradients?.info}`,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                },
+              }}
+              onClick={() => handleCardExpand('investment')}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+                <Typography variant="h4" color="info.main" gutterBottom>
+                  {formatToINR(actionSummary?.totalInvestment, isAmountVisible)}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Total Investment
+              </Typography>
+              <Chip
+                label={`${(
+                  (Number(actionSummary?.totalInvestment || 0) /
+                    Number(actionSummary?.totalIn || 1)) *
+                  100
+                ).toFixed(0)}% of income`}
+                color="info"
+                size="small"
+                sx={{ mt: 1 }}
+              />
+
+              <Collapse in={expandedCards.investment}>
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Investment Rate: {monthlyData?.analytics?.investmentRatio?.toFixed(1)}%
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    Transactions: {monthlyData?.statistics?.investmentTransactions || 0}
+                  </Typography>
+                </Box>
+              </Collapse>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Enhanced Secondary Metrics with Accordion Details */}
+        <Grid container spacing={2} sx={{ px: 2, mt: 2 }}>
+          <Grid item xs={12}>
+            <Paper sx={{}}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
+                  Detailed Financial Metrics
+                </Typography>
+                <Tooltip title="Click on cards to view detailed breakdown">
+                  <IconButton size="small">
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+
+              <Grid container spacing={2}>
+                {/* Net Expense */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="error.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalNetExpense, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Net Expense
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Daily Avg:{' '}
+                          {formatToINR(actionSummary?.totalNetExpense / 30, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalNetExpense / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Total Installment */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="error.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalInstallment, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Installment
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Monthly Avg:{' '}
+                          {formatToINR(actionSummary?.totalInstallment, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalInstallment / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Return Paid */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="error.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalReturn, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Return Paid
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Monthly Avg: {formatToINR(actionSummary?.totalReturn, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalReturn / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Refund Received */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="info.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalRefund, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Refund Received
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Monthly Avg: {formatToINR(actionSummary?.totalRefund, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalRefund / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Total Debit */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="warning.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalDebit, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Debit
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Daily Avg: {formatToINR(actionSummary?.totalDebit / 30, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalDebit / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Total Credit */}
+                <Grid item xs={6} sm={4} md={2}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 1,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '8px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h6" color="info.main" gutterBottom>
+                          {formatToINR(actionSummary?.totalCredit, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Credit
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Daily Avg: {formatToINR(actionSummary?.totalCredit / 30, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          % of Income:{' '}
+                          {(
+                            (actionSummary?.totalCredit / actionSummary?.totalIn) * 100 || 0
+                          ).toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          {/* Enhanced Financial Health Analysis */}
+          <Grid item xs={12}>
+            <Paper sx={{}}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: 3,
+                }}
+              >
+                <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
+                  Financial Health Analysis
+                </Typography>
+                <Chip
+                  label={
+                    monthlyData?.analytics?.financialHealth?.isHealthy
+                      ? 'Healthy'
+                      : 'Needs Attention'
+                  }
+                  color={monthlyData?.analytics?.financialHealth?.isHealthy ? 'success' : 'warning'}
+                  size="small"
+                />
+              </Box>
+
+              <Grid container spacing={3}>
+                {/* Savings Rate */}
+                <Grid item xs={12} md={3}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography
+                          variant="h4"
+                          color={
+                            monthlyData?.analytics?.savingsRate >= 20
+                              ? 'success.main'
+                              : 'warning.main'
+                          }
+                        >
+                          {monthlyData?.analytics?.savingsRate?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Savings Rate
+                        </Typography>
+                        <Chip
+                          label={
+                            monthlyData?.analytics?.savingsRate >= 20
+                              ? 'Excellent'
+                              : 'Needs Improvement'
+                          }
+                          color={monthlyData?.analytics?.savingsRate >= 20 ? 'success' : 'warning'}
+                          size="small"
+                          sx={{ mt: 1 }}
+                        />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Target: 20% or higher
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Current: {monthlyData?.analytics?.savingsRate?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Gap: {(20 - monthlyData?.analytics?.savingsRate)?.toFixed(1)}%
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Expense Ratio */}
+                <Grid item xs={12} md={3}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography
+                          variant="h4"
+                          color={
+                            monthlyData?.analytics?.expenseRatio <= 80
+                              ? 'success.main'
+                              : 'error.main'
+                          }
+                        >
+                          {monthlyData?.analytics?.expenseRatio?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Expense Ratio
+                        </Typography>
+                        <Chip
+                          label={monthlyData?.analytics?.expenseRatio <= 80 ? 'Good' : 'High'}
+                          color={monthlyData?.analytics?.expenseRatio <= 80 ? 'success' : 'error'}
+                          size="small"
+                          sx={{ mt: 1 }}
+                        />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Target: 80% or lower
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Current: {monthlyData?.analytics?.expenseRatio?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Status:{' '}
+                          {monthlyData?.analytics?.expenseRatio <= 80 ? 'On Track' : 'Over Budget'}
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Investment Ratio */}
+                <Grid item xs={12} md={3}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h4" color="info.main">
+                          {monthlyData?.analytics?.investmentRatio?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Investment Ratio
+                        </Typography>
+                        <Chip
+                          label={monthlyData?.analytics?.investmentRatio >= 10 ? 'Good' : 'Low'}
+                          color={
+                            monthlyData?.analytics?.investmentRatio >= 10 ? 'success' : 'warning'
+                          }
+                          size="small"
+                          sx={{ mt: 1 }}
+                        />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Target: 10% or higher
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Current: {monthlyData?.analytics?.investmentRatio?.toFixed(1)}%
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Gap: {(10 - monthlyData?.analytics?.investmentRatio)?.toFixed(1)}%
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Financial Health Status */}
+                <Grid item xs={12} md={3}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: 3,
+                      border: '2px solid',
+                      borderColor: monthlyData?.analytics?.financialHealth?.isHealthy
+                        ? 'success.main'
+                        : 'warning.main',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Chip
+                      label={
+                        monthlyData?.analytics?.financialHealth?.isHealthy
+                          ? 'Healthy'
+                          : 'Needs Attention'
+                      }
+                      color={
+                        monthlyData?.analytics?.financialHealth?.isHealthy ? 'success' : 'warning'
+                      }
+                      size="large"
+                      sx={{ mb: 2 }}
+                    />
+                    <Typography variant="body2" color="text.primary" sx={{ mt: 1 }}>
+                      Financial Health
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      Overall Score: {monthlyData?.analytics?.financialHealth?.score || 'N/A'}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* Enhanced Recommendations */}
+              {monthlyData?.analytics?.financialHealth?.recommendations?.length > 0 && (
+                <Fade in={true}>
+                  <Box sx={{ mt: 4 }}>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      Personalized Recommendations
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {monthlyData.analytics.financialHealth.recommendations.map((rec, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                          <Chip
+                            label={rec}
+                            color="info"
+                            variant="outlined"
+                            sx={{
+                              width: '100%',
+                              height: 'auto',
+                              py: 2,
+                              '& .MuiChip-label': {
+                                whiteSpace: 'normal',
+                                textAlign: 'center',
+                              },
+                            }}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                </Fade>
+              )}
+            </Paper>
+          </Grid>
+
+          {/* Enhanced Transaction Patterns & Insights */}
+          <Grid item xs={12}>
+            <Paper sx={{}}>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                Transaction Patterns & Insights
+              </Typography>
+
+              <Grid container spacing={3}>
+                {/* Average Daily Income */}
+                <Grid item xs={12} md={4}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h5" color="success.main" gutterBottom>
+                          {formatToINR(monthlyData?.analytics?.avgDailyIncome, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Average Daily Income
+                        </Typography>
+                        <Chip label="Income Pattern" color="success" size="small" sx={{ mt: 1 }} />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Highest Day:{' '}
+                          {formatToINR(monthlyData?.analytics?.highestDailyIncome, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Lowest Day:{' '}
+                          {formatToINR(monthlyData?.analytics?.lowestDailyIncome, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Active Days: {monthlyData?.analytics?.activeIncomeDays || 0}
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Average Daily Expense */}
+                <Grid item xs={12} md={4}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h5" color="error.main" gutterBottom>
+                          {formatToINR(monthlyData?.analytics?.avgDailyExpense, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Average Daily Expense
+                        </Typography>
+                        <Chip label="Expense Pattern" color="error" size="small" sx={{ mt: 1 }} />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Highest Day:{' '}
+                          {formatToINR(
+                            monthlyData?.analytics?.highestDailyExpense,
+                            isAmountVisible
+                          )}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Lowest Day:{' '}
+                          {formatToINR(monthlyData?.analytics?.lowestDailyExpense, isAmountVisible)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Active Days: {monthlyData?.analytics?.activeExpenseDays || 0}
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                {/* Total Transactions */}
+                <Grid item xs={12} md={4}>
+                  <Accordion
+                    sx={{
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': { margin: 0 },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        minHeight: 'auto',
+                        '& .MuiAccordionSummary-content': { margin: '12px 0' },
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        <Typography variant="h5" color="info.main" gutterBottom>
+                          {monthlyData?.statistics?.totalTransactions || 0}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Total Transactions
+                        </Typography>
+                        <Chip label="Activity Level" color="info" size="small" sx={{ mt: 1 }} />
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Daily Avg:{' '}
+                          {(monthlyData?.statistics?.totalTransactions / 30 || 0).toFixed(1)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Income Txns: {monthlyData?.statistics?.incomeTransactions || 0}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" display="block">
+                          Expense Txns: {monthlyData?.statistics?.expenseTransactions || 0}
+                        </Typography>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+
+          {/* Detailed Transaction Analysis */}
+          <Grid item xs={12}>
+            <Paper sx={{}}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: 3,
+                }}
+              >
+                <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
+                  Detailed Transaction Analysis
+                </Typography>
+              </Box>
+
+              {/* Search and Filter Controls */}
+              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+                <CustomSelect
+                  valueKey="value"
+                  labelKey="label"
+                  sx={{ minWidth: 150 }}
+                  menuList={[
+                    { value: 'all', label: 'All Types' },
+                    { value: 'In', label: 'Income' },
+                    { value: 'Out', label: 'Expense' },
+                    { value: 'To', label: 'Transfer To' },
+                    { value: 'From', label: 'Transfer From' },
+                    { value: 'Installment', label: 'Installment' },
+                    { value: 'Refund', label: 'Refund' },
+                    { value: 'Return', label: 'Return' },
+                  ]}
+                  defaultValue={filterType}
+                  callBackAction={(value) => setFilterType(value)}
+                />
+              </Box>
+
+              {/* Transaction Statistics */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={6} sm={3}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: 2,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="h6" color="success.main">
+                      {monthlyData?.statistics?.totalTransactions || 0}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Total Transactions
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: 2,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="h6" color="info.main">
+                      {monthlyData?.statistics?.daysWithTransactions || 0}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Active Days
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: 2,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="h6" color="warning.main">
+                      {(
+                        monthlyData?.statistics?.totalTransactions /
+                          monthlyData?.statistics?.daysWithTransactions || 0
+                      ).toFixed(1)}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Avg per Day
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      p: 2,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="h6" color="primary.main">
+                      {filteredTransactions.length}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Filtered Results
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* Transaction Pattern Highlights */}
+              {monthlyData?.analytics?.transactionPatterns && (
+                <Box sx={{ mb: 3 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                      <Accordion sx={{ boxShadow: 1 }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            {/* <TrendingUpIcon sx={{ mr: 1, color: 'success.main' }} /> */}
+                            <Box>
+                              <Typography variant="subtitle1">Highest Income Day</Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {fDate(
+                                  monthlyData.analytics.transactionPatterns.highestIncomeDay?.date
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography variant="h6" color="success.main">
+                            {formatToINR(
+                              monthlyData.analytics.transactionPatterns.highestIncomeDay
+                                ?.realIncome,
+                              isAmountVisible
+                            )}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Transactions:{' '}
+                            {monthlyData.analytics.transactionPatterns.highestIncomeDay
+                              ?.transactions?.length || 0}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Accordion sx={{ boxShadow: 1 }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Box>
+                              <Typography variant="subtitle1">Highest Expense Day</Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {fDate(
+                                  monthlyData.analytics.transactionPatterns.highestExpenseDay?.date
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography variant="h6" color="error.main">
+                            {formatToINR(
+                              monthlyData.analytics.transactionPatterns.highestExpenseDay
+                                ?.realExpense,
+                              isAmountVisible
+                            )}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Transactions:{' '}
+                            {monthlyData.analytics.transactionPatterns.highestExpenseDay
+                              ?.transactions?.length || 0}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Accordion sx={{ boxShadow: 1 }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Box>
+                              <Typography variant="subtitle1">Most Active Day</Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {fDate(
+                                  monthlyData.analytics.transactionPatterns.mostActiveDay?.date
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography variant="h6" color="info.main">
+                            {monthlyData.analytics.transactionPatterns.mostActiveDay?.transactions
+                              ?.length || 0}{' '}
+                            Transactions
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Income:{' '}
+                            {formatToINR(
+                              monthlyData.analytics.transactionPatterns.mostActiveDay?.realIncome,
+                              isAmountVisible
+                            )}{' '}
+                            | Expense:{' '}
+                            {formatToINR(
+                              monthlyData.analytics.transactionPatterns.mostActiveDay?.realExpense,
+                              isAmountVisible
+                            )}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+
+              {/* Detailed Transaction List */}
+
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  All Transactions ({filteredTransactions.length})
+                </Typography>
+                <Table
+                  className="custom-ant-table"
+                  columns={[
+                    {
+                      title: 'Date',
+                      dataIndex: 'date',
+                      key: 'date',
+                      width: 120,
+                      render: (date) => <Typography variant="body2">{fDate(date)}</Typography>,
+                    },
+                    {
+                      title: 'Action',
+                      dataIndex: 'action',
+                      key: 'action',
+                      width: 100,
+                      render: (action) => (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Typography variant="body2" sx={{ ml: 1, color: getActionColor(action) }}>
+                            {action}
+                          </Typography>
+                        </Box>
+                      ),
+                    },
+                    {
+                      title: 'Amount',
+                      dataIndex: 'amount',
+                      key: 'amount',
+                      width: 120,
+                      align: 'right',
+                      render: (amount, record) => (
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color:
+                              record.action === 'In' || record.action === 'Refund'
+                                ? 'success.main'
+                                : 'error.main',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {formatToINR(amount, isAmountVisible)}
+                        </Typography>
+                      ),
+                    },
+                    {
+                      title: 'Details',
+                      dataIndex: 'details',
+                      key: 'details',
+                      render: (details) => (
+                        <Typography variant="body2" sx={{ maxWidth: 300 }}>
+                          {details}
+                        </Typography>
+                      ),
+                    },
+                    {
+                      title: 'Description',
+                      dataIndex: 'description',
+                      key: 'description',
+                      render: (description) => (
+                        <Typography variant="body2" color="text.secondary">
+                          {description || '-'}
+                        </Typography>
+                      ),
+                    },
+                  ]}
+                  dataSource={filteredTransactions.map((transaction, index) => ({
+                    key: transaction.transactionId || index,
+                    ...transaction,
+                  }))}
+                  pagination={false}
+                  // pagination={{
+                  //   pageSize: 10,
+                  //   showSizeChanger: true,
+                  //   showQuickJumper: true,
+                  //   showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} transactions`,
+                  // }}
+                  scroll={{ x: 'max-content' }}
+                />
+              </Box>
+
+              {/* Daily Transaction Breakdown */}
+              {/* <Box sx={{ mt: 4 }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  Daily Transaction Breakdown
+                </Typography>
+                <Grid container spacing={2}>
+                  {dailyTransactions.slice(0, 6).map((day, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <Accordion sx={{ boxShadow: 1 }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Box sx={{ width: '100%' }}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Typography variant="subtitle1">{fDate(day.date)}</Typography>
+                              <Chip
+                                label={`${day.transactions?.length || 0} txns`}
+                                size="small"
+                                color="info"
+                              />
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                              <Typography variant="body2" color="success.main">
+                                +{formatToINR(day.realIncome, isAmountVisible)}
+                              </Typography>
+                              <Typography variant="body2" color="error.main">
+                                -{formatToINR(day.realExpense, isAmountVisible)}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {day.transactions?.map((transaction, tIndex) => (
+                            <Box
+                              key={tIndex}
+                              sx={{
+                                mb: 1,
+                                p: 1,
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                borderRadius: 1,
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                  {getActionIcon(transaction.Action)}
+                                  <Typography variant="body2" sx={{ ml: 1 }}>
+                                    {transaction.Action}
+                                  </Typography>
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    color:
+                                      transaction.Action === 'In' || transaction.Action === 'Refund'
+                                        ? 'success.main'
+                                        : 'error.main',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  {formatToINR(transaction.Amount, isAmountVisible)}
+                                </Typography>
+                              </Box>
+                              <Typography variant="caption" color="text.secondary">
+                                {transaction.Details}
+                              </Typography>
+                              {transaction.Description && (
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  display="block"
+                                >
+                                  {transaction.Description}
+                                </Typography>
+                              )}
+                            </Box>
+                          ))}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box> */}
+            </Paper>
+          </Grid>
+        </Grid>
+      </Card>
+    </Box>
+  );
+}

@@ -162,6 +162,23 @@ export function MonthlyReportService(payload, cb) {
         })
     }
 };
+export function MonthlyDataService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('/monthly/detailed-summary', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
 
 // Account-Based Analytics Services
 

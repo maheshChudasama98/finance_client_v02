@@ -10,7 +10,7 @@ import Chart, { useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
-export function AnimatedChart({ title, subheader, height, chart, ...other }) {
+export function AnimatedChart({ title, subheader, action, height, chart, ...other }) {
   const { labels, colors, series, options } = chart;
 
   const chartOptions = useChart({
@@ -21,7 +21,7 @@ export function AnimatedChart({ title, subheader, height, chart, ...other }) {
       },
     },
     fill: {
-      type: series.map((i) => i.fill),
+      type: series.map((i) => i.fill || 'solid'),
     },
     labels,
     xaxis: {
@@ -59,12 +59,13 @@ export function AnimatedChart({ title, subheader, height, chart, ...other }) {
           </Typography>
         }
         subheader={subheader}
+        action={action}
       />
 
       <Box sx={{ p: 1 }}>
         <Chart
           dir="ltr"
-          type="bar"
+          type={options?.chart?.type || 'bar'} // use the type passed in
           series={series}
           options={chartOptions}
           width="100%"

@@ -22,7 +22,6 @@ import { CustomTooltip } from 'src/components/CustomComponents';
 
 import { NAV } from './config-layout';
 import BranchPopover from './common/branch-popover';
-
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav, isActive }) {
@@ -85,7 +84,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         },
       }}
     >
-      {isActive ? <Logo sx={{ m: 'auto', my: 1.5 , mb:3 }} /> : <Logo sx={{ ml: 3, my: 1.5 ,mb:5 }} />}
+      {isActive ? <Logo sx={{ mx: 2.5 }}disabledLink={!upLg} /> : <Logo sx={{ ml: 3, my: 1.5, mb: 3 }} disabledLink />}
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
@@ -161,7 +160,7 @@ function NavItem({ item }) {
       }}
     >
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <i className={item?.Icon} style={{ fontSize: 18 }} />
+        <i className={item?.Icon} style={{ fontSize: 18 }} />
         <Box component="span">{item.ModulesName} </Box>
       </Stack>
     </ListItemButton>

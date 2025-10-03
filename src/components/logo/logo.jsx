@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 // import { ImgUrl, LogoDefaultPath } from 'src/constance';
 
@@ -39,7 +40,6 @@ const Logo = forwardRef(({ disabledLink = false, orgImg, sx, ...other }, ref) =>
         width: 50,
         height: 50,
         display: 'inline-flex',
-        // mb: 2,
         ...sx,
       }}
       {...other}
@@ -61,12 +61,17 @@ const Logo = forwardRef(({ disabledLink = false, orgImg, sx, ...other }, ref) =>
   );
 
   if (disabledLink) {
-    return logo;
+    return (
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box>{logo}</Box>
+        <Typography variant="h3" sx={{ color: PRIMARY_DARK, fontWeight: 'bold' }}>
+          DhanYug
+        </Typography>
+      </Box>
+    );
   }
 
-  return logo;
-  // <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
-  // </Link >
+  return <Box>{logo}</Box>;
 });
 
 Logo.propTypes = {

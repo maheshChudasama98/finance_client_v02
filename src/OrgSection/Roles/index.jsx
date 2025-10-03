@@ -298,6 +298,7 @@ export default function Index() {
                     }}
                   >
                     <Table
+                    className="custom-ant-table" 
                       columns={columns}
                       dataSource={tableSetData}
                       expandable={{

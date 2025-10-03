@@ -172,7 +172,7 @@ export default function Index({ backAction, editObject }) {
                       type="submit"
                       disabled={!dirty}
                       onClick={handleSubmit}
-                      color="success"
+                      color="primary"
                     >
                       Save
                     </Button>

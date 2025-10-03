@@ -55,6 +55,7 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
     setPreviousValue(null);
     setOperation(null);
     setWaitingForOperand(false);
+    setHistory([])
   };
 
   const clearDisplay = () => {
@@ -188,6 +189,68 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
     return total;
   };
 
+  const backspace = () => {
+    if (calculationDisplay.length <= 1) {
+      // If nothing or just one character, reset to 0
+      setDisplay('0');
+      setCalculationDisplay('');
+      setPreviousValue(null);
+      setOperation(null);
+      setWaitingForOperand(false);
+      return;
+    }
+
+    // Remove last character from calculation display
+    const newCalculationDisplay = calculationDisplay.slice(0, -1);
+    setCalculationDisplay(newCalculationDisplay);
+
+    // Parse the new calculation to determine current display
+    if (newCalculationDisplay === '') {
+      setDisplay('0');
+      setPreviousValue(null);
+      setOperation(null);
+      setWaitingForOperand(false);
+    } else {
+      // Extract the last number from the calculation
+      const parts = newCalculationDisplay.split(' ');
+      const lastPart = parts[parts.length - 1];
+
+      if (lastPart && !Number.isNaN(parseFloat(lastPart))) {
+        // Last part is a number
+        setDisplay(lastPart);
+        setWaitingForOperand(false);
+
+        // Update previous value and operation based on remaining calculation
+        if (parts.length >= 3) {
+          const firstNumber = parseFloat(parts[0]);
+          const operationSymbol = parts[1];
+          setPreviousValue(firstNumber);
+          setOperation(operationSymbol);
+        } else {
+          setPreviousValue(null);
+          setOperation(null);
+        }
+      } else if (parts.length > 1) {
+        // Last part is an operation, show the previous number
+        const prevNumber = parts[parts.length - 2];
+        if (prevNumber && !Number.isNaN(parseFloat(prevNumber))) {
+          setDisplay(prevNumber);
+          setWaitingForOperand(true);
+
+          if (parts.length >= 3) {
+            setPreviousValue(parseFloat(parts[0]));
+            setOperation(parts[1]);
+          }
+        }
+      } else {
+        setDisplay('0');
+        setPreviousValue(null);
+        setOperation(null);
+        setWaitingForOperand(false);
+      }
+    }
+  };
+
   // Keyboard support
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -210,6 +273,8 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
       } else if (key === 'Escape') {
         clearAll();
       } else if (key === 'Backspace') {
+        backspace();
+      } else if (key === 'c' || key === 'C') {
         clearDisplay();
       }
     };
@@ -282,6 +347,16 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
             <Row gutter={[10, 10]}>
               {/* First Row */}
 
+              <Col span={24}>
+                <CalculatorButton
+                  onClick={() => onCalculate(parseFloat(display))}
+                  color="primary"
+                  variant="contained"
+                  fullWidth
+                >
+                  Use
+                </CalculatorButton>
+              </Col>
               <Col span={6}>
                 <CalculatorButton onClick={clearAll} color="error" variant="contained">
                   AC
@@ -297,7 +372,7 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
                   onClick={() => {
                     const total = calculateTotal();
                     setDisplay(String(total));
-                    setCalculationDisplay(`Total: ${total}`);
+                    setCalculationDisplay(`${total}`);
                   }}
                   color="info"
                   variant="contained"
@@ -401,13 +476,8 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
               {/* Fifth Row */}
 
               <Col span={6}>
-                <CalculatorButton
-                  onClick={() => onCalculate(parseFloat(display))}
-                  color="primary"
-                  variant="contained"
-                  fullWidth
-                >
-                  Use
+                <CalculatorButton onClick={handleEquals} color="primary" variant="outlined">
+                  =
                 </CalculatorButton>
               </Col>
 
@@ -422,9 +492,12 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
                   .
                 </CalculatorButton>
               </Col>
+
               <Col span={6}>
-                <CalculatorButton onClick={handleEquals} color="primary" variant="contained">
-                  =
+                <CalculatorButton onClick={backspace} color="primary" variant="contained">
+                  <Box>
+                    <i className="fa-solid fa-delete-left" />
+                  </Box>
                 </CalculatorButton>
               </Col>
             </Row>
@@ -1152,10 +1225,12 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                   width: 400,
-                  bgcolor: 'background.paper',
-                  borderRadius: 2,
+                  bgcolor: 'background.neutral',
+                  borderRadius: 1.5,
+                  border: '2px solid',
+                  borderColor: 'primary.main',
                   boxShadow: 24,
-                  p: 4,
+                  p: 3,
                 }}
               >
                 <CalculatorModal

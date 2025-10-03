@@ -294,7 +294,7 @@ export default function Index() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    <Table columns={columns} dataSource={tableSetData} pagination={false} />
+                    <Table  className="custom-ant-table" columns={columns} dataSource={tableSetData} pagination={false} />
                   </Box>
                 ) : (
                   <DataNotFound />

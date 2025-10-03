@@ -18,9 +18,9 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { ImgUrl } from 'src/constance';
 import { useThemeSettings } from 'src/theme';
 import {
-  UserModifyService,
   SettingGetService,
   SettingModifyService,
+  UserProfileUpdateService,
 } from 'src/Services/User.Services';
 
 import Iconify from 'src/components/iconify';
@@ -47,55 +47,6 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
-// Profile Stats Component
-function ProfileStats({ userDetails }) {
-  const stats = [
-    {
-      label: 'Account Status',
-      value: !userDetails?.IsActive ? 'Active' : 'Inactive',
-      color: !userDetails?.IsActive ? 'success' : 'error',
-      icon: 'eva:checkmark-circle-2-fill',
-    },
-    {
-      label: 'Member Since',
-      value: userDetails?.CreatedAt ? new Date(userDetails.CreatedAt).toLocaleDateString() : 'N/A',
-      color: 'info',
-      icon: 'eva:calendar-fill',
-    },
-    {
-      label: 'Last Login',
-      value: userDetails?.LastLogin ? new Date(userDetails.LastLogin).toLocaleDateString() : 'N/A',
-      color: 'warning',
-      icon: 'eva:clock-fill',
-    },
-    {
-      label: 'Role',
-      value: userDetails?.RoleName || 'User',
-      color: 'primary',
-      icon: 'eva:person-fill',
-    },
-  ];
-
-  return (
-    <Grid container spacing={2} sx={{ mb: 3 }}>
-      {stats.map((stat, index) => (
-        <Grid item xs={12} sm={6} md={3} key={index}>
-          <Card sx={{ p: 2, textAlign: 'center', height: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-              <Iconify icon={stat.icon} width={24} height={24} color={`${stat.color}.main`} />
-            </Box>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              {stat.value}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {stat.label}
-            </Typography>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  );
-}
 
 function ThemePreferences() {
   const theme = useTheme();
@@ -227,6 +178,7 @@ export default function Index({ backAction, editObject }) {
 
   // Fetch roles and settings on component mount
   useEffect(() => {
+    // Fetch settings
     dispatch(
       SettingGetService((res) => {
         if (res?.status) {
@@ -249,25 +201,42 @@ export default function Index({ backAction, editObject }) {
   const ActionSubmit = (values) => {
     setFormSubmitLoader(true);
     const formData = new FormData();
+
+    // Add profile image if provided
     if (imgUrl) {
       formData.append('ImgPath', imgUrl);
     }
+
+    // Add user profile data
     formData.append('FirstName', values.FirstName);
     formData.append('LastName', values.LastName);
     formData.append('UserEmail', values.UserEmail);
-    formData.append('UserNumber', values.UserNumber);
+    formData.append('UserNumber', values.UserNumber || '');
     formData.append('Language', values.Language);
-    formData.append('RoleId', values.RoleId);
+    formData.append('RoleId', values.RoleId || userDetails?.RoleId || 1);
 
-    if (editObject?.UserId) {
-      formData.append('EditUserId', editObject?.UserId);
-    }
-
+    // Use the new dedicated profile update service
     dispatch(
-      UserModifyService(formData, (res) => {
+      UserProfileUpdateService(formData, (res) => {
         setFormSubmitLoader(false);
         if (res?.status) {
-          backAction();
+          // Update user details in Redux store with new data
+          dispatch({
+            type: 'USER_DETAILS',
+            UserDetails: {
+              ...userDetails,
+              FirstName: values.FirstName,
+              LastName: values.LastName,
+              Email: values.UserEmail,
+              Mobile: values.UserNumber,
+              Language: values.Language,
+              RoleId: values.RoleId,
+              ImgPath: imgUrl || userDetails?.ImgPath,
+            },
+          });
+
+          // Call back action if provided (for navigation)
+          if (backAction) backAction();
         }
       })
     );
@@ -315,7 +284,7 @@ export default function Index({ backAction, editObject }) {
         </Stack>
 
         {/* Profile Stats */}
-        <ProfileStats userDetails={userDetails} />
+        {/* <ProfileStats userDetails={userDetails} /> */}
       </Box>
 
       {/* Main Content with Tabs */}
@@ -332,17 +301,17 @@ export default function Index({ backAction, editObject }) {
             icon={<Iconify icon="eva:person-fill" />}
             iconPosition="start"
           />
-          {/* <Tab
+          <Tab
             label="Account Settings"
             icon={<Iconify icon="eva:settings-2-fill" />}
             iconPosition="start"
-          /> */}
-          <Tab
+          />
+          {/* <Tab
             label="Preferences"
             icon={<Iconify icon="eva:options-2-fill" />}
             iconPosition="start"
           />
-          <Tab label="Activity" icon={<Iconify icon="eva:activity-fill" />} iconPosition="start" />
+          <Tab label="Activity" icon={<Iconify icon="eva:activity-fill" />} iconPosition="start" /> */}
         </Tabs>
 
         {/* Personal Information Tab */}
@@ -356,6 +325,7 @@ export default function Index({ backAction, editObject }) {
               UserEmail: userDetails?.Email || '',
               UserNumber: userDetails?.Mobile || '',
               Language: userDetails?.Language || 'EN',
+              RoleId: userDetails?.RoleId || 1,
             }}
             validationSchema={Yup.object().shape({
               FirstName: Yup.string().required('First Name is required.'),
@@ -435,7 +405,7 @@ export default function Index({ backAction, editObject }) {
                               field="UserNumber"
                             />
                           </Grid>
-                          <Grid item xs={12} md={6}>
+                          {/*  <Grid item xs={12} md={6}>
                             <AutoCompleteSelectMenu
                               formik={props}
                               field="Language"
@@ -450,6 +420,16 @@ export default function Index({ backAction, editObject }) {
                               labelKey="value"
                             />
                           </Grid>
+                          <Grid item xs={12} md={6}>
+                            <AutoCompleteSelectMenu
+                              formik={props}
+                              field="RoleId"
+                              label="Role"
+                              menuList={rolesList}
+                              valueKey="RoleId"
+                              labelKey="RoleName"
+                            />
+                          </Grid> */}
                         </Grid>
 
                         <Divider sx={{ my: 3 }} />

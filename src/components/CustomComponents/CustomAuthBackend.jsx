@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -19,8 +20,12 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
 
   const persistedMode = 'light';
   const persistedPrimary = '#5BC43A';
-  if (persistedMode) setMode(persistedMode);
-  if (typeof persistedPrimary !== 'undefined') setPrimaryColor(persistedPrimary || '');
+  
+  // Use useEffect to prevent infinite re-renders
+  useEffect(() => {
+    if (persistedMode) setMode(persistedMode);
+    if (typeof persistedPrimary !== 'undefined') setPrimaryColor(persistedPrimary || '');
+  }, [setMode, setPrimaryColor, persistedMode, persistedPrimary]);
 
   return (
     <Box
@@ -87,7 +92,7 @@ export const CustomAuthBackend = ({ ChildComponent, titleString, endString, heig
                   border: 'none',
                 }}
               >
-                <Logo />
+                <Logo disabledLink />
                 <Box
                   sx={{
                     height: { xs: '90%', md: '90%' },

@@ -15,7 +15,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
-import { success } from 'src/theme/palette';
 import {
   BranchListService,
   BranchActiveService,
@@ -124,7 +123,6 @@ export default function Index() {
           height={45}
           iconSize={15}
           icon={'fa-solid fa-sitemap' || ''}
-          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="light">{item?.BranchName}</Typography>
@@ -219,6 +217,7 @@ export default function Index() {
     child: (
       <>
         <Table
+          className="custom-ant-table"
           pagination={false}
           columns={subColumns.map((col) => ({
             title: col.Header,
@@ -235,7 +234,6 @@ export default function Index() {
                         width={45}
                         height={45}
                         iconSize={15}
-                        bgColor={success?.main}
                         photoURL={subItem?.ImgPath || ''}
                         displayName={subItem?.AvatarName || ''}
                       />
@@ -256,7 +254,6 @@ export default function Index() {
       </>
     ),
   }));
-  
 
   const titleAction = (display) => {
     if (display) {
@@ -277,7 +274,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
@@ -330,6 +327,7 @@ export default function Index() {
                     }}
                   >
                     <Table
+                     className="custom-ant-table"
                       columns={columns.map((col) => ({
                         title: col.Header,
                         dataIndex: col.keyLabel,

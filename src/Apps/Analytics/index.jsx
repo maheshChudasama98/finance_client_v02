@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
 import LabelsAnalytics from './LabelsAnalytics';
+import MonthlyAnalytics from './MonthlyAnalytics';
 import PartiesAnalytics from './PartiesAnalytics';
 import AccountAnalytics from './AccountAnalytics';
 import EnhancedAnalytics from './EnhancedAnalytics';
@@ -53,6 +54,7 @@ export default function Index() {
             onChange={handleChange}
           >
             <Tab value={0} label="Enhanced Analytics" />
+            <Tab value={6} label="Monthly Analytics" />
             <Tab value={1} label="Accounts" />
             <Tab value={2} label="Parties" />
             <Tab value={3} label="Categories" />
@@ -64,6 +66,7 @@ export default function Index() {
 
       <Box sx={{ mt: 2 }}>
         {tabValue === 0 && <EnhancedAnalytics />}
+        {tabValue === 6 && <MonthlyAnalytics />}
         {tabValue === 1 && <AccountAnalytics />}
         {tabValue === 2 && <PartiesAnalytics />}
         {tabValue === 3 && <CategoriesAnalytics />}

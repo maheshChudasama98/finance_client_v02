@@ -8,7 +8,7 @@ import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/st
 
 import { sweetAlerts } from 'src/utils/sweet-alerts';
 
-import { SettingGetService } from 'src/Services/User.Services';
+import { SettingGetService, ThemeModifyService } from 'src/Services/User.Services';
 
 import { palette } from './palette';
 import { shadows } from './shadows';
@@ -170,15 +170,30 @@ export default function ThemeProvider({ children }) {
     } else {
       localStorage.removeItem('themePrimary');
     }
-  }, []);
+    
+      // Save to database
+      if (token) {
+        dispatch(ThemeModifyService(mode, color, (res) => {
+          // Silent save - no error handling needed
+        }));
+      }
+  }, [dispatch, token, mode]);
 
   const toggleMode = useCallback(() => {
     setMode((prev) => {
       const next = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem('themeMode', next);
+      
+      // Save to database
+      if (token) {
+        dispatch(ThemeModifyService(next, primaryColor, (res) => {
+          // Silent save - no error handling needed
+        }));
+      }
+      
       return next;
     });
-  }, []);
+  }, [dispatch, token, primaryColor]);
 
   const handleSetMode = useCallback((nextMode) => {
     setMode(nextMode);

@@ -126,7 +126,6 @@ export default function Index() {
           height={45}
           iconSize={15}
           icon={'fa-solid fa-sitemap' || ''}
-          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="light">{item?.OrgName}</Typography>
@@ -278,7 +277,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
@@ -326,7 +325,7 @@ export default function Index() {
                   <Box
                     sx={{
                       // marginX: 2,
-                      minWidth: '1000px',
+                      minWidth: '1000px', 
                       flexWrap: 'wrap',
                     }}
                   >

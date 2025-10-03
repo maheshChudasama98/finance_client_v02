@@ -15,7 +15,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { fDate } from 'src/utils/format-time';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
-import { success } from 'src/theme/palette';
 import { FetchUserListController } from 'src/Services/User.Services';
 
 import SvgColor from 'src/components/svg-color';
@@ -79,7 +78,6 @@ export default function Index() {
           iconSize={15}
           width={45}
           height={45}
-          bgColor={success?.main}
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="">
@@ -185,7 +183,7 @@ export default function Index() {
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
@@ -221,6 +219,7 @@ export default function Index() {
                         }}
                       >
                         <Table
+                          className="custom-ant-table"
                           columns={columns}
                           dataSource={tableSetData}
                           pagination={false}
