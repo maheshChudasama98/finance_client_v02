@@ -2,10 +2,13 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
+import Tabs from '@mui/material/Tabs';
 import Chip from '@mui/material/Chip';
 import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/system';
+import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import Collapse from '@mui/material/Collapse';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -14,12 +17,119 @@ import CardHeader from '@mui/material/CardHeader';
 
 import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
+import { fDate } from 'src/utils/format-time';
+import { fText } from 'src/utils/format-text';
+import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
-import { MonthList } from 'src/constance';
+import { MonthList, TransactionActions } from 'src/constance';
 import { MonthlyDataService } from 'src/Services/AnalystData.Services';
 
-import { CustomSelect } from 'src/components/CustomComponents';
+import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
+
+import { Table } from 'antd';
+
+const safeDivide = (numerator, denominator, defaultValue = 0) => {
+  const num = Number(numerator) || 0;
+  const den = Number(denominator) || 0;
+  return den === 0 ? defaultValue : num / den;
+};
+
+const safeMultiply = (value, multiplier, defaultValue = 0) => {
+  const val = Number(value) || 0;
+  return val * multiplier;
+};
+
+const getSavingsRateStatus = (rate) => {
+  if (rate >= 50) return 'Excellent';
+  if (rate >= 30) return 'Perfect';
+  if (rate >= 10) return 'Good';
+  return 'Low';
+};
+
+const getSavingsRateColor = (rate) => {
+  if (rate >= 30) return 'success.main';
+  if (rate >= 10) return 'warning.main';
+  return 'error.main';
+};
+
+const getSavingsRateChipColor = (rate) => {
+  if (rate >= 30) return 'success';
+  if (rate >= 10) return 'warning';
+  return 'error';
+};
+
+const getExpenseRatioStatus = (ratio) => {
+  if (ratio <= 20) return 'Perfect';
+  if (ratio <= 30) return 'On Track';
+  if (ratio <= 50) return 'Over Budget';
+  return 'Critical';
+};
+
+const getExpenseRatioLabel = (ratio) => {
+  if (ratio <= 20) return 'Perfect';
+  if (ratio <= 30) return 'Good';
+  if (ratio <= 50) return 'Too Much';
+  return 'Critical';
+};
+
+const getExpenseRatioColor = (ratio) => {
+  if (ratio <= 30) return 'success.main';
+  return 'error.main';
+};
+
+const getExpenseRatioChipColor = (ratio) => {
+  if (ratio <= 30) return 'success';
+  return 'error';
+};
+
+const getInvestmentRatioStatus = (ratio) => {
+  if (ratio >= 50) return 'Excellent';
+  if (ratio >= 30) return 'Perfect';
+  if (ratio >= 10) return 'Good';
+  return 'Low';
+};
+
+const getInvestmentRatioColor = (ratio) => {
+  if (ratio >= 30) return 'success.main';
+  if (ratio >= 10) return 'warning.main';
+  return 'error.main';
+};
+
+const getInvestmentRatioChipColor = (ratio) => {
+  if (ratio >= 30) return 'success';
+  if (ratio >= 10) return 'warning';
+  return 'error';
+};
+
+const iconSet = (action, icon) => {
+  if (action === 'From') {
+    return 'fa-solid fa-right-left';
+  }
+  if (action === 'Investment') {
+    return 'fa-solid fa-chart-simple';
+  }
+  if (
+    action === 'Debit' ||
+    action === 'Credit' ||
+    action === 'Refund' ||
+    action === 'Credit' ||
+    action === 'Return'
+  ) {
+    return 'fa-solid fa-people-arrows';
+  }
+  return icon;
+};
+
+const getSubCategoryName = (record) => {
+  if (record?.['fn_sub_category.SubCategoriesName']) {
+    return fText(`${record?.['fn_sub_category.SubCategoriesName']}`);
+  }
+  if (record?.Action === 'From') {
+    return 'Transfer';
+  }
+  return record?.Action;
+};
 
 export default function EnhancedAnalytics() {
   const dispatch = useDispatch();
@@ -41,13 +151,16 @@ export default function EnhancedAnalytics() {
   const [monthlyData, setMonthlyData] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
   const [dailySummary, setDailySummary] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     if (!selectYear || !selectedMonth) return;
 
     const monthIndex = MonthList.findIndex((m) => m.Key === selectedMonth);
     if (monthIndex === -1) return;
-    const selectedDate = new Date(selectYear, monthIndex, 1);
+    const selectedDate = new Date(selectYear, monthIndex, 5);
 
     dispatch(
       MonthlyDataService(
@@ -59,6 +172,10 @@ export default function EnhancedAnalytics() {
             setActionSummary(res?.data?.overView);
             setMonthlyData(res?.data);
             setDailySummary(res?.data?.dailySummary);
+            setTransactions(res?.data?.transactions);
+            if (res?.data?.dailySummary) {
+              setExpandedRowKeys(res?.data?.dailySummary.map((item) => item.date)); // 👈 use your unique key (date)
+            }
           }
         }
       )
@@ -72,79 +189,217 @@ export default function EnhancedAnalytics() {
     }));
   };
 
-  // Helper functions for data processing
-  const safeDivide = (numerator, denominator, defaultValue = 0) => {
-    const num = Number(numerator) || 0;
-    const den = Number(denominator) || 0;
-    return den === 0 ? defaultValue : num / den;
+  const ChipFun = (status) => {
+    const Action = TransactionActions?.find((i) => status === i.key);
+    const chipStyles = {
+      fontSize: { xs: 10, sm: 11 },
+      borderRadius: 0.5,
+      fontWeight: 700,
+    };
+    return (
+      <Chip
+        size="small"
+        sx={{
+          ...chipStyles,
+          color: Action?.textColor ? Action?.textColor : '#000',
+          backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
+          '&:hover': {
+            backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5),
+          },
+        }}
+        label={Action?.value || status}
+      />
+    );
   };
 
-  const safeMultiply = (value, multiplier, defaultValue = 0) => {
-    const val = Number(value) || 0;
-    return val * multiplier;
+  const columns = [
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+      render: (date) => (
+        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+          {fDate(date)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Income',
+      dataIndex: 'realIncome',
+      key: 'realIncome',
+      align: 'right',
+      width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="success.dark">
+          {data ? formatToINR(data) : ''}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Expense',
+      dataIndex: 'realExpense',
+      key: 'realExpense',
+      align: 'right',
+      width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="error.main">
+          {data ? formatToINR(data) : ''}
+        </Typography>
+      ),
+    },
+  ];
+
+  const columns_sub = [
+    {
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
+      width: '350px',
+      render: (_, record) => (
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <CustomAvatar
+            width={40}
+            height={40}
+            iconSize={14}
+            icon={iconSet(record?.Action, record?.['fn_sub_category.Icon'])}
+            bgColor={record?.['fn_category.Color']}
+          />
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {getSubCategoryName(record)}
+            </Typography>
+            {record?.['fn_category.CategoryName'] && (
+              <Typography variant="caption" color="text.secondary">
+                {fText(`${record?.['fn_category.CategoryName']}`)}
+              </Typography>
+            )}
+          </Box>
+        </Stack>
+      ),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
+      width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="text.success">
+          {ChipFun(data)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Account',
+      dataIndex: 'fn_account.AccountName',
+      key: 'fn_account.AccountName',
+      width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="">
+          {data}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Transfer/Party',
+      dataIndex: 'fn_account.AccountName',
+      key: 'fn_account.AccountName',
+      width: '200px',
+      render: (_, data) => (
+        <Typography variant="body2" color="">
+          {data?.TransferDetails?.AccountName && data?.TransferDetails?.AccountName}
+          {data?.PartyDetails?.FullName && (
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                {fText(`${data?.PartyDetails?.FullName}`)}
+              </Typography>
+            </Stack>
+          )}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Amount & Details',
+      dataIndex: 'AccountAmount',
+      key: 'AccountAmount',
+      align: 'right',
+      render: (_, record) => (
+        <Box>
+          <Typography
+            variant="body2"
+            color={record.AccountAmount > 0 ? 'success.dark' : 'error.main'}
+          >
+            {record.AccountAmount ? formatToINR(record.AccountAmount) : ''}
+          </Typography>
+
+          {record.Details && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 0.5, fontStyle: 'italic' }}
+            >
+              Details: {record.Details}
+            </Typography>
+          )}
+        </Box>
+      ),
+    },
+  ];
+
+  const columns_list = [
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+      width: '200px',
+      render: (date) => (
+        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+          {fDate(date)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="text.success">
+          {ChipFun(data)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Details',
+      dataIndex: 'details',
+      key: 'details',
+      // width: '200px',
+      render: (data) => (
+        <Typography variant="body2" color="">
+          {data}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      align: 'right',
+      width: '200px',
+      render: (data) => <Typography variant="body2">{data ? formatToINR(data) : ''}</Typography>,
+    },
+  ];
+
+  const handleExpand = (expanded, record) => {
+    setExpandedRowKeys(
+      (prev) =>
+        expanded
+          ? [...prev, record.date] // Add to list
+          : prev.filter((key) => key !== record.date) // Remove from list
+    );
   };
 
-  // Helper functions for status determination
-  const getSavingsRateStatus = (rate) => {
-    if (rate >= 50) return 'Excellent';
-    if (rate >= 30) return 'Perfect';
-    if (rate >= 10) return 'Good';
-    return 'Low';
-  };
-
-  const getSavingsRateColor = (rate) => {
-    if (rate >= 30) return 'success.main';
-    if (rate >= 10) return 'warning.main';
-    return 'error.main';
-  };
-
-  const getSavingsRateChipColor = (rate) => {
-    if (rate >= 30) return 'success';
-    if (rate >= 10) return 'warning';
-    return 'error';
-  };
-
-  const getExpenseRatioStatus = (ratio) => {
-    if (ratio <= 20) return 'Perfect';
-    if (ratio <= 30) return 'On Track';
-    if (ratio <= 50) return 'Over Budget';
-    return 'Critical';
-  };
-
-  const getExpenseRatioLabel = (ratio) => {
-    if (ratio <= 20) return 'Perfect';
-    if (ratio <= 30) return 'Good';
-    if (ratio <= 50) return 'Too Much';
-    return 'Critical';
-  };
-
-  const getExpenseRatioColor = (ratio) => {
-    if (ratio <= 30) return 'success.main';
-    return 'error.main';
-  };
-
-  const getExpenseRatioChipColor = (ratio) => {
-    if (ratio <= 30) return 'success';
-    return 'error';
-  };
-
-  const getInvestmentRatioStatus = (ratio) => {
-    if (ratio >= 50) return 'Excellent';
-    if (ratio >= 30) return 'Perfect';
-    if (ratio >= 10) return 'Good';
-    return 'Low';
-  };
-
-  const getInvestmentRatioColor = (ratio) => {
-    if (ratio >= 30) return 'success.main';
-    if (ratio >= 10) return 'warning.main';
-    return 'error.main';
-  };
-
-  const getInvestmentRatioChipColor = (ratio) => {
-    if (ratio >= 30) return 'success';
-    if (ratio >= 10) return 'warning';
-    return 'error';
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
   };
 
   return (
@@ -733,6 +988,59 @@ export default function EnhancedAnalytics() {
                 </Box>
               </Fade>
             )}
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <Tabs
+                variant="scrollable"
+                scrollButtons="auto"
+                disableRipple
+                value={tabValue}
+                onChange={handleChange}
+              >
+                <Tab value={0} label="List view" />
+                <Tab value={1} label="Summary view" />
+              </Tabs>
+
+              {tabValue === 0 && (
+                <Box sx={{ overflow: 'auto' }}>
+                  <Table
+                    className="custom-ant-table"
+                    columns={columns_list}
+                    dataSource={transactions}
+                    pagination={false}
+                    rowKey="date"
+                    scroll={{ x: 'max-content' }}
+                  />
+                </Box>
+              )}
+
+              {tabValue === 1 && (
+                <Box sx={{ overflow: 'auto' }}>
+                  <Table
+                    className="custom-ant-table"
+                    columns={columns}
+                    dataSource={dailySummary}
+                    pagination={false}
+                    rowKey="date"
+                    expandable={{
+                      expandedRowKeys,
+                      onExpand: handleExpand,
+                      expandedRowRender: (record) => (
+                        <Table
+                          className="custom-ant-table"
+                          columns={columns_sub}
+                          dataSource={record?.transactions}
+                          pagination={false}
+                          scroll={{ x: 'max-content' }}
+                        />
+                      ),
+                    }}
+                    scroll={{ x: 'max-content' }}
+                  />
+                </Box>
+              )}
+            </Card>
           </Grid>
         </Grid>
       </Card>
