@@ -6,11 +6,22 @@ import Typography from '@mui/material/Typography';
 
 import { Empty } from 'antd';
 
+import { DynamicDataNotFoundIllustration } from '../Illustrations';
+
 export const DataNotFound = () => (
   <Box sx={{ textAlign: 'center', p: 3, m: 'auto', py: 10 }}>
     <Empty
-      image={Empty.PRESENTED_IMAGE_DEFAULT}
-      //   image="/assets/DataNotFound/not_found.svg"
+      // image={Empty.PRESENTED_IMAGE_DEFAULT}
+      image={
+        <DynamicDataNotFoundIllustration
+          sx={{
+            mx: 'auto',
+            height: 260,
+            my: { xs: 5, sm: 10 },
+          }}
+        />
+      }
+      // image="/assets/DataNotFound/not_found.svg"
       description={
         <Typography variant="light" color="text.primary">
           No Data Found!
