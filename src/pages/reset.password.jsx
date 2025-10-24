@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Forgot password  </title>
+        <title>{__PROJECT_NAME__} | Forgot password </title>
       </Helmet>
 
       <ResetPassword />

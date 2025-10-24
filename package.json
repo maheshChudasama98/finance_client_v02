@@ -1,13 +1,14 @@
 {
   "name": "@minimal/material-kit-react",
-  "author": "Mr.yug",
-  "version": "1.0.12",
+  "author": "Mr.yug chudasama",
+  "version": "1.0.0",
   "private": false,
   "type": "module",
   "scripts": {
     "update-version": "node scripts/update-version.js --update-version",
     "dev": "vite --mode development",
     "start": "vite preview",
+    "build": "npm run update-version && vite build",
     "build:local": "vite build --mode development",
     "build:live": "npm run update-version && vite build --mode live",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
@@ -61,14 +62,17 @@
     "react-dom": "^18.2.0",
     "react-helmet-async": "^1.3.0",
     "react-hook-form": "^7.47.0",
+    "react-pdf-charts": "^0.4.2",
     "react-redux": "^9.1.2",
     "react-router-dom": "^6.16.0",
     "react18-input-otp": "^1.1.4",
     "reactcss": "^1.2.3",
+    "recharts": "^3.1.2",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "simplebar-react": "^3.2.4",
     "sweetalert2": "^11.13.3",
+    "swiper": "^11.2.10",
     "tinycolor2": "^1.6.0",
     "xlsx": "^0.18.5",
     "yup": "^1.4.0"
@@ -90,5 +94,5 @@
     "vite": "^4.4.11",
     "vite-plugin-checker": "^0.6.2"
   },
-  "buildTime": "2025-05-23T17:44:58.497Z"
+  "buildTime": "2025-09-24T13:21:54.883Z"
 }

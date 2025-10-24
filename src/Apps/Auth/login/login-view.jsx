@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-// import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-// import LoadingButton from '@mui/lab/LoadingButton';
-import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
+import CircularProgress from '@mui/material/CircularProgress';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { bgGradient } from 'src/theme/css';
 import { LoginApiAction, InfoApiActionService } from 'src/Services/Auth.Services';
 
-import Logo from 'src/components/logo';
 import { TextFieldForm } from 'src/components/inputs';
+import { CustomAuthBackend } from 'src/components/CustomComponents';
+
+import { Alert } from 'antd';
 
 import { Form, Formik } from 'formik';
 
@@ -34,6 +32,10 @@ export default function LoginView() {
   const theme = useTheme();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -41,145 +43,186 @@ export default function LoginView() {
     event.preventDefault();
   };
 
-  const handleSubmitAction = (values) => {
+  const handleSubmitAction = async (values, { setSubmitting }) => {
     const payload = {
       UserEmail: values.UserEmail,
-      // UserNumber: values.UserNumber,
       UserPassword: values.UserPassword,
     };
 
-    dispatch(
-      LoginApiAction(payload, (response) => {
-        dispatch(InfoApiActionService((res) => {
-          router.push('/dashboard');
-        }));
-      })
-    );
+    // Reset messages and set loading states
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setIsLoading(true);
+    setIsSubmitting(true);
+
+    try {
+      dispatch(
+        LoginApiAction(payload, (response) => {
+          setIsLoading(false);
+          setIsSubmitting(false);
+          setSubmitting(false);
+
+          if (response?.status) {
+            setErrorMsg(null);
+            setSuccessMsg('Login successful!');
+            dispatch(
+              InfoApiActionService((res) => {
+                router.push('/dashboard');
+              })
+            );
+          } else {
+            setErrorMsg(response?.message || 'Invalid email or password. Please try again.');
+            setSuccessMsg(null);
+          }
+        })
+      );
+    } catch (error) {
+      setIsLoading(false);
+      setIsSubmitting(false);
+      setSubmitting(false);
+      setErrorMsg('Network error. Please check your connection and try again.');
+      setSuccessMsg(null);
+    }
   };
 
   return (
-    <Box
-      sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.background.default, 0.9),
-          imgUrl: '/assets/background/overlay_4.jpg',
-        }),
-        height: 1,
-      }}
-    >
-      <Logo
-        sx={{
-          position: 'fixed',
-          top: { xs: 16, md: 24 },
-          left: { xs: 16, md: 24 },
-        }}
-      />
+    <CustomAuthBackend
+      titleString="Sign in to your account"
+      height={{ xs: '70%', md: '100%' }}
+      ChildComponent={
+        <Formik
+          enableReinitialize
+          initialValues={{
+            UserEmail: '',
+            UserPassword: '',
+          }}
+          validationSchema={Yup.object().shape({
+            UserEmail: Yup.string()
+              .email('Please enter a valid email address')
+              .matches(
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                'Please enter a valid email'
+              )
+              .required('Email is required'),
+            UserPassword: Yup.string()
+              .min(1, 'Password is required')
+              .required('Password is required'),
+          })}
+          onSubmit={handleSubmitAction}
+        >
+          {(props) => (
+            <Form autoComplete="off" noValidate>
+              <Stack spacing={3}>
+                {/* Error Message */}
+                {errorMsg && (
+                  <Alert
+                    message={errorMsg}
+                    type="error"
+                    showIcon
+                    closable
+                    onClose={() => setErrorMsg(null)}
+                  />
+                )}
 
-      <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
-        <Card
+                {/* Success Message */}
+                {successMsg && <Alert message={successMsg} type="success" showIcon />}
+
+                <TextFieldForm
+                  formik={props}
+                  label="Email"
+                  field="UserEmail"
+                  disabled={isLoading}
+                />
+
+                <TextFieldForm
+                  formik={props}
+                  label="Password"
+                  field="UserPassword"
+                  type={!showPassword ? 'text' : 'password'}
+                  disabled={isLoading}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                          disabled={isLoading}
+                        >
+                          {showPassword ? (
+                            <VisibilityOutlinedIcon fontSize="small" />
+                          ) : (
+                            <VisibilityOffOutlinedIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Stack>
+
+              <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
+                <Link
+                  variant="subtitle2"
+                  underline="hover"
+                  onClick={() => !isLoading && router.push('/forgot-password')}
+                  sx={{
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    opacity: isLoading ? 0.5 : 1,
+                  }}
+                >
+                  Forgot password?
+                </Link>
+              </Stack>
+
+              <Button
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isLoading || isSubmitting || !props.isValid}
+                startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : null}
+                sx={{
+                  minHeight: 48,
+                  '&:disabled': {
+                    backgroundColor: theme.palette.grey[300],
+                    color: theme.palette.grey[500],
+                  },
+                }}
+              >
+                {isSubmitting ? 'Signing in...' : 'Login'}
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      }
+      endString={
+        <Typography
+          variant="body2"
           sx={{
-            p: 5,
-            width: 1,
-            maxWidth: 420,
+            color: 'text.secondary',
+            // textAlign: 'center',
+            // mt: 5,
+            opacity: isLoading ? 0.5 : 1,
           }}
         >
-          <Typography variant="h4" align="center" sx={{ mt: 2, mb: 5 }}>
-            Sign in to {__PROJECT_NAME__}
-          </Typography>
-
-          <Formik
-            enableReinitialize
-            initialValues={{
-              UserEmail: '',
-              // UserNumber: "",
-              UserPassword: '',
+          Don&apos;t have an account?
+          <Link
+            variant="subtitle2"
+            underline="hover"
+            onClick={() => !isLoading && router.push('/signup')}
+            sx={{
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.5 : 1,
             }}
-            validationSchema={Yup.object().shape({
-              UserEmail: Yup.string()
-                .matches(
-                  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  'Please enter a valid email'
-                )
-                .required('Email is required'),
-              // UserNumber: Yup.string()
-              //   .nullable()
-              //   .test('either-email-or-employment', 'Either Email or Employment Number is required', (value, context) => {
-              //     const { UserEmail } = context.parent;
-              //     return Boolean(value || UserEmail);
-              //   }),
-              UserPassword: Yup.string().required('Password is required'),
-            })}
-            onSubmit={handleSubmitAction}
           >
-            {(props) => (
-              <Form autoComplete="off" noValidate>
-                <Stack spacing={3}>
-                  <TextFieldForm formik={props} label="Email" field="UserEmail" />
-
-                  {/* <Divider sx={{ my: 3 }}>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      OR
-                    </Typography>
-                  </Divider>
-
-                  <TextFieldForm
-                    type="number"
-                    formik={props}
-                    label='Employment Number'
-                    field='UserNumber'
-                  /> */}
-
-                  <TextFieldForm
-                    formik={props}
-                    label="Password"
-                    field="UserPassword"
-                    type={!showPassword ? 'text' : 'password'}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOutlinedIcon fontSize="small" />
-                            ) : (
-                              <VisibilityOffOutlinedIcon fontSize="small" />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Stack>
-
-                <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-                  <Link
-                    variant="subtitle2"
-                    underline="hover"
-                    onClick={() => router.push('/forgot-password')}
-                  >
-                    Forgot password?
-                  </Link>
-                </Stack>
-
-                <Button fullWidth size="large" type="submit" variant="contained" color="success">
-                  Login
-                </Button>
-
-                <Typography
-                  variant="body2"
-                  sx={{ color: 'text.secondary', textAlign: 'center', mt: 1 }}
-                >
-                  Version : {__APP_VERSION__}
-                </Typography>
-              </Form>
-            )}
-          </Formik>
-        </Card>
-      </Stack>
-    </Box>
+            {' '}
+            Sign up
+          </Link>
+        </Typography>
+      }
+    />
   );
 }

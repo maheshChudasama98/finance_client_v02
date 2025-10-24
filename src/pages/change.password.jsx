@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Change password </title>
+        <title>{__PROJECT_NAME__} | Change password </title>
       </Helmet>
 
       <ChangePassword />

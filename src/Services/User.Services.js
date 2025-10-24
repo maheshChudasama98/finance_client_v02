@@ -18,11 +18,11 @@ export function FetchUserListController(cb) {
     }
 }
 
-export function UserModifyService(payload,cb) {
+export function UserModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        jwtAuthAxios.post(`/user/modify`,payload,{
+        jwtAuthAxios.post(`/user/modify`, payload, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -30,15 +30,15 @@ export function UserModifyService(payload,cb) {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
-                if (cb) cb(res.data)
-                } else {
-                if (cb) cb(res.data)
+                if (cb) cb(res.data);
+            } else {
+                if (cb) cb(res.data);
                 dispatch({ type: "FETCH_ERROR", payload: res.data.message });
             }
         }).catch((error) => {
             errorHandler(error, dispatch);
-        })
-    }
+        });
+    };
 }
 
 export function DefaultBrachService(payload,cb) {
@@ -79,21 +79,100 @@ export function SettingGetService(cb) {
     }
 }
 
-export function SettingModifyService(payload,cb) {
+export function SettingModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        jwtAuthAxios.post(`/setting/modify`,payload).then((res) => {
+        jwtAuthAxios.post(`/setting/modify`, payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
-                if (cb) cb(res.data)
-                } else {
-                if (cb) cb(res.data)
+                if (cb) cb(res.data);
+            } else {
+                if (cb) cb(res.data);
                 dispatch({ type: "FETCH_ERROR", payload: res.data.message });
             }
         }).catch((error) => {
             errorHandler(error, dispatch);
-        })
-    }
+        });
+    };
+}
+
+// Enhanced service for theme settings
+export function ThemeModifyService(themeMode, themePrimary, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        
+        const payload = {
+            ThemeMode: themeMode,
+            ThemePrimary: themePrimary,
+            DefaultTimeFrame: localStorage.getItem('DefaultTimeFrame') || 'MONTH',
+            DefaultDuration: localStorage.getItem('DefaultDuration') || 'Last_Thirty_Days',
+            DefaultDateFormat: localStorage.getItem('DefaultDateFormat') || 'DD/MM/YYYY',
+            DefaultCurrency: localStorage.getItem('DefaultCurrency') || 'INR',
+            AmountHide: localStorage.getItem('AmountHide') === 'true' ? 1 : 0
+        };
+
+        jwtAuthAxios.post(`/setting/modify`, payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+            }
+            if (cb) cb(res.data);
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        });
+    };
+}
+
+// Enhanced service for amount visibility settings
+export function AmountVisibilityModifyService(isAmountVisible, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        
+        const payload = {
+            ThemeMode: localStorage.getItem('themeMode') || 'light',
+            ThemePrimary: localStorage.getItem('themePrimary') || '#5BC43A',
+            DefaultTimeFrame: localStorage.getItem('DefaultTimeFrame') || 'MONTH',
+            DefaultDuration: localStorage.getItem('DefaultDuration') || 'Last_Thirty_Days',
+            DefaultDateFormat: localStorage.getItem('DefaultDateFormat') || 'DD/MM/YYYY',
+            DefaultCurrency: localStorage.getItem('DefaultCurrency') || 'INR',
+            AmountHide: isAmountVisible ? 0 : 1
+        };
+
+        jwtAuthAxios.post(`/setting/modify`, payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+            }
+            if (cb) cb(res.data);
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        });
+    };
+}
+
+// Enhanced service for user profile updates
+export function UserProfileUpdateService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        
+        jwtAuthAxios.post(`/user/profile/update`, payload, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message || "Profile updated successfully" });
+                if (cb) cb(res.data);
+            } else {
+                if (cb) cb(res.data);
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message || "Failed to update profile" });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        });
+    };
 }

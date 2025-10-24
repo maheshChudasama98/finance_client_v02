@@ -57,6 +57,23 @@ export function AccountActionService(payload, cb) {
     }
 };
 
+export function SelectedAccountService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post(`account/selected`,payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
 export function LabelsFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
@@ -224,6 +241,61 @@ export function SubCategoriesFetchListService(payload, cb) {
         dispatch({ type: "FETCH_START" });
         jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('sub/categories/list', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                // dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res?.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+export function LongsModifyService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('loan/modify', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+export function LongsActionService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('loan/action', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });
+                if (cb) cb(res.data.data);
+            } else {
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+
+export function LongsFetchListService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('loans/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
                 // dispatch({ type: "SHOW_MESSAGE", payload: res.data.message });

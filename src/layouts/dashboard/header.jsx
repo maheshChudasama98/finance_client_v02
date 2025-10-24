@@ -1,25 +1,31 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import { useTheme } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
+import { alpha, useTheme } from '@mui/material/styles';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
-import { grey } from 'src/theme/palette';
+import { useThemeSettings } from 'src/theme';
+import { setDisplayFlag } from 'src/redux/actions/common';
 
 import Iconify from 'src/components/iconify';
+import AmountVisibilityToggle from 'src/components/CustomComponents/AmountVisibilityToggle';
 
-// import Searchbar from './common/searchbar';
 import { NAV, HEADER } from './config-layout';
 import BranchPopover from './common/branch-popover';
 import AccountPopover from './common/account-popover';
+// import Searchbar from './common/searchbar';
 // import LanguagePopover from './common/language-popover';
 // import TransactionsPopover from './common/transactions-popover';
 // import NotificationsPopover from './common/notifications-popover';
@@ -28,9 +34,17 @@ import AccountPopover from './common/account-popover';
 
 export default function Header({ onOpenNav, isActive, setIsActive }) {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { mode, toggleMode } = useThemeSettings();
 
   const lgUp = useResponsive('up', 'lg');
   const upLg = useResponsive('up', 'lg');
+
+  const handleRecordClick = () => {
+    navigate('/records');
+    dispatch(setDisplayFlag(true));
+  };
 
   const renderContent = (
     <>
@@ -43,7 +57,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       {/* <Searchbar /> */}
 
       <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ display: { xs: "none", md: "contents" } }}>
+      <Box sx={{ display: { xs: 'none', md: 'contents' } }}>
         <BranchPopover />
       </Box>
 
@@ -55,6 +69,28 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
       >
         {/* <TransactionsPopover /> */}
         {/* <NotificationsPopover /> */}
+        <AmountVisibilityToggle />
+
+        <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
+          <IconButton
+            onClick={toggleMode}
+            color={mode === 'light' ? 'darker' : 'warning'}
+            sx={{
+              width: 40,
+              height: 40,
+              background: () => alpha(theme.palette.grey[500], 0.08),
+              '&:hover': {
+                background: () => alpha(theme.palette.primary.main, 0.08),
+              },
+            }}
+          >
+            <Iconify icon={mode === 'light' ? 'mdi:weather-night' : 'mdi:white-balance-sunny'} />
+          </IconButton>
+        </Tooltip>
+
+        <Button onClick={handleRecordClick} variant="outlined" color="primary">
+          Record
+        </Button>
         <AccountPopover />
       </Stack>
     </>
@@ -76,6 +112,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
           width: `calc(100% - ${isActive ? NAV.SORT_WIDTH : NAV.WIDTH + 1}px)`,
           height: HEADER.H_DESKTOP,
         }),
+        background: theme.palette.background.default,
       }}
     >
       <Toolbar
@@ -97,7 +134,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
             top: 15,
             border: `dashed 1px ${theme.palette.divider}`,
             borderRadius: 10,
-            background: grey[100],
+            background: theme.palette.background.default,
             // background: "#f9fafb",
             // zIndex: 999999
           }}

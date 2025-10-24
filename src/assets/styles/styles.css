@@ -402,22 +402,112 @@
 }
 
 .custom-info-icon-css {
-  background: #5bc43a;
-  color: white;
+  background: var(--palette-primary-main, #5bc43a);
+  color: var(--palette-primary-contrastText, #ffffff);
   padding: 4px 7px;
   margin-right: 25px;
   font-size: 9px;
   border-radius: 10px;
   place-self: anchor-center;
-
 }
 
+/* Ant Table tweaks */
 .custom-ant-table .ant-table-expanded-row>.ant-table-cell {
-  padding: 0 !important;
-  margin: 0 !important;
-  background-color: #fff !important;
+  /* padding: 0 !important; */
+  /* margin: 0 !important; */
+  background-color: var(--palette-background-paper, #fff) !important;
 }
 
 .twitter-picker {
   width: 500px !important;
+}
+
+.custom-ant-table .ant-table-tbody>tr>td {
+  border-bottom: 1px dashed var(--palette-divider, #EEE) !important;
+  /* padding: 10px; */
+}
+
+.custom-ant-table .ant-table-tbody>tr:last-child>td {
+  border-bottom: none !important;
+}
+
+/* Remove border radius for table container and cells */
+.custom-ant-table .ant-table,
+.custom-ant-table .ant-table-container,
+.custom-ant-table .ant-table-thead>tr:first-child>th:first-child,
+.custom-ant-table .ant-table-thead>tr:first-child>th:last-child,
+.custom-ant-table .ant-table-tbody>tr:last-child>td:first-child,
+.custom-ant-table .ant-table-tbody>tr:last-child>td:last-child {
+  border-radius: 0 !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th {
+  border-top: 1px solid var(--palette-divider, #e5e7eb) !important;
+  border-bottom: 1px solid var(--palette-divider, #e5e7eb) !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th {
+  border-top: none !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th {
+  border: none !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th::before,
+.custom-ant-table .ant-table-thead>tr>th::after {
+  display: none !important;
+}
+
+/* Theme-aware styles for Ant Table using CSS custom properties */
+.custom-ant-table .ant-table-container {
+  background-color: var(--palette-background-paper, #ffffff) !important;
+  color: var(--palette-text-primary, #1f2937) !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th {
+  background-color: var(--palette-background-table-header, #f3f4f6) !important;
+  color: var(--palette-text-primary, #374151) !important;
+}
+
+.custom-ant-table .ant-table-tbody>tr:hover>td {
+  background-color: var(--palette-action-hover, #f9fafb) !important;
+}
+
+.custom-ant-table .ant-table-tbody>tr>td {
+  border-bottom-color: var(--palette-divider, rgba(229, 231, 235, 0.12)) !important;
+}
+
+.custom-ant-table .ant-table-thead>tr>th {
+  border-top: 1px solid var(--palette-divider, #e5e7eb) !important;
+  border-bottom: 1px solid var(--palette-divider, #e5e7eb) !important;
+}
+
+/* Expand button styling using CSS custom properties */
+.custom-ant-table .ant-table-row-expand-icon {
+  background-color: var(--palette-background-paper, #ffffff) !important;
+  border: 1px solid var(--palette-divider, #d1d5db) !important;
+  color: var(--palette-text-primary, #374151) !important;
+}
+
+.custom-ant-table .ant-table-row-expand-icon:hover {
+  background-color: var(--palette-action-hover, #f3f4f6) !important;
+  border-color: var(--palette-text-secondary, #9ca3af) !important;
+}
+
+.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded {
+  background-color: var(--palette-primary-main, #5bc43a) !important;
+  border-color: var(--palette-primary-main, #5bc43a) !important;
+  color: var(--palette-primary-contrastText, #ffffff) !important;
+}
+
+/* Expand icon content styling */
+.custom-ant-table .ant-table-row-expand-icon::before,
+.custom-ant-table .ant-table-row-expand-icon::after {
+  color: var(--palette-text-primary, #374151) !important;
+}
+
+.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::before,
+.custom-ant-table .ant-table-row-expand-icon.ant-table-row-expand-icon-expanded::after {
+  color: var(--palette-primary-contrastText, #ffffff) !important;
 }

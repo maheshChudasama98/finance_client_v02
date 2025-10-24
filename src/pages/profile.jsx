@@ -8,7 +8,7 @@ export default function AppPage() {
   return (
     <>
       <Helmet>
-        <title> Profile </title>
+        <title>{__PROJECT_NAME__} | Profile </title>
       </Helmet>
 
       <Profile />

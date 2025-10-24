@@ -5,6 +5,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const LoginPage = lazy(() => import('src/pages/login'));
+export const SignupPage = lazy(() => import('src/pages/signup'));
 export const ResetPasswordPage = lazy(() => import('src/pages/reset.password'));
 export const ChangePasswordPage = lazy(() => import('src/pages/change.password'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
@@ -27,10 +28,13 @@ export const RecordsPage = lazy(() => import('src/pages/records'));
 export const SettingPage = lazy(() => import('src/pages/setting'));
 export const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 export const UsersPage = lazy(() => import('src/pages/user'));
+export const FinanceCalculatorPage = lazy(() => import('src/pages/finance-calculator'));
+export const LoansPage = lazy(() => import('src/pages/loans'));
 
 export default function Router({ permissionList }) {
   const CommRoutes = [
     { path: 'login', element: <LoginPage />, index: true },
+    { path: 'signup', element: <SignupPage />, index: true },
     { path: 'forgot-password', element: <ResetPasswordPage />, index: true },
     { path: '*', element: <Page404 /> },
     { path: '', element: <Navigate to="login" replace /> },
@@ -50,6 +54,8 @@ export default function Router({ permissionList }) {
     { path: '/users', element: <UsersPage />, title: 'Users' },
     { path: '/setting', element: <SettingPage />, title: 'Setting' },
     { path: '/analytics', element: <AnalyticsPage />, title: 'Analytics' },
+    // { path: '/finance-calculator', element: <FinanceCalculatorPage />, title: 'Finance Calculator' },
+    { path: '/loans', element: <LoansPage />, title: 'Loans' },
   ];
 
   const filterData = OrgRouters.filter((item) => {
@@ -74,6 +80,11 @@ export default function Router({ permissionList }) {
         { path: '/dashboard', element: <DashboardPage />, title: 'Dashboard' },
         { path: '/change-password', element: <ChangePasswordPage />, title: 'Change Password' },
         { path: '/profile', element: <ProfilePage />, title: 'Profile' },
+        {
+          path: '/finance-calculator',
+          element: <FinanceCalculatorPage />,
+          title: 'Finance Calculator',
+        },
       ],
     },
     ...CommRoutes,

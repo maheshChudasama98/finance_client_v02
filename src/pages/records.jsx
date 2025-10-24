@@ -5,13 +5,13 @@ import Record from 'src/Apps/Record';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Records </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Records </title>
+      </Helmet>
 
-            <Record />
-        </>
-    );
-} 
+      <Record />
+    </>
+  );
+}

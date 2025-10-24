@@ -85,7 +85,7 @@ export default function Index({ backAction, editObject, modulesList }) {
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       {' '}
                       Cancel{' '}

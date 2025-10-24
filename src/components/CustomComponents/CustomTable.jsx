@@ -38,7 +38,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
             sx={{
               py: 1.5,
               pl: 4,
-              backgroundColor: (theme) => `${theme?.palette?.grey?.[10]}`,
+              backgroundColor: (theme) => `${theme?.palette?.background?.tableHeader}`,
             }}
           >
             <Grid
@@ -71,10 +71,10 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                 sx={{
                   py: expandedState[rowIndex] ? 1.5 : 0.5,
                   borderBottom: (theme) => getBorderStyle(rowIndex, data, expandedState, theme),
-                  borderColor: (theme) => theme.palette.grey[300],
+                  borderColor: (theme) => theme.palette.border.strong,
                   transition: 'background-color 0.2s ease',
                   '&:hover': {
-                    backgroundColor: (theme) => theme.palette.grey[100],
+                    backgroundColor: (theme) => theme?.palette?.background?.tableHeader,
                   },
                 }}
               >
@@ -197,10 +197,15 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
           <Box
             sx={{
               py: 1.5,
-              backgroundColor: (theme) => `${theme?.palette?.grey?.[200]}`,
+              // backgroundColor: (theme) => `${theme?.palette?.grey?.[200]}`,
+              background: 'background.default',
             }}
           >
-            <Grid container spacing={2} sx={{ alignItems: 'center', mx: 1.5 }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{ alignItems: 'center', mx: 1.5, background: 'background.default' }}
+            >
               {columns.map((item, key) => (
                 <Grid xs={item?.xs} key={key}>
                   <Typography
@@ -227,7 +232,7 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                       (data?.length || 0) - 1 > rowIndex
                         ? (theme) => `dashed 1px ${theme?.palette?.grey?.[400]}`
                         : '',
-                    transition: 'background-color 0.2s ease', 
+                    transition: 'background-color 0.2s ease',
                     '&:hover': {
                       backgroundColor: (theme) => theme.palette.grey[100], // Add hover background color
                     },
@@ -241,7 +246,6 @@ export const CustomTable = ({ columns, data, expanded, allOpen }) => {
                       mx: 1.5,
                       pl: 1,
                       alignItems: 'center',
-                      
                     }}
                   >
                     {columns.map((col, colIndex) => (

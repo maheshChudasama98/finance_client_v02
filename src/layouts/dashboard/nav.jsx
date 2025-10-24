@@ -22,7 +22,6 @@ import { CustomTooltip } from 'src/components/CustomComponents';
 
 import { NAV } from './config-layout';
 import BranchPopover from './common/branch-popover';
-
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav, isActive }) {
@@ -85,7 +84,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         },
       }}
     >
-      {isActive ? <Logo sx={{ m: 'auto', my: 1.5 }} /> : <Logo sx={{ ml: 3.3, my: 1.5 }} />}
+      {isActive ? <Logo sx={{ mx: 2.5 }}disabledLink={!upLg} /> : <Logo sx={{ ml: 3, my: 1.5, mb: 3 }} disabledLink />}
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
@@ -151,19 +150,19 @@ function NavItem({ item }) {
         textTransform: 'capitalize',
         fontWeight: 'fontWeightMedium',
         ...(active && {
-          color: 'success.main',
+          color: 'primary.main',
           fontWeight: 'fontWeightSemiBold',
-          bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
           '&:hover': {
-            bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
           },
         }),
       }}
     >
-      <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
         <i className={item?.Icon} style={{ fontSize: 18 }} />
-      </Box>
-      <Box component="span">{item.ModulesName} </Box>
+        <Box component="span">{item.ModulesName} </Box>
+      </Stack>
     </ListItemButton>
   );
 }
@@ -195,19 +194,18 @@ function NavMobileItem({ item }) {
           display: 'grid',
           placeContent: 'center',
           ...(active && {
-            color: 'success.main',
+            color: 'primary.main',
             fontWeight: 'fontWeightSemiBold',
-            // border: (theme) => `dashed 1px ${theme.palette.success.main}`,
-            bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+            // border: (theme) => `dashed 1px ${theme.palette.primary.main}`,
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
             '&:hover': {
-              bgcolor: (theme) => alpha(theme.palette.success.main, 0.16),
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
             },
           }),
         }}
       >
         <Box component="span" sx={{ width: 20, height: 20, margin: 'auto', mb: 0.5 }}>
           <i className={item?.Icon} style={{ fontSize: 20 }} />
-          {/* {item.icon} */}
         </Box>
 
         <Box component="span" sx={{ textAlign: 'center' }}>

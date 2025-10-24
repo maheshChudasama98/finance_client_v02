@@ -5,13 +5,13 @@ import Categories from 'src/Apps/Categories';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Categories </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Categories </title>
+      </Helmet>
 
-            <Categories />
-        </>
-    );
-} 
+      <Categories />
+    </>
+  );
+}

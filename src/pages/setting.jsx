@@ -5,13 +5,13 @@ import Setting from 'src/Apps/Setting';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Setting </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Setting </title>
+      </Helmet>
 
-            <Setting />
-        </>
-    );
-} 
+      <Setting />
+    </>
+  );
+}

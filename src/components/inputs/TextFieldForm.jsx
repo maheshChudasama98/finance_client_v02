@@ -29,6 +29,12 @@ export function TextFieldForm({ formik, field, label, ...props }) {
           color: 'red',
           fontSize: 18,
         },
+        '& .MuiInputBase-multiline': {
+          p: 0,
+          m: 0,
+          maxHeight: 120,
+          minHeight: 120,
+        },
       }}
       {...props}
     />

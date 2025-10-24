@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import { green } from 'src/theme/palette';
 import { ModuleModifyService } from 'src/Services/org/Org.Services';
 
 import ButtonLoader from 'src/components/Loaders/ButtonLoader';
@@ -55,7 +54,7 @@ export default function Index({ backAction, editObject, modulesList }) {
       onSubmit={ActionSubmit}
     >
       {(props) => {
-        const { handleSubmit, dirty, resetForm  ,} = props;
+        const { handleSubmit, dirty, resetForm  ,values} = props;
         return (
           <Form>
             <Grid
@@ -87,7 +86,7 @@ export default function Index({ backAction, editObject, modulesList }) {
               </Grid>
 
               <Grid xs={12} md={6}>
-                 <CustomIconPicker formik={props} required label="Icon" field="Icon" color={green[100]} />
+                 <CustomIconPicker formik={props} required label="Icon" field="Icon" color={values?.Icon} />
               </Grid>
 
               <Grid item xs={12} md={12}>
@@ -112,7 +111,7 @@ export default function Index({ backAction, editObject, modulesList }) {
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                     color="darker"
                     >
                       {' '}
                       Cancel{' '}

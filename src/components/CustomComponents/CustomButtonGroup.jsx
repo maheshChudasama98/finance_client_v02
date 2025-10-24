@@ -17,13 +17,13 @@ export const CustomButtonGroup = ({ onSelect, defaultValue }) => {
   };
 
   return (
-    <ButtonGroup variant="outlined" color="success" size="small">
+    <ButtonGroup variant="outlined" color="primary" size="small">
       {ButtonGroupDurationList.map(({ Key, Value }) => (
         <Button
           key={Value}
           variant={selected === Value ? 'contained' : 'outlined'}
           onClick={() => handleSelect(Value)}
-          color="success"
+          color="primary"
         >
           {Key}
         </Button>

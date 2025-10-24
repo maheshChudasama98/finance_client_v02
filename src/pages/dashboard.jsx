@@ -5,13 +5,13 @@ import Accounts from 'src/Apps/Dashboard';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Dashboard </title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Dashboard </title>
+      </Helmet>
 
-            <Accounts />
-        </>
-    );
-} 
+      <Accounts />
+    </>
+  );
+}

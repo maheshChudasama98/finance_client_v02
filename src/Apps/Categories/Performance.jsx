@@ -96,8 +96,7 @@ export default function Performance({ CategoryId }) {
 
   return (
     <Box>
-      
-      <Box sx={{ placeSelf: 'end', mb: 2, mx: 2, display: 'flex' }}>
+      <Box sx={{ placeSelf: 'end', m: 2, display: 'flex' }}>
         <CustomSelect
           valueKey="Key"
           labelKey="Value"
@@ -117,6 +116,7 @@ export default function Performance({ CategoryId }) {
         <>
           {list && list?.length > 0 ? (
             <Table
+              className="custom-ant-table"
               columns={columns}
               dataSource={tableSetData}
               pagination={false}

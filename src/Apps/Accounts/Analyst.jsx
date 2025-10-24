@@ -52,7 +52,7 @@ export default function Analyst({ AccountId }) {
         <Button
           variant="contained"
           sx={{ ml: 1 }}
-          color="success"
+          color="primary"
           onClick={() => setDownloadFlag(true)}
         >
           <i className="fa-solid fa-download" />
@@ -78,7 +78,9 @@ export default function Analyst({ AccountId }) {
           )}
         </>
       )}
-      {downloadFlag && <PDFCreateComponent list={list} setFlag={(value) => setDownloadFlag(value)} />}
+      {downloadFlag && (
+        <PDFCreateComponent list={list} setFlag={(value) => setDownloadFlag(value)} />
+      )}
     </Box>
   );
 }

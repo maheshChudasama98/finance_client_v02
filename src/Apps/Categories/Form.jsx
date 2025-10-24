@@ -96,7 +96,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
 
               <Grid xs={12}>
                 <Box sx={{ float: 'right', display: 'flex' }}>
-                  {editObject?.CategoryId && (
+                  {editObject?.CategoryId && editObject?.isPrimitive === 1 && (
                     <Button
                       variant="contained"
                       sx={{ marginX: 1 }}
@@ -110,13 +110,12 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   )}
                   {dirty && (
                     <Button
+                      color="darker"
                       variant="outlined"
                       sx={{ marginX: 1 }}
-                      // disabled={!dirty}
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
                     >
                       Cancel
                     </Button>
@@ -148,7 +147,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                       onClick={() => {
                         resetForm();
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       {' '}
                       Cancel{' '}

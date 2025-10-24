@@ -111,7 +111,7 @@ export default function Index({ backAction, editObject }) {
                         resetForm();
                         setImgUrl(null);
                       }}
-                      color="CancelButton"
+                      color="darker"
                     >
                       Cancel{' '}
                     </Button>

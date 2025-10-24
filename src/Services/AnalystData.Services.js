@@ -144,3 +144,76 @@ export function PerformanceService(payload, cb) {
         })
     }
 };
+
+export function MonthlyReportService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('/monthly/report', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+export function MonthlyDataService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('/monthly/detailed-summary', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+// Account-Based Analytics Services
+
+export function AccountOverviewService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('account/overview', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};
+
+export function AccountDetailsService(payload, cb) {
+    return (dispatch) => {
+        dispatch({ type: "FETCH_START" });
+        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
+        jwtAuthAxios.post('account/details', payload).then((res) => {
+            if (res.data.status) {
+                dispatch({ type: "FETCH_SUCCESS" });
+                if (cb) cb(res.data)
+            } else {
+                if (cb) cb(res.data)
+                dispatch({ type: "FETCH_ERROR", payload: res.data.message });
+            }
+        }).catch((error) => {
+            errorHandler(error, dispatch);
+        })
+    }
+};

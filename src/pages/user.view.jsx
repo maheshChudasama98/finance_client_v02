@@ -5,13 +5,12 @@ import UserViewPage from 'src/Apps/UserViewPage';
 // ----------------------------------------------------------------------
 
 export default function AppPage() {
-    return (
-        <>
-            <Helmet>
-                <title> Notices </title>
-            </Helmet>
-            <UserViewPage />
-
-        </>
-    );
-} 
+  return (
+    <>
+      <Helmet>
+        <title>{__PROJECT_NAME__} | Notices </title>
+      </Helmet>
+      <UserViewPage />
+    </>
+  );
+}

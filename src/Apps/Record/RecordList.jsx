@@ -1,113 +1,51 @@
 import React from 'react';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
 import { fDate } from 'src/utils/format-time';
 import { fText } from 'src/utils/format-text';
-import { lightenColor } from 'src/utils/utils';
+import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 import { sweetAlertQuestion } from 'src/utils/sweet-alerts';
 
-import { CustomAvatar, CustomTooltip } from 'src/components/CustomComponents';
+import { TransactionActions } from 'src/constance';
+
+import { CustomAvatar } from 'src/components/CustomComponents';
 
 const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) => {
-  const styes = {
-    fontSize: { xs: 11, md: 12 },
+  const { isAmountVisible } = useAmountVisibility();
+
+  const chipStyles = {
+    fontSize: { xs: 10, sm: 11 },
     borderRadius: 1,
     fontWeight: 700,
   };
 
-  const ChipFun = (status, bg = true) => {
-    switch (status) {
-      case 'In':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['In'])}
-            size="small"
-            sx={{
-              ...styes,
-              // color: bg ? '#1b925e' : (theme) => `${theme?.palette?.grey?.[600]}`,
-              color: '#1b925e',
-              backgroundColor: bg ? '#dbf6e5' : '#FFF',
-            }}
-            label="Income"
-          />
-        );
-      case 'Out':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['Out'])}
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ff5630',
-              backgroundColor: bg ? '#ffe4de' : '#FFF',
-            }}
-            label="Expense"
-          />
-        );
+  const ChipFun = (status) => {
+    const Action = TransactionActions?.find((i) => status === i.key);
 
-      case 'From':
-        return (
-          <Chip
-            onClick={() => filterHeader('Actions', ['From'])}
-            size="small"
-            sx={{
-              ...styes,
-              color: '#ba7308',
-              backgroundColor: bg ? '#fff1d6' : '#FFF',
-            }}
-            label="Transfer"
-          />
-        );
-      case 'Investment':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Investment'])}
-            sx={{
-              ...styes,
-              color: '#1877F2',
-              backgroundColor: bg ? '#D0ECFE' : '#FFF',
-            }}
-            label="Investment"
-          />
-        );
-      case 'Debit':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Debit'])}
-            sx={{
-              ...styes,
-              color: '#00B8D9',
-              backgroundColor: bg ? '#CAFDF5' : '#FFF',
-            }}
-            label="Debit"
-          />
-        );
-
-      case 'Credit':
-        return (
-          <Chip
-            size="small"
-            onClick={() => filterHeader('Actions', ['Credit'])}
-            sx={{
-              ...styes,
-              color: '#5119b7',
-              backgroundColor: bg ? '#eddeff' : '#FFF',
-            }}
-            label="Credit"
-          />
-        );
-      default:
-        break;
-    }
+    return (
+      <Chip
+        size="small"
+        sx={{
+          ...chipStyles,
+          color: Action?.textColor ? Action?.textColor : '#000',
+          backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.85),
+          '&:hover': {
+            backgroundColor: getThemeColor(Action?.textColor ? Action?.textColor : '#FFF', 0.5),
+          },
+        }}
+        label={Action?.value || status}
+      />
+    );
   };
 
   const iconSet = (action, icon) => {
@@ -115,11 +53,9 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
       return 'fa-solid fa-right-left';
     }
     if (action === 'Investment') {
-      // return 'fa-solid fa-arrow-up-right-dots';
-      // return 'fa-solid fa-ranking-star';
       return 'fa-solid fa-chart-simple';
     }
-    if (action === 'Debit' || action === 'Credit') {
+    if (action === 'Debit' || action === 'Credit' || action === 'Refund' || action === 'Credit') {
       return 'fa-solid fa-people-arrows';
     }
     return icon;
@@ -134,148 +70,197 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     }
     return record?.Action;
   };
-  const tooltipString = (record) => {
-    const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
 
-    let formattedTags = '';
-    if (tagList.length > 1) {
-      formattedTags = `${tagList.slice(0, -1).join(', ')} and ${tagList.slice(-1)}`;
-    } else if (tagList.length === 1) {
-      formattedTags = tagList[0];
-    }
+  // const tooltipString = (record) => {
+  //   const tagList = record?.TagList?.map((e) => e?.LabelName) || [];
+
+  //   let formattedTags = '';
+  //   if (tagList.length > 1) {
+  //     formattedTags = `${tagList.slice(0, -1).join(', ')} and ${tagList.slice(-1)}`;
+  //   } else if (tagList.length === 1) {
+  //     formattedTags = tagList[0];
+  //   }
+
+  //   return (
+  //     <div>
+  //       {tagList.length > 0 && (
+  //         <div>
+  //           <small>
+  //             <b>Label:</b> {formattedTags}
+  //           </small>
+  //         </div>
+  //       )}
+  //       {record?.Description && (
+  //         <div>
+  //           <small>
+  //             <b>Desc:</b> {record.Description}
+  //           </small>
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
+  const renderTags = (record) => {
+    if (!record?.TagList || record.TagList.length === 0) return null;
 
     return (
-      <div>
-        {tagList.length > 0 && (
-          <div>
-            <small>
-              <b>Label:</b> {formattedTags}
-            </small>
-          </div>
-        )}
-        
-        {record?.Description && (
-          <div>
-            <small>
-              <b>Desc:</b> {record.Description}
-            </small>
-          </div>
-        )}
-      </div>
+      <Box sx={{ mt: 1.5, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
+        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, mr: 1 }}>
+            Tags:
+          </Typography>
+          {record.TagList.map((tag, index) => (
+            <Chip
+              key={index}
+              size="small"
+              variant="outlined"
+              sx={{
+                fontSize: 10,
+                height: 20,
+                borderRadius: 1,
+                borderColor: 'primary.main',
+                color: 'white',
+                backgroundColor: 'primary.main',
+              }}
+              label={tag.LabelName}
+            />
+          ))}
+        </Stack>
+      </Box>
+    );
+  };
+
+  const renderDescription = (record) => {
+    if (!record?.Description) return null;
+
+    return (
+      <Box sx={{ mt: 1, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+          &ldquo;{record.Description}&rdquo;
+        </Typography>
+      </Box>
     );
   };
 
   return (
-    <>
-      <Box
+    <Box sx={{ mb: 2 }}>
+      <Card
         sx={{
-          py: { xs: 1.5, md: 2 },
-          px: { xs: 1.5, md: 2.5 },
-          backgroundColor: (theme) => `${theme?.palette?.grey?.[100]}`,
+          mb: 1,
+          backgroundColor: (theme) => theme.palette.background.neutral2,
+          borderRadius: 2,
         }}
       >
-        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-          <Grid xs={6}>
-            <Typography variant="normal" color="text.secondary">
-              {fDate(item?.date)}
-            </Typography>
+        <Box sx={{ p: 2 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid xs={6}>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                {fDate(item?.date)}
+              </Typography>
+            </Grid>
+            <Grid xs={6}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  textAlign: 'end',
+                  fontWeight: 700,
+                  color: (theme) =>
+                    item?.dayTotal >= 0 ? theme.palette.success.main : theme.palette.error.main,
+                }}
+              >
+                {formatToINR(item?.dayTotal)}
+              </Typography>
+            </Grid>
           </Grid>
+        </Box>
+      </Card>
 
-          <Grid xs={6}>
-            <Typography
-              color="text.secondary"
-              variant="normal"
-              sx={{
-                textAlign: 'end',
-                fontWeight: 600,
-                color: item?.dayTotal >= 0 ? '#00A76F' : '#FF5630',
-              }}
-            >
-              {formatToINR(item?.dayTotal)}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
+      {/* Transaction Records */}
       {item?.records?.map((record, key) => (
-        <Box sx={{ px: { xs: 1.5, md: 2 } }} key={key}>
-          <Box
-            key={key}
-            sx={{
-              display: { xs: 'none', lg: 'block' },
-              py: isHeader ? 1.5 : 0.8,
-              borderBottom:
-                item?.records?.length > key + 1
-                  ? (theme) => `dashed 1px ${theme?.palette?.grey?.[300]}`
-                  : '',
-              backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
-            }}
-          >
-            <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+        <Card
+          key={key}
+          sx={{
+            mb: 1,
+            borderRadius: 2,
+            border: 1,
+            borderColor: 'divider',
+            '&:hover': {
+              boxShadow: 2,
+              borderColor: 'primary.main',
+            },
+          }}
+        >
+          {/* Desktop View */}
+          <Box sx={{ display: { xs: 'none', lg: 'block' }, p: 2 }}>
+            <Grid container spacing={2} alignItems="center">
               <Grid xs={2.5}>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <CustomAvatar
-                    width={45}
-                    height={45}
-                    iconSize={15}
+                    width={40}
+                    height={40}
+                    iconSize={14}
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
-                  <Typography variant="normal">
-                    {getSubCategoryName(record)}
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      {getSubCategoryName(record)}
+                    </Typography>
                     {record?.CategoryDetails?.CategoryName && (
-                      <Typography variant="light" color="text.secondary">
+                      <Typography variant="caption" color="text.secondary">
                         {fText(`${record?.CategoryDetails?.CategoryName}`)}
                       </Typography>
                     )}
-                  </Typography>
+                  </Box>
                 </Stack>
               </Grid>
 
-              <Grid
-                xs={1.5}
-                sx={{
-                  alignItems: 'center',
-                  display: 'inline-flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                {ChipFun(record?.Action)}
-                {(record.Description || record?.TagList) && (
-                  <CustomTooltip label={tooltipString(record)} Placement="right">
-                    <i className="fa-solid fa-info custom-info-icon-css" />
-                  </CustomTooltip>
-                )}
+              <Grid xs={1.5}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {ChipFun(record?.Action)}
+                  {/* {(record.Description || record?.TagList) && (
+                    <CustomTooltip label={tooltipString(record)} Placement="top">
+                      <i
+                        className="fa-solid fa-info"
+                        style={{ fontSize: 12, color: 'text.secondary' }}
+                      />
+                    </CustomTooltip>
+                  )} */}
+                </Stack>
               </Grid>
 
               <Grid xs={1.5}>
-                <Typography variant="light">
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Chip
-                      onClick={() => filterHeader('AccountsIds', [record?.AccountId])}
-                      size="small"
-                      sx={{
-                        ...styes,
-                        color: record?.AccountDetails?.Color || '#1b925e',
-                        backgroundColor: lightenColor(
-                          record?.AccountDetails?.Color || '#1b925e',
-                          0.92
-                        ),
-                      }}
-                      label={record?.AccountDetails?.AccountName}
-                    />
-                  </Stack>
-                </Typography>
+                <Chip
+                  onClick={() => filterHeader('AccountsIds', [record?.AccountId])}
+                  size="small"
+                  sx={{
+                    ...chipStyles,
+                    color: record?.AccountDetails?.Color || '#1b925e',
+                    backgroundColor: getThemeColor(
+                      record?.AccountDetails?.Color || '#1b925e',
+                      0.85
+                    ),
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: getThemeColor(
+                        record?.AccountDetails?.Color || '#1b925e',
+                        0.85
+                      ),
+                    },
+                  }}
+                  label={record?.AccountDetails?.AccountName}
+                />
               </Grid>
 
               <Grid xs={1.5}>
                 {record?.TransferDetails?.AccountName && (
                   <Chip
                     size="small"
-                    avatar="M"
                     sx={{
-                      ...styes,
+                      ...chipStyles,
                       color: record?.TransferDetails?.Color || '#1b925e',
-                      backgroundColor: lightenColor(
+                      backgroundColor: getThemeColor(
                         record?.TransferDetails?.Color || '#00A76F',
                         0.92
                       ),
@@ -287,14 +272,14 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
               <Grid xs={1.5}>
                 {record?.PartyDetails?.FullName && (
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  <Stack direction="row" alignItems="center" spacing={1}>
                     <CustomAvatar
                       width={45}
                       height={45}
                       iconSize={15}
                       displayName={record?.PartyDetails?.PartyAvatar}
                     />
-                    <Typography variant="light">
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>
                       {fText(`${record?.PartyDetails?.FullName}`)}
                     </Typography>
                   </Stack>
@@ -303,29 +288,32 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
 
               <Grid xs={1.5}>
                 <Typography
-                  variant="light"
+                  variant="subtitle2"
                   sx={{
                     textAlign: 'end',
-                    fontWeight: 600,
-                    color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
+                    fontWeight: 700,
+                    color: (theme) =>
+                      record?.AccountAmount > 0
+                        ? theme.palette.success.main
+                        : theme.palette.error.main,
                   }}
                 >
-                  {formatToINR(record?.AccountAmount)}
+                  {formatToINR(record?.AccountAmount, isAmountVisible)}
                 </Typography>
               </Grid>
 
-              <Grid xs={2} sx={{ alignItems: 'end', textAlign: 'end', justifyContent: 'end' }}>
-                <Stack
-                  direction="row"
-                  alignItems="end"
-                  spacing={0.5}
-                  sx={{ alignItems: 'end', textAlign: 'end', justifyContent: 'end' }}
-                >
-                  {/* <Button size="small" color="success" onClick={() => editAction(record)}>
-                  <i className="fa-solid fa-info custom-info-icon-css" />
-                  </Button> */}
-
-                  <Button size="small" color="success" onClick={() => editAction(record)}>
+              <Grid xs={2}>
+                <Stack direction="row" spacing={1} justifyContent="flex-end">
+                  <Button
+                    size="small"
+                    color="success"
+                    onClick={() => editAction(record)}
+                    sx={{
+                      minWidth: 'auto',
+                      px: 1.5,
+                      fontSize: '0.75rem',
+                    }}
+                  >
                     Edit
                   </Button>
 
@@ -343,65 +331,147 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
                           console.error(error);
                         });
                     }}
+                    sx={{
+                      minWidth: 'auto',
+                      px: 1.5,
+                      fontSize: '0.75rem',
+                    }}
                   >
                     Delete
                   </Button>
                 </Stack>
               </Grid>
             </Grid>
+
+            {/* Tags and Description for Desktop */}
+            {(record?.TagList?.length > 0 || record?.Description) && (
+              <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                <Grid container spacing={2}>
+                  {record?.TagList?.length > 0 && (
+                    <Grid xs={6}>
+                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ fontWeight: 600, mr: 1 }}
+                        >
+                          Tags:
+                        </Typography>
+                        {record?.TagList?.map((tag, index) => (
+                          <Chip
+                            key={index}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: 10,
+                              height: 20,
+                              borderRadius: 1,
+                              borderColor: 'primary.main',
+                              color: 'white',
+                              backgroundColor: 'primary.main',
+                            }}
+                            label={tag.LabelName}
+                          />
+                        ))}
+                      </Stack>
+                    </Grid>
+                  )}
+                  {record?.Description && (
+                    <Grid xs={record?.TagList?.length > 0 ? 6 : 12}>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontStyle: 'italic' }}
+                      >
+                        &ldquo;{record.Description}&rdquo;
+                      </Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
+            )}
           </Box>
 
+          {/* Mobile View */}
           <Box
-            key={key}
             sx={{
               display: { xs: 'block', lg: 'none' },
-              py: isHeader ? 1.5 : 0.8,
-              borderBottom: isHeader ? '' : (theme) => `solid 1px ${theme?.palette?.grey?.[200]}`,
-              backgroundColor: isHeader ? (theme) => `${theme?.palette?.grey?.[200]}` : '',
+              p: 2,
+              cursor: 'pointer',
             }}
             onClick={() => editAction(record)}
           >
-            <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-              <Grid xs={6}>
-                <Stack direction="row" alignItems="center" spacing={1}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid xs={8}>
+                <Stack direction="row" alignItems="center" spacing={2}>
                   <CustomAvatar
-                    width={45}
-                    height={45}
-                    iconSize={15}
+                    width={40}
+                    height={40}
+                    iconSize={14}
                     icon={iconSet(record?.Action, record?.SubCategoryDetails?.Icon)}
                     bgColor={record?.CategoryDetails?.Color}
                   />
-
-                  <Typography variant="normal">
-                    {record?.SubCategoryDetails?.SubCategoriesName || ''}
-                    <Typography variant="light" color="text.secondary">
-                      {record?.AccountDetails?.AccountName}
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                      {getSubCategoryName(record)}
                     </Typography>
-                  </Typography>
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                      {ChipFun(record?.Action)}
+                      {record?.AccountDetails?.AccountName && (
+                        <Chip
+                          size="small"
+                          sx={{
+                            fontSize: 10,
+                            height: 20,
+                            color: record?.AccountDetails?.Color || '#1b925e',
+                            backgroundColor: getThemeColor(
+                              record?.AccountDetails?.Color || '#1b925e',
+                              0.92
+                            ),
+                          }}
+                          label={record?.AccountDetails?.AccountName}
+                        />
+                      )}
+                    </Stack>
+                  </Box>
                 </Stack>
               </Grid>
 
-              <Grid xs={6}>
-                <Typography
-                  variant="light"
-                  sx={{
-                    textAlign: 'end',
-                    fontWeight: 600,
-                    color: record?.AccountAmount > 0 ? '#00A76F' : '#FF5630',
-                  }}
-                >
-                  {formatToINR(record?.AccountAmount)}
-
-                  <Typography fontSize={5} color="text.secondary">
-                    {ChipFun(record?.Action, false)}
+              <Grid xs={4}>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 700,
+                      color: (theme) =>
+                        record?.AccountAmount > 0
+                          ? theme.palette.success.main
+                          : theme.palette.error.main,
+                      mb: 0.5,
+                    }}
+                  >
+                    {formatToINR(record?.AccountAmount, isAmountVisible)}
                   </Typography>
-                </Typography>
+                  {record?.PartyDetails?.FullName && (
+                    <Typography variant="caption" color="text.secondary">
+                      {fText(`${record?.PartyDetails?.FullName}`)}
+                    </Typography>
+                  )}
+                </Box>
               </Grid>
             </Grid>
+
+            {(record?.TagList?.length > 0 || record?.Description) && (
+              <>
+                {renderDescription(record)}
+                {renderTags(record)}
+              </>
+            )}
           </Box>
-        </Box>
+        </Card>
       ))}
-    </>
+    </Box>
   );
 };
+
 export default RecordList;

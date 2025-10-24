@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { ImgUrl } from 'src/constance';
-import { success } from 'src/theme/palette';
 
 export const CustomAvatar = ({
   open,
@@ -16,12 +15,13 @@ export const CustomAvatar = ({
   imgDefault = true,
   displayName,
   iconSize = 20,
-  bgColor = success.main,
+  bgColor,
   photoURL,
   handleOpen,
   width = { xs: 40, md: 45, lg: 56 }, // default width
   height = { xs: 40, md: 45, lg: 56 }, // default height
   borderDashed = false,
+  iconColor = '#FFFFFF',
   ...props
 }) => {
   // Calculate the size for IconButton and Avatar
@@ -49,16 +49,16 @@ export const CustomAvatar = ({
       onClick={handleOpen}
       sx={{
         ...buttonSize,
-        background: (theme) => (borderDashed !== true ? alpha(theme.palette.grey[900], 0.08) : ''),
-        border: (theme) => (borderDashed === true ? `dashed 1px ${theme.palette.grey[400]}` : ''),
-        ...(open && {
-          background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
-        }),
-        ...(error && {
-          background: (theme) =>
-            `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
-        }),
+        // background: (theme) => (borderDashed !== true ? alpha(theme.palette.grey[900], 0.08) : ''),
+        // border: (theme) => (borderDashed === true ? `dashed 1px ${theme.palette.grey[400]}` : ''),
+        // ...(open && {
+        //   background: (theme) =>
+        //     `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
+        // }),
+        // ...(error && {
+        //   background: (theme) =>
+        //     `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`,
+        // }),
       }}
     >
       <Avatar
@@ -75,7 +75,9 @@ export const CustomAvatar = ({
         {!icon && displayName && (
           <Typography variant="light">{displayName?.toUpperCase()}</Typography>
         )}
-        {icon && <i className={icon} style={{ fontSize: iconSize }} />}
+        {icon && (
+          <i className={icon} style={{ fontSize: iconSize, color: iconColor || '#ffffff' }} />
+        )}
       </Avatar>
     </IconButton>
   );

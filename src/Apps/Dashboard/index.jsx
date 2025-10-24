@@ -2,12 +2,14 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Skeleton from '@mui/material/Skeleton';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { calculatePercentageChange } from 'src/utils/utils';
+import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
+
+import { formatToINR } from 'src/utils/format-number';
 
 import { TimeDurationList } from 'src/constance';
 import {
@@ -20,26 +22,41 @@ import {
 import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
-import InfoBox from './InfoBox';
 import OverView from './OverView';
+import AccountList from './AccountList';
+import QuickInsights from './QuickInsights';
+import GrowthRateChart from './GrowthRateChart';
+import LoadingSkeleton from './LoadingSkeleton';
+import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
+import YearlyOverviewPDF from '../../DocumentToPDF/YearlyOverviewPDF';
 
 export default function Index() {
   const dispatch = useDispatch();
-  const [selectedYear, setSelectedYear] = useState(new Date());
-  const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
-  const [currentYearBaseData, setCurrentYearBaseData] = useState({});
-  const [lastYearBaseData, setLastYearBaseData] = useState({});
-  const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
+  const { isAmountVisible } = useAmountVisibility();
+
+  const DefaultTimeFrame = localStorage.getItem('DefaultTimeFrame');
+  const DefaultDuration = localStorage.getItem('DefaultDuration');
+
+  const [currentBalance, setCurrentBalance] = useState(0);
+
+  const [topTen, setTopTen] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
-  const [topTen, setTopTen] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(new Date());
+  const [lastYearBaseData, setLastYearBaseData] = useState({});
+  const [currentYearBaseData, setCurrentYearBaseData] = useState({});
+  const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
+  const [currentYearMonthBaseData, setCurrentYearMonthBaseData] = useState([]);
 
-  const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState('WEEK');
   const [dataFlowIncrement, setDataFlowIncrement] = useState([]);
+  const [dataFlowTimeDurationLoader, setDataFlowTimeDurationLoader] = useState(true);
+  const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState(DefaultTimeFrame || 'WEEK');
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  const [cashFlowDuration, setCashFlowDuration] = useState('Last_Thirty_Days');
+  const [downloadFlag, setDownloadFlag] = useState(false);
+  const [cashFlowDurationLoader, setCashFlowDurationLoader] = useState(true);
+  const [cashFlowDuration, setCashFlowDuration] = useState(DefaultDuration || 'Last_Thirty_Days');
 
   useEffect(() => {
     setCurrentYearBaseLoader(true);
@@ -71,8 +88,10 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    setDataFlowTimeDurationLoader(true);
     dispatch(
       BalanceOverviewService({ Duration: dataFlowTimeDuration }, (res) => {
+        setDataFlowTimeDurationLoader(false);
         if (res.status) {
           setDataFlowIncrement(res?.data?.increment);
         }
@@ -81,8 +100,10 @@ export default function Index() {
   }, [dataFlowTimeDuration]);
 
   useEffect(() => {
+    setCashFlowDurationLoader(true);
     dispatch(
       BalanceFollService({ Duration: cashFlowDuration }, (res) => {
+        setCashFlowDurationLoader(false);
         if (res.status) {
           setCashFlowData(res?.data);
         }
@@ -90,147 +111,107 @@ export default function Index() {
     );
   }, [cashFlowDuration]);
 
-  // const columns = [
-  //   {
-  //     title: 'Category Name',
-  //     dataIndex: 'CategoryName',
-  //     key: 'CategoryName',
-  //     width: '70%',
-  //   },
-  //   {
-  //     title: 'Amount',
-  //     dataIndex: 'totalOut',
-  //     key: 'totalOut',
-  //     align: 'right',
-  //     width: '30%',
-  //   },
-  // ];
-
-  // const tableSetData = topTen.map((item, index) => ({
-  //   item,
-  //   key: index,
-  //   CategoryName: (
-  //     <Stack direction="row" alignItems="center" spacing={2}>
-  //       <CustomAvatar
-  //         width={{ xs: 40, md: 40, lg: 40 }}
-  //         height={{ xs: 40, md: 40, lg: 40 }}
-  //         iconSize={15}
-  //         icon={item?.Icon || ''}
-  //         bgColor={item?.Color || ''}
-  //       />
-  //       <Typography variant="light">{item?.CategoryName}</Typography>
-  //     </Stack>
-  //   ),
-  //   totalOut: (
-  //     <Typography variant="light" color="error">
-  //       {formatToINR(item?.totalOut) || ''}
-  //     </Typography>
-  //   ),
-  // }));
-
-  // const topTenSubCategoriesData = topTenSubCategories.map((item, index) => ({
-  //   item,
-  //   key: index,
-  //   CategoryName: (
-  //     <Stack direction="row" alignItems="center" spacing={2}>
-  //       <CustomAvatar
-  //         width={{ xs: 40, md: 40, lg: 40 }}
-  //         height={{ xs: 40, md: 40, lg: 40 }}
-  //         iconSize={15}
-  //         icon={item?.Icon || ''}
-  //         bgColor={item?.Color || ''}
-  //       />
-  //       <Typography variant="light">{item?.SubCategoryName}</Typography>
-  //     </Stack>
-  //   ),
-  //   totalOut: (
-  //     <Typography variant="light" color="error">
-  //       {formatToINR(item?.totalOut) || ''}
-  //     </Typography>
-  //   ),
-  // }));
-
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Box sx={{ justifyContent: 'space-between', display: 'flex' }}>
-        <Typography variant="h4" sx={{ ml: 2 }} color="text.secondary">
-          Hi, Welcome back 👋
-        </Typography>
-
-        <DateRangePicker
-          label="Select Year"
-          disableFuture
-          views={['year']}
-          openTo="year"
-          format="YYYY"
-          value={selectedYear}
-          onChange={(event) => {
-            setSelectedYear(event);
+    <Container maxWidth="xl" sx={{ py: 3 }}>
+      {/* Header Section */}
+      <Box sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: { md: 'flex', xs: 'block' },
+            justifyContent: 'space-between',
+            mb: 3,
           }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                color: 'text.primary',
+                fontWeight: 600,
+                mb: 0.5,
+              }}
+              variant="h4"
+            >
+              Welcome back 👋
+            </Typography>
+            <Typography color="text.secondary" variant="body2">
+              Here&apos;s what&apos;s happening with your finances today
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: { xs: 3, md: 0 } }}>
+            {!downloadFlag && (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<i className="fa-solid fa-download" />}
+                onClick={() => setDownloadFlag(true)}
+                disabled={currentYearBaseLoader}
+              >
+                Download
+              </Button>
+            )}
+
+            {downloadFlag && (
+              <YearlyOverviewPDF
+                setFlag={setDownloadFlag}
+                selectedYear={selectedYear}
+                currentYearData={currentYearBaseData}
+                lastYearData={lastYearBaseData}
+                currentMonth={currentMonth}
+                lastMonth={lastMonth}
+                currentYearMonthBaseData={currentYearMonthBaseData}
+                // dataFlowIncrement={dataFlowIncrement}
+                // topCategories={topTen}
+              />
+            )}
+            <DateRangePicker
+              disableFuture
+              format="YYYY"
+              label=""
+              onChange={(event) => {
+                setSelectedYear(event);
+              }}
+              sx={{ width: 200 }}
+              openTo="year"
+              value={selectedYear}
+              views={['year']}
+            />
+          </Box>
+        </Box>
+        <AccountList setCurrentBalance={setCurrentBalance} />
+      </Box>
+
+      {/* Account List Section */}
+      <Box sx={{ mb: 2 }}>
+        <DashboardSummary
+          currentYearData={currentYearBaseData}
+          lastYearData={lastYearBaseData}
+          currentMonth={currentMonth}
+          lastMonth={lastMonth}
+          loading={currentYearBaseLoader}
         />
       </Box>
 
-      <Box sx={{ marginTop: 3 }}>
-        <Grid container spacing={2}>
-          {/*  Total Income  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Income"
-              amount={currentYearBaseData?.totalIn || 0}
-              previousValue={
-                calculatePercentageChange(currentMonth?.totalIn, lastMonth?.totalIn) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
+      {/* Quick Insights */}
+      <Box sx={{ mb: 2 }}>
+        <QuickInsights
+          currentBalance={currentBalance}
+          currentMonth={currentMonth}
+          currentYearData={currentYearBaseData}
+          lastMonth={lastMonth}
+          topCategories={topTen}
+        />
+      </Box>
 
-          {/*  Total Expense  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              flag={false}
-              title="Total Expense"
-              amount={currentYearBaseData?.totalOut || 0}
-              previousValue={
-                calculatePercentageChange(currentMonth?.totalOut, lastMonth?.totalOut) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          {/*  Total Investment  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Investment"
-              amount={currentYearBaseData?.totalInvestment || 0}
-              previousValue={
-                calculatePercentageChange(
-                  currentMonth?.totalInvestment,
-                  lastMonth?.totalInvestment
-                ) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          {/*  Total Debit  */}
-          <Grid item xs={6} sm={6} md={3}>
-            <InfoBox
-              title="Total Debit"
-              amount={currentYearBaseData?.totalDebit || 0}
-              previousValue={
-                calculatePercentageChange(
-                  currentYearBaseData?.totalDebit,
-                  lastYearBaseData?.totalDebit
-                ) || 0
-              }
-              loader={currentYearBaseLoader}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={12}>
+      {/* Charts Section */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          {/* Balance Overview Chart */}
+          <Grid item xs={12} lg={8}>
             {!currentYearBaseLoader ? (
               <OverView
-                title="Balance overview"
+                title="Balance Overview"
                 height={300}
                 chart={{
                   labels:
@@ -252,25 +233,29 @@ export default function Index() {
                       name: 'Expense',
                       type: 'column',
                       fill: 'solid',
+                      color: '#FFAb00',
                       data:
                         currentYearMonthBaseData?.length > 0
                           ? currentYearMonthBaseData?.map((item, key) => item?.totalOut || 0)
                           : [],
                     },
                   ],
+                  options: {
+                    stroke: {
+                      width: [1],
+                    },
+                  },
                 }}
               />
             ) : (
-              <Card sx={{ p: 2 }}>
-                <Skeleton variant="text" sx={{ fontSize: 20 }} width={250} />
-                <Skeleton variant="rounded" height={330} animation="wave" />
-              </Card>
+              <LoadingSkeleton type="chart" />
             )}
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* Top Categories Chart */}
+          <Grid item xs={12} lg={4}>
             <AppCurrentVisits
-              title="Top 5 Categories"
+              title="Top Categories"
               type="radialBar"
               chart={{
                 series: topTen?.slice(0, 5)?.map((item) => ({
@@ -280,73 +265,92 @@ export default function Index() {
               }}
             />
           </Grid>
+        </Grid>
+      </Box>
 
-          <Grid item xs={12} md={8}>
-            <OverView
-              height={300}
-              title={
-                <Box
-                  sx={{
-                    justifyContent: 'space-between',
-                    display: 'flex',
-                  }}
-                >
-                  <Typography variant="big">Data Flow</Typography>
-                  <Box>
-                    <CustomSelect
-                      valueKey="Key"
-                      labelKey="Value"
-                      size="small"
-                      sx={{ width: 120 }}
-                      menuList={TimeDurationList}
-                      defaultValue={dataFlowTimeDuration}
-                      callBackAction={(value) => setDataFlowTimeDuration(value)}
-                    />
+      {/* Data Flow and Cash Flow Section */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={6}>
+            {dataFlowTimeDurationLoader ? (
+              <LoadingSkeleton type="chart" />
+            ) : (
+              <OverView
+                height={280}
+                title={
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Data Flow
+                    </Typography>
+                    <Box>
+                      <CustomSelect
+                        callBackAction={(value) => setDataFlowTimeDuration(value)}
+                        defaultValue={dataFlowTimeDuration}
+                        labelKey="Value"
+                        menuList={TimeDurationList}
+                        size="small"
+                        sx={{ width: 120 }}
+                        valueKey="Key"
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              }
-              chart={{
-                labels:
-                  dataFlowIncrement?.length > 0
-                    ? dataFlowIncrement?.map((item, key) => item?.duration)
-                    : [],
-                series: [
-                  {
-                    name: 'Income',
-                    type: 'area',
-                    fill: 'gradient',
-                    color: '#00A76F',
-                    data:
-                      dataFlowIncrement?.length > 0
-                        ? dataFlowIncrement?.map((item, key) => item?.totalIn || 0)
-                        : [],
-                  },
-                  {
-                    name: 'Expense',
-                    type: 'area',
-                    fill: 'gradient',
-                    data:
-                      dataFlowIncrement?.length > 0
-                        ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
-                        : [],
-                  },
-                ],
-              }}
-            />
+                }
+                chart={{
+                  labels:
+                    dataFlowIncrement?.length > 0
+                      ? dataFlowIncrement?.map((item, key) => item?.duration)
+                      : [],
+                  series: [
+                    {
+                      name: 'Income',
+                      type: 'area',
+                      fill: 'gradient',
+                      color: '#00A76F',
+                      data:
+                        dataFlowIncrement?.length > 0
+                          ? dataFlowIncrement?.map((item, key) => item?.totalIn || 0)
+                          : [],
+                    },
+                    {
+                      name: 'Expense',
+                      type: 'area',
+                      fill: 'gradient',
+                      color: '#FFAb00',
+                      data:
+                        dataFlowIncrement?.length > 0
+                          ? dataFlowIncrement?.map((item, key) => item?.totalOut || 0)
+                          : [],
+                    },
+                  ],
+                }}
+              />
+            )}
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <OverView
-              height={260}
-              title={
-                <Box
-                  sx={{
-                    justifyContent: 'space-between',
-                    display: 'flex',
-                  }}
-                >
-                  <Typography variant="big">Cash Flow</Typography>
-                  <Box>
+          {/* Cash Flow Chart */}
+          <Grid item xs={12} lg={6}>
+            {cashFlowDurationLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <OverView
+                height={280}
+                title={
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Cash Flow
+                    </Typography>
                     <CustomButtonGroup
                       defaultValue={cashFlowDuration}
                       onSelect={(value) => {
@@ -354,124 +358,124 @@ export default function Index() {
                       }}
                     />
                   </Box>
-                </Box>
-              }
-              chart={{
-                labels:
-                  cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
-                series: [
-                  {
-                    name: ' ',
-                    type: 'line',
-                    color: '#00A76F',
-                    data:
-                      cashFlowData?.length > 0
-                        ? cashFlowData?.map((item, key) => item?.Count || 0)
-                        : [],
-                  },
-                ],
-                options: {
-                  xaxis: {
-                    labels: {
-                      show: false,
+                }
+                chart={{
+                  labels:
+                    cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
+                  series: [
+                    {
+                      name: 'Cash Flow',
+                      type: 'line',
+                      color: '#00A76F',
+                      data:
+                        cashFlowData?.length > 0
+                          ? cashFlowData?.map((item, key) => item?.Count || 0)
+                          : [],
+                    },
+                  ],
+                  options: {
+                    chart: {
+                      zoom: { enabled: true },
+                    },
+                    dataLabels: {
+                      enabled: true,
+                      formatter: (val, opts) => {
+                        if (
+                          opts.dataPointIndex === Number((cashFlowData?.length || 0) - 1) ||
+                          null
+                        ) {
+                          // return val?.toLocaleString('en-IN');
+                          return formatToINR(val, isAmountVisible);
+                        }
+                        return '';
+                      },
+                      // style: {
+                      //   colors: ['#ffffff'],
+                      //   fontSize: '12px',
+                      //   fontWeight: 'bold',
+                      // },
+                      // background: {
+                      //   enabled: true,
+                      //   foreColor: '#00A76F',
+                      //   borderRadius: 4,
+                      //   padding: 6,
+                      // },
+                      offsetY: -10,
+                      offsetX: -10,
+                    },
+                    // markers: {
+                    //   hover: {
+                    //     sizeOffset: 4,
+                    //   },
+                    //   size: 4,
+                    // },
+                    xaxis: {
+                      labels: {
+                        show: false,
+                      },
+                    },
+                    yaxis: {
+                      labels: {
+                        show: false,
+                      },
                     },
                   },
-                  yaxis: {
-                    labels: {
-                      show: false,
-                    },
-                  },
-                  chart: {
-                    zoom: { enabled: true },
-                  },
-                },
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <OverView
-              title="Investment"
-              height={260}
-              chart={{
-                labels:
-                  currentYearMonthBaseData?.length > 0
-                    ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
-                    : [],
-                series: [
-                  {
-                    name: '',
-                    type: 'column',
-                    fill: 'solid',
-                    color: '#00b8d9',
-                    data:
-                      currentYearMonthBaseData?.length > 0
-                        ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
-                        : [],
-                  },
-                ],
-              }}
-            />
-          </Grid>
-
-          {/* <Grid item xs={12} md={6}>
-            <Card>
-              <CardHeader title="Top Ten Category" />
-              <Scrollbar
-                sx={{
-                  height: 310,
-                  '& .simplebar-content': {
-                    height: 310,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
                 }}
-              >
-                {tableSetData && tableSetData.length > 0 ? (
-                  <Table
-                    dataSource={tableSetData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
-            </Card>
+              />
+            )}
           </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardHeader title="Top ten sub category" />
-              <Scrollbar
-                sx={{
-                  height: 310,
-                  '& .simplebar-content': {
-                    height: 310,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  },
-                }}
-              >
-                {topTenSubCategoriesData && topTenSubCategoriesData.length > 0 ? (
-                  <Table
-                    dataSource={topTenSubCategoriesData}
-                    showHeader={false}
-                    columns={columns}
-                    pagination={false}
-                    rowKey="CategoryName"
-                  />
-                ) : (
-                  <DataNotFound />
-                )}
-              </Scrollbar>
-            </Card>
-          </Grid> */}
         </Grid>
       </Box>
-    </Box>
+
+      {/* Investment Chart */}
+      <Box sx={{ mb: 2 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={6}>
+            {currentYearBaseLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <OverView
+                title="Investment Overview"
+                height={280}
+                chart={{
+                  labels:
+                    currentYearMonthBaseData?.length > 0
+                      ? currentYearMonthBaseData?.map((item, key) => item?.monthName)
+                      : [],
+                  series: [
+                    {
+                      name: 'Investment',
+                      type: 'column',
+                      fill: 'solid',
+                      color: '#00B8D9',
+                      data:
+                        currentYearMonthBaseData?.length > 0
+                          ? currentYearMonthBaseData?.map((item, key) => item?.totalInvestment || 0)
+                          : [],
+                    },
+                  ],
+                }}
+              />
+            )}
+          </Grid>
+
+          {/* Growth Rate Chart */}
+          <Grid item xs={12} lg={6}>
+            {currentYearBaseLoader ? (
+              <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={280} />
+            ) : (
+              <GrowthRateChart
+                loading={currentYearBaseLoader}
+                monthlyData={currentYearMonthBaseData}
+                title="Monthly Growth Rate"
+              />
+            )}
+          </Grid>
+        </Grid>
+      </Box>
+
+      {/* PDF Download Component */}
+    </Container>
   );
 }
 

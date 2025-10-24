@@ -33,7 +33,7 @@ export default function LanguagePopover() {
           iconSize={14}
           width={{ xs: 35, md: 35, lg: 40 }}
           height={{ xs: 35, md: 35, lg: 40 }}
-          icon="fa-solid fa-sitemap"
+          icon="fa-solid fa-wallet"
           photoURL={item?.ImgPath || ''}
         />
         <Typography variant="body2" sx={{ mx: 1 }}>

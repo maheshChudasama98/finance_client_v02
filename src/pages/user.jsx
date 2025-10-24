@@ -8,7 +8,7 @@ export default function UserPage() {
   return (
     <>
       <Helmet>
-        <title> Users </title>
+        <title>{__PROJECT_NAME__} | Users </title>
       </Helmet>
 
       <UserView />

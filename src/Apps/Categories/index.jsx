@@ -9,9 +9,12 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Unstable_Grid2';
+import { useTheme } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -32,7 +35,6 @@ import {
   CustomAvatar,
   CustomSelect,
   CustomTooltip,
-  CustomTabLabel,
   CustomCheckbox,
   CustomSearchInput,
 } from 'src/components/CustomComponents';
@@ -46,6 +48,8 @@ import PerformanceComponent from './Performance';
 
 export default function Index() {
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [apiFlag, setApiFlag] = useState(false);
   const [displayFlag, setDisplayFlag] = useState(false);
@@ -79,6 +83,75 @@ export default function Index() {
       );
     }
   }, [displayFlag]);
+
+  useEffect(() => {
+    if (editObject?.CategoryId) {
+      const key = editObject?.CategoryId ? editObject?.CategoryId : null;
+
+      const details = recodeList?.find((e) => e?.CategoryId === key);
+
+      setCustomSubCategory(
+        details?.SubCategories?.length > 0
+          ? details?.SubCategories?.map((subItem, i) => ({
+              i,
+              key: i,
+              item: subItem,
+              SubCategoriesName: (
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <CustomTooltip label={subItem.Description || ''} Placement="right">
+                    <CustomAvatar
+                      width={{ xs: 35, md: 35, lg: 38 }}
+                      height={{ xs: 35, md: 35, lg: 38 }}
+                      iconSize={14}
+                      icon={subItem?.Icon || ''}
+                      bgColor={details?.Color || ''}
+                    />
+                  </CustomTooltip>
+                  <Typography variant="light">
+                    {subItem?.SubCategoriesName}
+                    <Typography
+                      variant="light"
+                      color="text.secondary"
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      {fDate(subItem?.createdAt)}
+                    </Typography>
+                  </Typography>
+                </Stack>
+              ),
+              Income: (
+                <Typography variant="light">
+                  {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
+                </Typography>
+              ),
+              Expense: (
+                <Typography variant="light">
+                  {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
+                </Typography>
+              ),
+              Active: (
+                <CustomCheckbox
+                  checked={subItem?.isActive}
+                  loading={
+                    subLoadingSwitch[subItem?.SubCategoryId] &&
+                    subLoadingSwitch?.action === 'isActive'
+                  }
+                  onClick={(e) => {
+                    SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
+                    e.stopPropagation();
+                  }}
+                />
+              ),
+            }))
+          : []
+      );
+
+      setSubEditObject({});
+      setDisplayFlag(true);
+      setSubDisplayFlag(false);
+      setEditObject(details);
+    }
+  }, [recodeList]);
 
   useEffect(() => {
     if (!displayFlag) {
@@ -116,30 +189,30 @@ export default function Index() {
       key: 'CategoryName',
     },
     {
-      title: 'Income',
-      dataIndex: 'Income',
-      key: 'Income',
+      title: 'Action',
+      dataIndex: 'Action',
+      key: 'Action',
       align: 'right',
       width: '15%',
-    },
-    {
-      title: 'Expense',
-      dataIndex: 'Expense',
-      key: 'Expense',
-      align: 'right',
-      width: '15%',
-    },
-    {
-      title: 'Active',
-      dataIndex: 'Active',
-      key: 'Active',
-      align: 'right',
-      width: '10%',
     },
     // {
-    //   title: 'Action',
-    //   dataIndex: 'Action',
-    //   key: 'Action',
+    //   title: 'Income',
+    //   dataIndex: 'Income',
+    //   key: 'Income',
+    //   align: 'right',
+    //   width: '15%',
+    // },
+    // {
+    //   title: 'Expense',
+    //   dataIndex: 'Expense',
+    //   key: 'Expense',
+    //   align: 'right',
+    //   width: '15%',
+    // },
+    // {
+    //   title: 'Active',
+    //   dataIndex: 'Active',
+    //   key: 'Active',
     //   align: 'right',
     //   width: '10%',
     // },
@@ -151,26 +224,12 @@ export default function Index() {
       dataIndex: 'SubCategoriesName',
       key: 'SubCategoriesName',
     },
-    {
-      title: 'Income',
-      dataIndex: 'Income',
-      key: 'Income',
-      align: 'right',
-      width: '15%',
-    },
-    {
-      title: 'Expense',
-      dataIndex: 'Expense',
-      key: 'Expense',
-      align: 'right',
-      width: '15%',
-    },
     // {
-    //   title: 'Active',
-    //   dataIndex: 'Active',
-    //   key: 'Active',
+    //   title: 'Action',
+    //   dataIndex: 'Action',
+    //   key: 'Action',
     //   align: 'right',
-    //   width: '10%',
+    //   width: '20%',
     // },
   ];
 
@@ -188,7 +247,7 @@ export default function Index() {
             bgColor={item?.Color || ''}
           />
         </CustomTooltip>
-        <Typography variant="light">
+        <Typography variant="body2" fontWeight={600}>
           {item?.CategoryName}
           <Typography
             color="text.secondary"
@@ -234,65 +293,55 @@ export default function Index() {
       />
     ),
     Action: (
-      <Dropdown
-        trigger={['click']}
-        menu={{
-          items: [
-            {
-              label: (
-                <Typography
-                  variant="light"
-                  onClick={() => {
-                    setDisplayFlag(true);
-                    setEditObject(item);
-                  }}
-                >
-                  <Box display="flex" alignItems="center">
-                    <SvgColor
-                      src="/assets/icons/general/pen.svg"
-                      sx={{ width: 25, height: 25, mr: 2 }}
-                    />
-                    Edit
-                  </Box>
-                </Typography>
-              ),
-            },
-            {
-              label: (
-                <Typography
-                  variant="light"
-                  color="error"
-                  onClick={() => {
-                    sweetAlertQuestion()
-                      .then((result) => {
-                        if (result === 'Yes') {
-                          StatusChange('isDeleted', true, item?.CategoryId);
-                        }
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                      });
-                  }}
-                >
-                  <Box display="flex" alignItems="center" justifyContent="center">
-                    <SvgColor
-                      src="/assets/icons/general/trash.svg"
-                      sx={{ width: 25, height: 25, mr: 2 }}
-                    />
-                    Delete
-                  </Box>
-                </Typography>
-              ),
-            },
-          ],
-        }}
-        placement="bottomRight"
-        arrow={{ pointAtCenter: true }}
-      >
-        <IconButton size="small" sx={{ pointerEvents: 'auto' }}>
-          <MoreVertIcon fontSize="small" />
-        </IconButton>
-      </Dropdown>
+      <Box sx={{ display: 'inline-flex', gap: 1 }}>
+        {item?.isPrimitive === 1 && (
+          <>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDisplayFlag(true);
+                setEditObject(item);
+                setTabValue('1');
+              }}
+              sx={{
+                fontSize: '0.7rem',
+                px: 1.5,
+                py: 0.5,
+                minWidth: 'auto',
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="error"
+              onClick={(e) => {
+                e.stopPropagation();
+                sweetAlertQuestion()
+                  .then((result) => {
+                    if (result === 'Yes') {
+                      StatusChange('isDeleted', true, item?.CategoryId);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }}
+              sx={{
+                fontSize: '0.7rem',
+                px: 1.5,
+                py: 0.5,
+                minWidth: 'auto',
+              }}
+            >
+              Delete
+            </Button>
+          </>
+        )}
+      </Box>
     ),
     child:
       item?.SubCategories?.length > 0
@@ -435,7 +484,13 @@ export default function Index() {
     setSubLoadingSwitch((prev) => ({ ...prev, [id]: true, action }));
     dispatch(
       SubCategoryActionService({ [action]: value, SubCategoryId: id }, () => {
-        setApiFlag(!apiFlag);
+        dispatch(
+          CategoriesFetchListService({}, (res) => {
+            if (res?.status) {
+              setRecodesList(res?.data?.list);
+            }
+          })
+        );
       })
     );
   };
@@ -472,6 +527,7 @@ export default function Index() {
       details?.SubCategories?.length > 0
         ? details?.SubCategories?.map((subItem, i) => ({
             i,
+            key: i,
             item: subItem,
             SubCategoriesName: (
               <Stack direction="row" alignItems="center" spacing={2}>
@@ -590,6 +646,83 @@ export default function Index() {
     setEditObject(details);
   };
 
+  const subCategoryAction = async (item) => {
+    let dataReCode = recodeList;
+    dispatch(
+      CategoriesFetchListService({}, (res) => {
+        if (res?.status) {
+          dataReCode = res?.data?.list;
+          setRecodesList(res?.data?.list);
+
+          const key = editObject?.CategoryId ? editObject?.CategoryId : item;
+
+          const details = dataReCode?.find((e) => e?.CategoryId === key);
+
+          setCustomSubCategory(
+            details?.SubCategories?.length > 0
+              ? details?.SubCategories?.map((subItem, i) => ({
+                  i,
+                  key: i,
+                  item: subItem,
+                  SubCategoriesName: (
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <CustomTooltip label={subItem.Description || ''} Placement="right">
+                        <CustomAvatar
+                          width={{ xs: 35, md: 35, lg: 38 }}
+                          height={{ xs: 35, md: 35, lg: 38 }}
+                          iconSize={14}
+                          icon={subItem?.Icon || ''}
+                          bgColor={details?.Color || ''}
+                        />
+                      </CustomTooltip>
+                      <Typography variant="light">
+                        {subItem?.SubCategoriesName}
+                        <Typography
+                          variant="light"
+                          color="text.secondary"
+                          sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                          {fDate(subItem?.createdAt)}
+                        </Typography>
+                      </Typography>
+                    </Stack>
+                  ),
+                  Income: (
+                    <Typography variant="light">
+                      {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
+                    </Typography>
+                  ),
+                  Expense: (
+                    <Typography variant="light">
+                      {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
+                    </Typography>
+                  ),
+                  Active: (
+                    <CustomCheckbox
+                      checked={subItem?.isActive}
+                      loading={
+                        subLoadingSwitch[subItem?.SubCategoryId] &&
+                        subLoadingSwitch?.action === 'isActive'
+                      }
+                      onClick={(e) => {
+                        SubStatusChange('isActive', !subItem?.isActive, subItem?.SubCategoryId);
+                        e.stopPropagation();
+                      }}
+                    />
+                  ),
+                }))
+              : []
+          );
+
+          setSubEditObject({});
+          setDisplayFlag(true);
+          setSubDisplayFlag(false);
+          setEditObject(details);
+        }
+      })
+    );
+  };
+
   const ListCustomList = recodeList.map((item) => (
     <MenuItem key={item?.CategoryId} value={item?.CategoryId}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -607,17 +740,141 @@ export default function Index() {
     </MenuItem>
   ));
 
+  const MobileGrid = () => (
+    <Box sx={{ p: 2 }}>
+      <Grid container spacing={1}>
+        {recodeList.map((item) => (
+          <Grid item xs={12} sm={12} key={item?.CategoryId}>
+            <Box
+              sx={{
+                p: 1,
+                cursor: 'pointer',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+                backgroundColor: 'background.paper',
+                '&:hover': {
+                  borderColor: 'primary.main',
+                  boxShadow: 1,
+                  transform: 'translateY(-2px)',
+                  transition: 'all 0.2s ease-in-out',
+                },
+              }}
+              onClick={() => selectItemAction(item?.CategoryId)}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                  <CustomAvatar
+                    width={48}
+                    height={48}
+                    iconSize={20}
+                    icon={item?.Icon || ''}
+                    bgColor={item?.Color || ''}
+                  />
+                  <Box sx={{ ml: 1, flex: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {item?.CategoryName}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: '0.75rem' }}
+                    >
+                      {fDate(item?.createdAt)}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ justifyItems: 'center', alignItems: 'center', display: 'flex', gap: 1 }}>
+                  {item?.isPrimitive === 1 && (
+                    <>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDisplayFlag(true);
+                          setEditObject(item);
+                          setTabValue('1');
+                        }}
+                        sx={{
+                          fontSize: '0.7rem',
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 'auto',
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          sweetAlertQuestion()
+                            .then((result) => {
+                              if (result === 'Yes') {
+                                StatusChange('isDeleted', true, item?.CategoryId);
+                              }
+                            })
+                            .catch((error) => {
+                              console.error(error);
+                            });
+                        }}
+                        sx={{
+                          fontSize: '0.7rem',
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 'auto',
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+
+  const deleteSubAction = (subItem) => {
+    sweetAlertQuestion()
+      .then((result) => {
+        if (result === 'Yes') {
+          SubStatusChange('isDeleted', true, subItem?.SubCategoryId);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
       <Card>
         <CardHeader
           title={titleAction(!displayFlag)}
-          sx={{ marginBottom: 2 }}
+          sx={{
+            // marginBottom: 2,
+            paddingX: { xs: 2, sm: 3 },
+            paddingY: 2,
+          }}
           action={
             <Button
               onClick={showDisplayAction}
               variant="contained"
-              color="success"
+              color="primary"
+              size={isMobile ? 'small' : 'medium'}
               startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
             >
               {!displayFlag ? 'Add New' : 'Back'}
@@ -631,8 +888,9 @@ export default function Index() {
             {editObject.CategoryId && (
               <Box
                 sx={{
-                  margin: 2,
-                  display: { sm: 'flex', xs: 'inline-block' },
+                  mx: 2,
+                  mt: 1,
+                  display: { md: 'flex', xs: 'block' },
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
@@ -640,39 +898,9 @@ export default function Index() {
                 <Box
                   sx={{
                     display: 'flex',
+                    width: { xs: '100%', sm: 'auto' },
                   }}
                 >
-                  <Tabs
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    disableRipple
-                    value={tabValue}
-                    onChange={handleChange}
-                  >
-                    <Tab
-                      value="1"
-                      label={<CustomTabLabel selectValue={tabValue} label="Details" value="1" />}
-                    />
-                    <Tab
-                      value="4"
-                      label={
-                        <CustomTabLabel selectValue={tabValue} label="Sub Categories" value="4" />
-                      }
-                    />
-                    <Tab
-                      value="2"
-                      label={<CustomTabLabel selectValue={tabValue} label="Activity" value="2" />}
-                    />
-                    <Tab
-                      value="3"
-                      label={
-                        <CustomTabLabel selectValue={tabValue} label="Performance" value="3" />
-                      }
-                    />
-                  </Tabs>
-                </Box>
-
-                <Box sx={{ display: 'flex' }}>
                   <CustomSelect
                     size="small"
                     valueKey="CategoryId"
@@ -681,12 +909,56 @@ export default function Index() {
                     customMenuList={ListCustomList}
                     defaultValue={editObject?.CategoryId}
                     callBackAction={selectItemAction}
-                    sx={{ width: { xs: 230, md: 230, lg: 230 } }}
+                    sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
                   />
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    overflow: 'auto',
+                  }}
+                >
+                  <Tabs
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    disableRipple
+                    value={tabValue}
+                    onChange={handleChange}
+                    sx={{
+                      minHeight: { xs: 48, sm: 56 },
+                      '& .MuiTab-root': {
+                        minHeight: { xs: 48, sm: 56 },
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      },
+                    }}
+                  >
+                    <Tab value="1" label="Details" />
+                    <Tab value="4" label="Sub Categories" />
+                    <Tab value="2" label="Activity" />
+                    <Tab value="3" label="Performance" />
+                  </Tabs>
                 </Box>
               </Box>
             )}
 
+            {tabValue === '0' &&
+              editObject.CategoryId &&
+              (isMobile ? (
+                <MobileGrid />
+              ) : (
+                <Table
+                  className="custom-ant-table"
+                  columns={columns}
+                  dataSource={tableSetData}
+                  pagination={false}
+                  onRow={(record) => ({
+                    onClick: () => {
+                      selectItemAction(record?.item);
+                    },
+                  })}
+                />
+              ))}
             {(tabValue === '1' || !editObject.CategoryId) && (
               <Form
                 backAction={showDisplayAction}
@@ -708,7 +980,7 @@ export default function Index() {
                 <Box
                   sx={{
                     margin: 2,
-                    display: { sm: 'flex', xs: 'inline-block' },
+                    display: 'flex',
                     justifyContent: 'end',
                     alignItems: 'center',
                   }}
@@ -719,7 +991,7 @@ export default function Index() {
                       setSubEditObject({});
                     }}
                     variant="contained"
-                    color="success"
+                    color="primary"
                   >
                     Add
                   </Button>
@@ -730,6 +1002,8 @@ export default function Index() {
                     Category={editObject}
                     CategoryId={editObject.CategoryId}
                     Color={editObject.Color}
+                    backAction={subCategoryAction}
+                    deleteAction={deleteSubAction}
                   />
                 )}
 
@@ -738,12 +1012,32 @@ export default function Index() {
                   columns={subColumns}
                   dataSource={customSubCategory}
                   pagination={false}
-                  onRow={(subItem) => ({
-                    onClick: () => {
-                      setSubDisplayFlag(true);
-                      setSubEditObject(subItem.item);
-                    },
-                  })}
+                  rowKey={(record) => record.key}
+                  expandable={{
+                    expandedRowRender: (record) =>
+                      record?.item?.isPrimitive === 1 ? (
+                        <Box
+                          sx={{
+                            m: 2,
+                            borderRadius: 1,
+                            border: 'solid 1px #EEE',
+                          }}
+                        >
+                          <SubCategoriesForm
+                            editObject={record?.item}
+                            Category={editObject}
+                            CategoryId={editObject.CategoryId}
+                            Color={editObject.Color}
+                            backAction={subCategoryAction}
+                            deleteAction={deleteSubAction}
+                          />
+                        </Box>
+                      ) : (
+                        <Box> Your are not owner this Category</Box>
+                      ),
+                    expandRowByClick: true,
+                    showExpandColumn: false,
+                  }}
                 />
               </>
             )}
@@ -769,17 +1063,22 @@ export default function Index() {
                 </Box>
 
                 {recodeList && recodeList?.length > 0 ? (
-                  <Table
-                    className="custom-ant-table"
-                    columns={columns}
-                    dataSource={tableSetData}
-                    pagination={false}
-                    onRow={(record) => ({
-                      onClick: () => {
-                        selectItemAction(record?.item);
-                      },
-                    })}
-                  />
+                  <>
+                    {isMobile && <MobileGrid />}
+                    {!isMobile && (
+                      <Table
+                        className="custom-ant-table"
+                        columns={columns}
+                        dataSource={tableSetData}
+                        pagination={false}
+                        onRow={(record) => ({
+                          onClick: () => {
+                            selectItemAction(record?.item);
+                          },
+                        })}
+                      />
+                    )}
+                  </>
                 ) : (
                   <DataNotFound />
                 )}
