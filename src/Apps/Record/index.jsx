@@ -114,7 +114,7 @@ export default function Index() {
       const amount = parseFloat(item.Amount);
       if (item.Action === 'In') {
         dateGroup.totalIn += amount;
-      } else if (item.Action === 'Out') {
+      } else if (item.Action === 'Out' || item.Action === 'Installment') {
         dateGroup.totalOut += amount;
       }
 

@@ -19,11 +19,11 @@ export const CustomMaintenance = () => (
     <DynamicMaintenanceIllustration
       sx={{
         height: 260,
-        mb: 3,
+        mb: 5,
       }}
     />
 
-    <Typography variant="h3" sx={{ fontWeight: 600 }}>
+    <Typography variant="h5" sx={{ fontWeight: 600 }}>
       Under Maintenance
     </Typography>
   </Box>

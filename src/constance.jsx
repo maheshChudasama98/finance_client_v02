@@ -107,6 +107,7 @@ export const MonthList = [
 export const SettingDurationList = [
   { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },
   { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
+  { Key: 'This Month', Value: 'This_Month' },
   { Key: 'Last 6 Months', Value: 'Six_Month' },
   { Key: 'This Year', Value: 'This_Year' },
   { Key: 'Last 5 Years', Value: 'Last_Five_Year' },
@@ -116,6 +117,7 @@ export const SettingDurationList = [
 export const ButtonGroupDurationList = [
   { Key: '7D', Value: 'Last_Seven_Days' },
   { Key: '30D', Value: 'Last_Thirty_Days' },
+  { Key: '1M', Value: 'This_Month' },
   { Key: '6M', Value: 'Six_Month' },
   { Key: '1Y', Value: 'This_Year' },
   { Key: '5Y', Value: 'Last_Five_Year' },

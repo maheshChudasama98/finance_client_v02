@@ -1,0 +1,191 @@
+import React, { useRef, useState, useEffect } from 'react';
+
+import { fDate } from 'src/utils/format-time';
+
+import PagePDF from 'src/components/PDF/PagePDF';
+import Chart, { useChart } from 'src/components/chart';
+import ButtonLoader from 'src/components/Loaders/ButtonLoader';
+
+import moment from 'moment';
+
+import { Text, View, Font, Image, StyleSheet } from '@react-pdf/renderer';
+
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    {
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf',
+      fontWeight: 'light',
+    },
+    {
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
+      fontWeight: 'normal',
+    },
+    {
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf',
+      fontWeight: 'bold',
+    },
+  ],
+});
+
+const numberformat = (number) => {
+  const num = Number(number || 0);
+  return `${num.toLocaleString('en-IN') || 0}`;
+};
+
+const MonthlyFinancialAnalyticsPDF = ({ theme, setFlag, monthlyData, monthString }) => {
+  const titleString = `${monthString} Financial Overview`;
+
+  console.log('monthlyData', theme, monthlyData?.overView, monthlyData?.totalIn, monthString);
+  const [loader, setLoader] = useState(false);
+
+  const styles = StyleSheet.create({
+    sectionTitle: {
+      fontSize: 18,
+      fontFamily: 'Roboto',
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: 5,
+      paddingBottom: 5,
+      borderBottom: '1 solid #DDD',
+    },
+    boldText: {
+      fontSize: 12,
+      fontFamily: 'Roboto',
+      fontWeight: 'bold',
+      margin: '2px 0px',
+    },
+    normalText: {
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      fontWeight: 'normal',
+      margin: '2px 0px',
+    },
+    lightText: {
+      fontSize: 9,
+      fontFamily: 'Roboto',
+      fontWeight: 'light',
+      margin: '2px 0px',
+      color: '#666',
+    },
+    row: {
+      flexDirection: 'row',
+      margin: '3px 0',
+      padding: '5px 0',
+    },
+    br: {
+      borderBottom: '1 solid #eee',
+      margin: '8px 0',
+    },
+    summaryBox: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      // marginTop: 15,
+      // marginBottom: 15,
+      // padding: 15,
+      // backgroundColor: '#f8f9fa',
+      // borderRadius: 5,
+    },
+    summaryItem: {
+      alignItems: 'center',
+      width: '30%',
+      padding: 15,
+      borderRadius: 5,
+      margin: '0px 2px',
+      border: `1 solid ${theme.palette.border?.success}`,
+      backgroundColor: `#a7f3d0`,
+    },
+    summaryValue: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#5BC43A',
+    },
+    negativeValue: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#FF4842',
+    },
+    summaryLabel: {
+      fontSize: 10,
+      color: '#666',
+      marginTop: 2,
+    },
+    tableHeader: {
+      flexDirection: 'row',
+      backgroundColor: '#f5f5f5',
+      padding: '8px 0',
+      marginTop: 10,
+    },
+    tableRow: {
+      flexDirection: 'row',
+      padding: '6px 0',
+      borderBottom: '1 solid #eee',
+    },
+    tableCell: {
+      fontSize: 9,
+      padding: '2px 4px',
+    },
+    positiveAmount: {
+      color: '#00A76F',
+      fontWeight: 'bold',
+    },
+    negativeAmount: {
+      color: '#FF4842',
+      fontWeight: 'bold',
+    },
+    legendText: {
+      fontSize: 9,
+      color: '#666',
+    },
+  });
+
+  console.log('first', styles?.summaryItem);
+  return (
+    <div>
+      {loader && <ButtonLoader />}
+
+      {!loader && (
+        <PagePDF
+          title={titleString}
+          setFlag={setFlag}
+          ChildComponent={() => (
+            <>
+              <View style={styles.summaryBox}>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryValue}>
+                    {numberformat(monthlyData?.overView?.totalIn) || 0}
+                  </Text>
+                  <Text style={styles.summaryLabel}>Total Income</Text>
+                </View>
+
+                <View style={styles.summaryItem}>
+                  <Text style={{ ...styles.negativeValue }}>
+                    {numberformat(monthlyData?.overView?.totalExpense) || 0}
+                  </Text>
+                  <Text style={styles.summaryLabel}>Total Expense</Text>
+                </View>
+
+                <View style={styles.summaryItem}>
+                  <Text style={{ ...styles.summaryValue }}>
+                    {numberformat(monthlyData?.overView?.netSavings || 0)}
+                  </Text>
+                  <Text style={styles.summaryLabel}>Net Savings</Text>
+                </View>
+
+                <View style={styles.summaryItem}>
+                  <Text style={{ ...styles.summaryValue }}>
+                    {numberformat(monthlyData?.overView?.totalInvestment || 0)}
+                  </Text>
+                  <Text style={styles.summaryLabel}>Total Investment</Text>
+                </View>
+              </View>
+              <View break />
+            </>
+          )}
+        />
+      )}
+    </div>
+  );
+};
+
+export default MonthlyFinancialAnalyticsPDF;

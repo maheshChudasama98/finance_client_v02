@@ -17,6 +17,7 @@ import { formatToINR } from 'src/utils/format-number';
 
 import {
   DashboardService,
+  SavingFollService,
   BalanceFollService,
   TopCategoriesService,
   TopSubCategoriesService,
@@ -758,6 +759,13 @@ export default function EnhancedAnalytics() {
         <Grid item xs={12}>
           <CashFlowComponent dispatch={dispatch} theme={theme} isAmountVisible={isAmountVisible} />
         </Grid>
+        <Grid item xs={12}>
+          <SavingFlowComponent
+            dispatch={dispatch}
+            theme={theme}
+            isAmountVisible={isAmountVisible}
+          />
+        </Grid>
       </Grid>
 
       <Grid container spacing={3} sx={{ px: 2, mb: 2 }}>
@@ -1004,6 +1012,164 @@ const CashFlowComponent = ({ dispatch, theme, isAmountVisible }) => {
             name: 'Cash Flow',
             type: 'area',
             color: theme.palette.success.main,
+            data:
+              cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Count || 0) : [],
+          },
+        ],
+        options: {
+          ...chartOptionsMain,
+          chart: {
+            type: 'area',
+            zoom: {
+              enabled: true,
+              type: 'x',
+              autoScaleYaxis: true,
+            },
+            toolbar: {
+              show: true,
+              tools: {
+                download: false,
+                selection: true,
+                zoom: true,
+                zoomin: true,
+                zoomout: true,
+                pan: true,
+                reset: true,
+              },
+            },
+          },
+
+          fill: {
+            type: ['gradient'],
+          },
+        },
+      }}
+    />
+  );
+};
+
+const SavingFlowComponent = ({ dispatch, theme, isAmountVisible }) => {
+  const DefaultDuration = localStorage.getItem('DefaultDuration');
+  const [cashFlowDurationLoader, setCashFlowDurationLoader] = useState(true);
+  const [cashFlowData, setCashFlowData] = useState([]);
+  const [cashFlowDuration, setCashFlowDuration] = useState(DefaultDuration || 'Six_Month');
+
+  useEffect(() => {
+    setCashFlowDurationLoader(true);
+    dispatch(
+      SavingFollService({ Duration: cashFlowDuration }, (res) => {
+        setCashFlowDurationLoader(false);
+        if (res.status) {
+          setCashFlowData(res?.data);
+        }
+      })
+    );
+  }, [cashFlowDuration]);
+
+  const chartOptionsMain = useChart({
+    stroke: {
+      width: [2, 2, 2, 2],
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: (value) => {
+          if (typeof value !== 'undefined') {
+            return formatToINR(value || 0, isAmountVisible);
+          }
+          return value;
+        },
+      },
+    },
+
+    yaxis: {
+      labels: {
+        show: true,
+        formatter: (val) => {
+          const sign = val < 0 ? '-' : '';
+          const absVal = Math.abs(val);
+
+          if (absVal >= 10000000) {
+            return `${sign}${(absVal / 10000000).toFixed(1).replace(/\.0$/, '')}Cr`;
+          }
+          if (absVal >= 100000) {
+            return `${sign}${(absVal / 100000).toFixed(1).replace(/\.0$/, '')}L`;
+          }
+          if (absVal >= 1000) {
+            return `${sign}${(absVal / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+          }
+          return `${sign}${absVal}`;
+        },
+      },
+    },
+    xaxis: {
+      labels: {},
+      axisBorder: {
+        show: true,
+        color: theme?.palette?.border?.strong,
+        height: 1,
+        offsetX: 0,
+        offsetY: 0,
+      },
+      axisTicks: {
+        show: true,
+        borderType: 'solid',
+        color: theme?.palette?.border?.strong,
+        height: 6,
+        offsetX: 0,
+        offsetY: 0,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val, opts) => {
+        if (opts.dataPointIndex === Number((cashFlowData?.length || 0) - 1) || null) {
+          // return val?.toLocaleString('en-IN');
+          return formatToINR(val, isAmountVisible);
+        }
+        return '';
+      },
+      style: {
+        colors: ['#ffffff'],
+        fontSize: '12px',
+        fontWeight: 'bold',
+      },
+      background: {
+        enabled: true,
+        foreColor: '#00A76F',
+        borderRadius: 4,
+        padding: 6,
+      },
+      offsetY: -10,
+      offsetX: -10,
+    },
+  });
+
+  if (cashFlowDurationLoader) {
+    return <LoadingSkeleton type="chart" loading={cashFlowDurationLoader} height={300} />;
+  }
+
+  return (
+    <AnimatedChart
+      title="Saving Flow Trend"
+      subheader="Based on selected duration"
+      action={
+        <CustomButtonGroup
+          defaultValue={cashFlowDuration}
+          onSelect={(value) => {
+            setCashFlowDuration(value);
+          }}
+        />
+      }
+      height={300}
+      chart={{
+        labels: cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Date) : [],
+        series: [
+          {
+            name: 'Saving Flow',
+            type: 'area',
+            color: theme.palette.info.main,
             data:
               cashFlowData?.length > 0 ? cashFlowData?.map((item, key) => item?.Count || 0) : [],
           },

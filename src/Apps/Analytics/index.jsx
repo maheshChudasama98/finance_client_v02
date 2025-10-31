@@ -19,7 +19,7 @@ import CategoriesAnalytics from './CategoriesAnalytics';
 import SubCategoriesAnalytics from './SubCategoriesAnalytics';
 
 export default function Index() {
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(6);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);

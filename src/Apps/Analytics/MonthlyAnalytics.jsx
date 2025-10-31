@@ -11,8 +11,10 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import Collapse from '@mui/material/Collapse';
 import Grid from '@mui/material/Unstable_Grid2';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 
@@ -22,13 +24,19 @@ import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
 import { MonthList, TransactionActions } from 'src/constance';
-import { MonthlyDataService } from 'src/Services/AnalystData.Services';
+import {
+  MonthlyDataService,
+  TopCategoriesService,
+  TopSubCategoriesService,
+} from 'src/Services/AnalystData.Services';
 
 import Loader from 'src/components/Loaders/Loader';
+import Chart, { useChart } from 'src/components/chart';
 import { DataNotFound } from 'src/components/DataNotFound';
 import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
 
 import { Table } from 'antd';
+// import MonthlyFinancialAnalyticsPDF from 'src/DocumentToPDF/MonthlyFinancialAnalyticsPDF';
 
 const safeDivide = (numerator, denominator, defaultValue = 0) => {
   const num = Number(numerator) || 0;
@@ -157,6 +165,12 @@ export default function EnhancedAnalytics() {
   const [tabValue, setTabValue] = useState(0);
   const [loader, setLoader] = useState(false);
 
+  const [isDrilldown, setIsDrilldown] = useState(false);
+  const [drillCategory, setDrillCategory] = useState(null);
+  const [drillSubCategories, setDrillSubCategories] = useState([]);
+  const [drillLoading, setDrillLoading] = useState(false);
+  const [categoriesList, setCategoriesList] = useState([]);
+
   useEffect(() => {
     if (!selectYear || !selectedMonth) return;
 
@@ -167,6 +181,7 @@ export default function EnhancedAnalytics() {
     setDailySummary([]);
     setActionSummary({});
     setLoader(true);
+    handleBackFromDrilldown();
     dispatch(
       MonthlyDataService(
         {
@@ -185,6 +200,13 @@ export default function EnhancedAnalytics() {
           }
         }
       )
+    );
+    dispatch(
+      TopCategoriesService({ Duration: 'MONTH', SelectedDate: selectedDate }, (res) => {
+        if (res.status) {
+          setCategoriesList(res?.data?.list?.[0]?.topTenOut || []);
+        }
+      })
     );
   }, [selectYear, selectedMonth]);
 
@@ -236,7 +258,7 @@ export default function EnhancedAnalytics() {
       align: 'right',
       width: '200px',
       render: (data) => (
-        <Typography variant="body2" color="success.dark">
+        <Typography variant="body2" sx={{ fontWeight: 600 }} color="success.dark">
           {data ? formatToINR(data) : ''}
         </Typography>
       ),
@@ -248,7 +270,7 @@ export default function EnhancedAnalytics() {
       align: 'right',
       width: '200px',
       render: (data) => (
-        <Typography variant="body2" color="error.main">
+        <Typography variant="body2" sx={{ fontWeight: 600 }} color="error.main">
           {data ? formatToINR(data) : ''}
         </Typography>
       ),
@@ -260,13 +282,13 @@ export default function EnhancedAnalytics() {
       title: 'Category',
       dataIndex: 'category',
       key: 'category',
-      width: '350px',
+      width: '300px',
       render: (_, record) => (
         <Stack direction="row" alignItems="center" spacing={2}>
           <CustomAvatar
-            width={40}
-            height={40}
-            iconSize={14}
+            width={{ xs: 45, md: 45, lg: 45 }}
+            height={{ xs: 45, md: 45, lg: 45 }}
+            iconSize={16}
             icon={iconSet(record?.Action, record?.['fn_sub_category.Icon'])}
             bgColor={record?.['fn_category.Color']}
           />
@@ -395,6 +417,40 @@ export default function EnhancedAnalytics() {
     },
   ];
 
+  const categoryDistributionData = {
+    labels: categoriesList.slice(0, 8).map((item) => item?.CategoryName),
+    series: [
+      {
+        name: 'Expense',
+        type: 'pie',
+        data: categoriesList.slice(0, 8).map((item) => item?.totalOut || 0),
+      },
+    ],
+  };
+
+  const categoryColors = categoriesList.slice(0, 8).map((item) => item?.Color || '#9e9e9e');
+  const subCategoryColors = drillSubCategories.map(() => drillCategory?.Color || '#9e9e9e');
+
+  const pieChartOptions = useChart({
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '70%',
+        },
+      },
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: (value) => formatToINR(value, isAmountVisible),
+      },
+    },
+    legend: {
+      position: 'bottom',
+    },
+  });
+
   const handleExpand = (expanded, record) => {
     setExpandedRowKeys(
       (prev) =>
@@ -406,6 +462,46 @@ export default function EnhancedAnalytics() {
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handleCategorySliceClick = (dataPointIndex) => {
+    if (isDrilldown) return;
+    const list = categoriesList.slice(0, 8);
+    const clicked = list?.[dataPointIndex];
+    if (!clicked) return;
+    setDrillCategory(clicked);
+    setIsDrilldown(true);
+    setDrillLoading(true);
+
+    const monthIndex = MonthList.findIndex((m) => m.Key === selectedMonth);
+    if (monthIndex === -1) return;
+    const selectedDate = new Date(selectYear, monthIndex, 5);
+
+    dispatch(
+      TopSubCategoriesService(
+        {
+          Duration: 'MONTH',
+          SelectedDate: selectedDate,
+          CategoryId: clicked?.CategoryId,
+        },
+        (res) => {
+          setDrillLoading(false);
+          if (res?.status) {
+            const data = res?.data?.list?.[0]?.topTenOut || [];
+            setDrillSubCategories(data);
+          } else {
+            setDrillSubCategories([]);
+          }
+        }
+      )
+    );
+  };
+
+  const handleBackFromDrilldown = () => {
+    setIsDrilldown(false);
+    setDrillCategory(null);
+    setDrillSubCategories([]);
+    setDrillLoading(false);
   };
 
   return (
@@ -453,6 +549,16 @@ export default function EnhancedAnalytics() {
           </Box>
         ) : (
           <>
+            {/* <MonthlyFinancialAnalyticsPDF
+              setFlag={() => {}}
+              monthlyData={monthlyData}
+              selectedMonth={selectedMonth}
+              selectYear={selectYear}
+              theme={theme}
+              monthString={`${
+                actionSummary?.monthName || MonthList.find((m) => m.Key === selectedMonth)?.Value
+              } ${selectYear}`}
+            /> */}
             <Grid container spacing={3} sx={{ mt: 3, px: 2 }}>
               {/* Total Income Card */}
               <Grid item xs={6} sm={6} md={3}>
@@ -993,38 +1099,162 @@ export default function EnhancedAnalytics() {
 
               <Grid item xs={12}>
                 <Card sx={{ p: 2 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                    Personalized Recommendations
+                  </Typography>
                   {monthlyData?.analytics?.financialHealth?.recommendations?.length > 0 && (
-                    <>
-                      <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                        Personalized Recommendations
-                      </Typography>
-                      <Box sx={{ mt: 2 }}>
-                        <Grid container spacing={2}>
-                          {monthlyData.analytics.financialHealth.recommendations.map(
-                            (rec, index) => (
-                              <Grid item xs={12} sm={6} md={4} key={index}>
-                                <Chip
-                                  label={rec}
-                                  color="info"
-                                  variant="outlined"
-                                  sx={{
-                                    width: '100%',
-                                    height: 'auto',
-                                    py: 1,
-                                    borderRadius: 1,
-                                    '& .MuiChip-label': {
-                                      whiteSpace: 'normal',
-                                      textAlign: 'center',
-                                    },
-                                  }}
-                                />
-                              </Grid>
-                            )
-                          )}
-                        </Grid>
-                      </Box>
-                    </>
+                    <Box sx={{ mt: 2 }}>
+                      <Grid container spacing={2}>
+                        {monthlyData.analytics.financialHealth.recommendations.map((rec, index) => (
+                          <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Chip
+                              label={rec}
+                              color="info"
+                              variant="outlined"
+                              sx={{
+                                width: '100%',
+                                height: 'auto',
+                                py: 1,
+                                borderRadius: 1,
+                                '& .MuiChip-label': {
+                                  whiteSpace: 'normal',
+                                  textAlign: 'center',
+                                },
+                              }}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
                   )}
+                </Card>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Card>
+                  <CardHeader
+                    title={
+                      isDrilldown
+                        ? `Subcategories: ${drillCategory?.CategoryName || ''}`
+                        : 'Category Distribution'
+                    }
+                    subheader={
+                      isDrilldown
+                        ? 'Expense breakdown by subcategory'
+                        : 'Expense breakdown by category'
+                    }
+                    action={
+                      isDrilldown ? (
+                        <IconButton
+                          aria-label="back"
+                          onClick={handleBackFromDrilldown}
+                          size="small"
+                        >
+                          <ArrowBackIcon fontSize="small" />
+                        </IconButton>
+                      ) : null
+                    }
+                  />
+                  <Box
+                    sx={{
+                      p: 3,
+                      pb: 1,
+                    }}
+                  >
+                    {drillLoading ? (
+                      <Box sx={{ display: 'flex', height: '365px' }}>
+                        <Loader />
+                      </Box>
+                    ) : (
+                      <Chart
+                        dir="ltr"
+                        type="donut"
+                        series={
+                          isDrilldown
+                            ? drillSubCategories.map((item) => item?.totalOut || 0)
+                            : categoryDistributionData.series[0].data
+                        }
+                        options={{
+                          ...pieChartOptions,
+                          labels: isDrilldown
+                            ? drillSubCategories.map((item) => item?.SubCategoryName)
+                            : categoryDistributionData.labels,
+                          colors: isDrilldown ? subCategoryColors : categoryColors,
+                          legend: {
+                            ...(pieChartOptions?.legend || {}),
+                            position: 'bottom',
+                            horizontalAlign: 'center',
+                            border: `node`,
+                            fontSize: 12,
+                            labels: {
+                              colors: theme.palette.text?.secondary,
+                              useSeriesColors: false,
+                            },
+                            formatter: (seriesName, opts) => {
+                              try {
+                                const idx = opts?.seriesIndex ?? 0;
+                                const seriesArr = opts?.w?.globals?.series || [];
+                                const val = Number(seriesArr[idx] || 0);
+                                const total =
+                                  seriesArr.reduce((a, b) => a + Number(b || 0), 0) || 1;
+                                const pct = ((val / total) * 100).toFixed(1);
+                                return `${seriesName} (${pct}%)`;
+                              } catch (e) {
+                                return seriesName;
+                              }
+                            },
+                            markers: { width: 8, height: 8, radius: 12 },
+                            itemMargin: { horizontal: 8, vertical: 0 },
+                          },
+                          tooltip: {
+                            enabled: true,
+                            shared: false,
+                            intersect: false,
+                            followCursor: true,
+                            custom: ({ series, seriesIndex, w }) => {
+                              try {
+                                const idx = typeof seriesIndex === 'number' ? seriesIndex : 0;
+                                const val = Number(series?.[idx] || 0);
+                                const total =
+                                  (series || []).reduce((a, b) => a + Number(b || 0), 0) || 1;
+                                const pct = ((val / total) * 100).toFixed(1);
+                                const label = w?.globals?.labels?.[idx] || '';
+                                const color = (w?.config?.colors || [])[idx] || '#000';
+                                return `
+                              <div style="background:#fff; color:#000; padding:8px 10px; border:1px solid #e0e0e0; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${color};"></span>
+                                  <strong>${label}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; gap:16px;">
+                                  <span>${formatToINR(val, isAmountVisible)}</span>
+                                  <span>${pct}%</span>
+                                </div>
+                              </div>`;
+                              } catch (e) {
+                                return '';
+                              }
+                            },
+                          },
+                          stroke: {
+                            show: true,
+                            width: 2,
+                            colors: [theme.palette.background?.paper], // border color
+                          },
+                          chart: {
+                            ...(pieChartOptions?.chart || {}),
+                            events: {
+                              dataPointSelection: (event, chartContext, config) => {
+                                handleCategorySliceClick(config?.dataPointIndex);
+                              },
+                            },
+                          },
+                        }}
+                        width="100%"
+                        height={345}
+                      />
+                    )}
+                  </Box>
                 </Card>
               </Grid>
 
@@ -1042,15 +1272,15 @@ export default function EnhancedAnalytics() {
                         <Tab value={0} label="List view" />
                         <Tab value={1} label="Summary view" />
                       </Tabs>
-                      
+
                       {tabValue === 0 && (
                         <Box sx={{ overflow: 'auto' }}>
                           <Table
-                            className="custom-ant-table"
+                            rowKey="date"
                             columns={columns_list}
                             dataSource={transactions}
                             pagination={false}
-                            rowKey="date"
+                            className="custom-ant-table"
                             scroll={{ x: 'max-content' }}
                           />
                         </Box>
@@ -1069,11 +1299,13 @@ export default function EnhancedAnalytics() {
                               onExpand: handleExpand,
                               expandedRowRender: (record) => (
                                 <Table
-                                  className="custom-ant-table"
+                                  showHeader={false}
+                                  // className="custom-ant-table"
                                   columns={columns_sub}
                                   dataSource={record?.transactions}
                                   pagination={false}
                                   scroll={{ x: 'max-content' }}
+                                  size="small"
                                 />
                               ),
                             }}

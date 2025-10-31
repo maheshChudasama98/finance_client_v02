@@ -29,6 +29,8 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     fontWeight: 700,
   };
 
+  console.log('item', item)
+
   const ChipFun = (status) => {
     const Action = TransactionActions?.find((i) => status === i.key);
 
@@ -219,14 +221,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
               <Grid xs={1.5}>
                 <Stack direction="row" alignItems="center" spacing={1}>
                   {ChipFun(record?.Action)}
-                  {/* {(record.Description || record?.TagList) && (
-                    <CustomTooltip label={tooltipString(record)} Placement="top">
-                      <i
-                        className="fa-solid fa-info"
-                        style={{ fontSize: 12, color: 'text.secondary' }}
-                      />
-                    </CustomTooltip>
-                  )} */}
                 </Stack>
               </Grid>
 
