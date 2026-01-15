@@ -57,8 +57,8 @@ export default function AccountList({ setCurrentBalance }) {
     );
   };
 
-  const getAccountTypeName = (typeId) =>
-    AccountTypes?.find((e) => e?.key === typeId)?.value || 'Account';
+  // const getAccountTypeName = (typeId) =>
+  //   AccountTypes?.find((e) => e?.key === typeId)?.value || 'Account';
 
   if (loading) {
     return (
@@ -83,12 +83,12 @@ export default function AccountList({ setCurrentBalance }) {
   }
 
   return (
-    <Card sx={{ p: 2.5 }}>
+    <Card sx={{ p: { xs: 1, md: 2 } }}>
       {accounts.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 3 }}>
           <Iconify icon="eva:credit-card-outline" sx={{ fontSize: 48, color: 'text.disabled' }} />
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
-            No accounts found
+            No Accounts found
           </Typography>
         </Box>
       ) : (
@@ -101,27 +101,29 @@ export default function AccountList({ setCurrentBalance }) {
               delay: 5000,
               disableOnInteraction: false,
             }}
-            breakpoints={{
-              320: {
-                slidesPerView: 1.2,
-                spaceBetween: 10,
-              },
-              480: {
-                slidesPerView: 1.2,
-                spaceBetween: 10,
-              },
-              768: {
-                slidesPerView: 3.2,
-                spaceBetween: 14,
-              },
-              1024: {
-                slidesPerView: 4.2,
-                spaceBetween: 16,
-              },
-            }}
+            // breakpoints={{
+            //   320: {
+            //     slidesPerView: 2.2,
+            //     // spaceBetween: 10,
+            //   },
+            //   480: {
+            //     slidesPerView: 3.2,
+            //     // spaceBetween: 10,
+            //   },
+            //   768: {
+            //     slidesPerView: 3.2,
+            //     // spaceBetween: 14,
+            //   },
+            //   1024: {
+            //     slidesPerView: 4.2,
+            //     // spaceBetween: 16,
+            //   },
+            // }}
           >
             {accounts.map((account) => (
-              <SwiperSlide key={account.AccountId}>
+              <SwiperSlide key={account.AccountId} style={{
+        width: 'auto', // 👈 important — lets min/max width apply
+      }}>
                 <Card
                   onClick={() => {
                     navigate('/accounts', { state: { accountId: account.AccountId } });
@@ -134,11 +136,12 @@ export default function AccountList({ setCurrentBalance }) {
                     //   transform: 'translateY(-2px)',
                     //   boxShadow: (theme) => theme.customShadows.z24,
                     // },
-                    px: 2,
-                    py: 1,
+                    px: { xs: 1, md: 2 },
+                    py: { xs: 0.5, md: 1 },
                     borderRadius: 0.8,
                     width: '100%',
-                    minWidth: 250,
+                    minWidth: { xs: 150, md: 250 },
+                    maxWidth: { xs: 180, md: 250 },
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -149,10 +152,21 @@ export default function AccountList({ setCurrentBalance }) {
                       justifyContent="space-between"
                       width="100%"
                     >
-                      <i className={account?.Icon} style={{ color: '#ffffff', fontSize: 25 }} />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 600,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          fontSize: { xs: 16, md: 20 },
+                        }}
+                      >
+                        <i className={account?.Icon} style={{ color: '#ffffff' }} />
+                      </Typography>
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography
-                          variant="subtitle2"
+                          variant="body2"
                           sx={{
                             fontWeight: 600,
                             overflow: 'hidden',
@@ -161,25 +175,38 @@ export default function AccountList({ setCurrentBalance }) {
                             color: '#ffffff',
                             p: 0,
                             m: 0,
+                            fontSize: { xs: 10, md: 14 },
                           }}
                         >
                           {account.AccountName}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: '#FFF', p: 0, m: 0 }}>
-                          {getAccountTypeName(account.TypeId)}
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#FFF',
+                            p: 0,
+                            m: 0,
+                            fontSize: { xs: 10, md: 12 },
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {formatToINR(account.CurrentAmount || 0, isAmountVisible)}
                         </Typography>
                       </Box>
 
-                      <Typography
-                        variant="subtitle2"
+                      {/* <Typography
+                        variant="body2"
                         sx={{
                           fontSize: 16,
                           color: '#ffffff',
                           fontWeight: 700,
+                          fontSize: { xs: 12, md: 20 },
                         }}
                       >
                         {formatToINR(account.CurrentAmount || 0, isAmountVisible)}
-                      </Typography>
+                      </Typography> */}
                     </Stack>
                   </Box>
                 </Card>

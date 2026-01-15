@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -47,9 +48,13 @@ import PerformanceComponent from './Performance';
 export default function Index() {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const location = useLocation();
+
   const { isAmountVisible } = useAmountVisibility();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [accountId, setAccountId] = useState(location.state?.accountId || null);
 
   const [apiFlag, setApiFlag] = useState(false);
   const [displayFlag, setDisplayFlag] = useState(false);
@@ -90,12 +95,20 @@ export default function Index() {
           setLoadingSearchLoader(false);
           if (res?.status) {
             setAccountsList(res?.data?.list);
+            if (accountId) {
+              const account = res?.data?.list?.find((e) => e?.AccountId === accountId);
+              setDisplayFlag(true);
+              setEditObject(account);
+              setAccountId(null);
+            }
             setLoadingSwitch({});
           }
         })
       );
     }
   }, [searchValue, apiFlag]);
+
+  useEffect(() => {}, [accountId]);
 
   const columns = [
     {
@@ -627,7 +640,7 @@ export default function Index() {
 
         {displayFlag ? (
           <>
-            {editObject.AccountId && (
+            {editObject?.AccountId && (
               <Box
                 sx={{
                   mx: 2,
@@ -676,7 +689,7 @@ export default function Index() {
               </Box>
             )}
 
-            {(tabValue === '1' || !editObject.AccountId) && (
+            {(tabValue === '1' || !editObject?.AccountId) && (
               <Form
                 backAction={showDisplayAction}
                 editObject={editObject}
@@ -685,7 +698,7 @@ export default function Index() {
             )}
 
             {tabValue === '0' &&
-              editObject.AccountId &&
+              editObject?.AccountId &&
               (isMobile ? (
                 <MobileGrid />
               ) : (
@@ -702,12 +715,12 @@ export default function Index() {
                   })}
                 />
               ))}
-            {tabValue === '2' && editObject.AccountId && (
-              <AnalystComponent AccountId={editObject.AccountId} />
+            {tabValue === '2' && editObject?.AccountId && (
+              <AnalystComponent AccountId={editObject?.AccountId} />
             )}
 
-            {tabValue === '3' && editObject.AccountId && (
-              <PerformanceComponent AccountId={editObject.AccountId} />
+            {tabValue === '3' && editObject?.AccountId && (
+              <PerformanceComponent AccountId={editObject?.AccountId} />
             )}
           </>
         ) : (
