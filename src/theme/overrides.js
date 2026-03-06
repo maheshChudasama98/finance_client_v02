@@ -501,7 +501,7 @@ export function overrides(theme) {
       styleOverrides: {
         root: {
           position: 'relative',
-          border: `1px solid ${theme.palette.primary.light}`,
+          border: `1px solid ${theme.palette.primary.main}`,
           borderRadius: Number(theme.shape.borderRadius) * 0.6,
           minWidth: 0,
           marginRight: 6,
@@ -510,7 +510,7 @@ export function overrides(theme) {
           fontSize: 14,
           minHeight: 35,
           overflow: 'visible',
-          color: theme.palette.primary.light,
+          color: theme.palette.primary.main,
 
           '&:hover': {
             color: theme.palette.primary.main,
@@ -520,7 +520,7 @@ export function overrides(theme) {
           '&.Mui-selected': {
             color: theme.palette.grey[100],
             fontWeight: 700,
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.primary.main,
             border: 'none',
 
             '&::after': {
@@ -533,7 +533,7 @@ export function overrides(theme) {
               height: 0,
               borderLeft: '6px solid transparent',
               borderRight: '6px solid transparent',
-              borderTop: `6px solid ${theme.palette.primary.light}`, // arrow color
+              borderTop: `6px solid ${theme.palette.primary.main}`, // arrow color
             },
           },
 
