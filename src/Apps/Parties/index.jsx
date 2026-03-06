@@ -562,154 +562,152 @@ export default function Index() {
   };
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Card>
-        <CardHeader
-          title={titleAction(!displayFlag)}
-          sx={{ marginBottom: 2 }}
-          action={
-            <Button
-              onClick={showDisplayAction}
-              variant="contained"
-              color="primary"
-              size={isMobile ? 'small' : 'medium'}
-              startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+    <Card>
+      <CardHeader
+        title={titleAction(!displayFlag)}
+        sx={{ marginBottom: 2 }}
+        action={
+          <Button
+            onClick={showDisplayAction}
+            variant="contained"
+            color="primary"
+            size={isMobile ? 'small' : 'medium'}
+            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+          >
+            {!displayFlag ? 'Add New' : 'Back'}
+          </Button>
+        }
+      />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+
+      {displayFlag ? (
+        <>
+          {editObject.PartyId && (
+            <Box
+              sx={{
+                margin: 2,
+                display: { md: 'flex', xs: 'block' },
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              {!displayFlag ? 'Add New' : 'Back'}
-            </Button>
-          }
-        />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
-
-        {displayFlag ? (
-          <>
-            {editObject.PartyId && (
               <Box
                 sx={{
-                  margin: 2,
-                  display: { md: 'flex', xs: 'block' },
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: 'flex',
+                  mt: { xs: 2, md: 0 },
                 }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    mt: { xs: 2, md: 0 },
-                  }}
-                >
-                  <CustomSelect
-                    valueKey="PartyId"
-                    labelKey="FullName"
-                    size="small"
-                    menuList={getList}
-                    defaultValue={editObject?.PartyId}
-                    callBackAction={selectItemAction}
-                    sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                  }}
-                >
-                  <Tabs
-                    disableRipple
-                    value={tabValue}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    onChange={handleChange}
-                  >
-                    <Tab value="1" label="Details" />
-                    <Tab value="2" label="Activity" />
-                    <Tab value="3" label="Performance" />
-                  </Tabs>
-                </Box>
-              </Box>
-            )}
-
-            {tabValue === '0' &&
-              editObject.PartyId &&
-              (isMobile ? (
-                <MobileGrid />
-              ) : (
-                <Table
-                  className="custom-ant-table"
-                  columns={columns}
-                  dataSource={tableSetData}
-                  pagination={false}
-                  rowKey={(record) => record.PartyId}
-                  onRow={(record) => ({
-                    onClick: () => {
-                      selectItemAction(record.key);
-                      handleChange(null, '2');
-                    },
-                  })}
+                <CustomSelect
+                  valueKey="PartyId"
+                  labelKey="FullName"
+                  size="small"
+                  menuList={getList}
+                  defaultValue={editObject?.PartyId}
+                  callBackAction={selectItemAction}
+                  sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
                 />
-              ))}
-            {(tabValue === '1' || !editObject.PartyId) && (
-              <Form
-                backAction={showDisplayAction}
-                editObject={editObject}
-                deleteAction={deleteAction}
-              />
-            )}
-
-            {tabValue === '2' && editObject.PartyId && (
-              <AnalystComponent PartyId={editObject.PartyId} />
-            )}
-
-            {tabValue === '3' && editObject.PartyId && (
-              <PerformanceComponent PartyId={editObject.PartyId} />
-            )}
-          </>
-        ) : (
-          <Box sx={{ borderRadius: 1.3 }}>
-            {loadingLoader ? (
-              <Box sx={{ display: 'flex', height: '50vh' }}>
-                <Loader />
               </Box>
-            ) : (
               <Box
                 sx={{
-                  overflow: 'auto',
+                  display: 'flex',
                 }}
               >
-                <Box sx={{ m: 2 }}>
-                  <CustomSearchInput
-                    loading={loadingSearchLoader}
-                    searchValue={searchValue}
-                    callBack={setSearchValue}
-                  />
-                </Box>
-
-                {getList && getList?.length > 0 ? (
-                  <>
-                    {isMobile && <MobileGrid />}
-                    {!isMobile && (
-                      <Table
-                        className="custom-ant-table"
-                        columns={columns}
-                        dataSource={tableSetData}
-                        pagination={false}
-                        rowKey={(record) => record.PartyId}
-                        onRow={(record) => ({
-                          onClick: () => {
-                            selectItemAction(record.key);
-                          },
-                        })}
-                      />
-                    )}
-                  </>
-                ) : (
-                  <DataNotFound />
-                )}
+                <Tabs
+                  disableRipple
+                  value={tabValue}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  onChange={handleChange}
+                >
+                  <Tab value="1" label="Details" />
+                  <Tab value="2" label="Activity" />
+                  <Tab value="3" label="Performance" />
+                </Tabs>
               </Box>
-            )}
-          </Box>
-        )}
-      </Card>
-    </Box>
+            </Box>
+          )}
+
+          {tabValue === '0' &&
+            editObject.PartyId &&
+            (isMobile ? (
+              <MobileGrid />
+            ) : (
+              <Table
+                className="custom-ant-table"
+                columns={columns}
+                dataSource={tableSetData}
+                pagination={false}
+                rowKey={(record) => record.PartyId}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectItemAction(record.key);
+                    handleChange(null, '2');
+                  },
+                })}
+              />
+            ))}
+          {(tabValue === '1' || !editObject.PartyId) && (
+            <Form
+              backAction={showDisplayAction}
+              editObject={editObject}
+              deleteAction={deleteAction}
+            />
+          )}
+
+          {tabValue === '2' && editObject.PartyId && (
+            <AnalystComponent PartyId={editObject.PartyId} />
+          )}
+
+          {tabValue === '3' && editObject.PartyId && (
+            <PerformanceComponent PartyId={editObject.PartyId} />
+          )}
+        </>
+      ) : (
+        <Box sx={{ borderRadius: 1.3 }}>
+          {loadingLoader ? (
+            <Box sx={{ display: 'flex', height: '50vh' }}>
+              <Loader />
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                overflow: 'auto',
+              }}
+            >
+              <Box sx={{ m: 2 }}>
+                <CustomSearchInput
+                  loading={loadingSearchLoader}
+                  searchValue={searchValue}
+                  callBack={setSearchValue}
+                />
+              </Box>
+
+              {getList && getList?.length > 0 ? (
+                <>
+                  {isMobile && <MobileGrid />}
+                  {!isMobile && (
+                    <Table
+                      className="custom-ant-table"
+                      columns={columns}
+                      dataSource={tableSetData}
+                      pagination={false}
+                      rowKey={(record) => record.PartyId}
+                      onRow={(record) => ({
+                        onClick: () => {
+                          selectItemAction(record.key);
+                        },
+                      })}
+                    />
+                  )}
+                </>
+              ) : (
+                <DataNotFound />
+              )}
+            </Box>
+          )}
+        </Box>
+      )}
+    </Card>
   );
 }
 

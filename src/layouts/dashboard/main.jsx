@@ -8,7 +8,7 @@ import { NAV, HEADER } from './config-layout';
 
 // ----------------------------------------------------------------------
 
-const SPACING = 8;
+const SPACING = 10;
 
 export default function Main({ children, sx, ...other }) {
   const lgUp = useResponsive('up', 'lg');
@@ -20,8 +20,7 @@ export default function Main({ children, sx, ...other }) {
         flexGrow: 1,
         minHeight: 1,
         display: 'flex',
-        flexDirection: 'column',
-        // marginX: { xs: 1.5, md: 0 },
+        flexDirection: 'column',  
         py: `${HEADER.H_MOBILE + SPACING}px`,
         ...(lgUp && {
           px: 2,
@@ -32,7 +31,9 @@ export default function Main({ children, sx, ...other }) {
       }}
       {...other}
     >
-      {children}
+      <Box  sx={{ py: 1 }}>
+        {children}
+      </Box>
     </Box>
   );
 }

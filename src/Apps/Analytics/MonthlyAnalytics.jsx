@@ -1262,17 +1262,18 @@ export default function EnhancedAnalytics() {
                 <Card>
                   {transactions && transactions?.length > 0 ? (
                     <>
-                      <Tabs
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        disableRipple
-                        value={tabValue}
-                        onChange={handleChange}
-                      >
-                        <Tab value={0} label="List view" />
-                        <Tab value={1} label="Summary view" />
-                      </Tabs>
-
+                      <Box sx={{ px: 2, pt: 2 }}>
+                        <Tabs
+                          variant="scrollable"
+                          scrollButtons="auto"
+                          disableRipple
+                          value={tabValue}
+                          onChange={handleChange}
+                        >
+                          <Tab value={0} label="List view" />
+                          <Tab value={1} label="Summary view" />
+                        </Tabs>
+                      </Box>
                       {tabValue === 0 && (
                         <Box sx={{ overflow: 'auto' }}>
                           <Table

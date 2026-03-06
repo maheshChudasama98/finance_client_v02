@@ -21,7 +21,7 @@ import Scrollbar from 'src/components/scrollbar';
 import { CustomTooltip } from 'src/components/CustomComponents';
 
 import { NAV } from './config-layout';
-import BranchPopover from './common/branch-popover';
+// import BranchPopover from './common/branch-popover';
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav, isActive }) {
@@ -54,7 +54,7 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
     <Stack component="nav" spacing={0.5} sx={{ px: isActive ? 1 : 2 }}>
       <>
         <Box sx={{ display: { xs: 'block', md: 'none' }, paddingBottom: 2 }}>
-          <BranchPopover />
+          {/* <BranchPopover /> */}
         </Box>
         {isActive && upLg ? (
           <>
@@ -84,7 +84,11 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
         },
       }}
     >
-      {isActive ? <Logo sx={{ mx: 2.5 }}disabledLink={!upLg} /> : <Logo sx={{ ml: 3, my: 1.5, mb: 3 }} disabledLink />}
+      {isActive ? (
+        <Logo sx={{ mx: 2.5 }} disabledLink={!upLg} />
+      ) : (
+        <Logo sx={{ ml: 3, my: 1.5, mb: 3 }} disabledLink />
+      )}
       {renderMenu}
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
@@ -103,7 +107,8 @@ export default function Nav({ openNav, onCloseNav, isActive }) {
             height: 1,
             position: 'fixed',
             width: isActive ? NAV.SORT_WIDTH : NAV.WIDTH,
-            borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
+            borderRight: (theme) => `solid 1px ${theme.palette.primary?.light}`,
+            background: (theme) => theme.palette.background.paper,
           }}
         >
           {renderContent}

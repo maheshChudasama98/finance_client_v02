@@ -23,7 +23,6 @@ import Iconify from 'src/components/iconify';
 import AmountVisibilityToggle from 'src/components/CustomComponents/AmountVisibilityToggle';
 
 import { NAV, HEADER } from './config-layout';
-import BranchPopover from './common/branch-popover';
 import AccountPopover from './common/account-popover';
 // import Searchbar from './common/searchbar';
 // import LanguagePopover from './common/language-popover';
@@ -54,12 +53,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
         </IconButton>
       )}
 
-      {/* <Searchbar /> */}
-
       <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ display: { xs: 'none', md: 'contents' } }}>
-        <BranchPopover />
-      </Box>
 
       <Stack
         direction="row"
@@ -67,8 +61,6 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         spacing={1}
       >
-        {/* <TransactionsPopover /> */}
-        {/* <NotificationsPopover /> */}
         <AmountVisibilityToggle />
 
         <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
@@ -112,7 +104,8 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
           width: `calc(100% - ${isActive ? NAV.SORT_WIDTH : NAV.WIDTH + 1}px)`,
           height: HEADER.H_DESKTOP,
         }),
-        background: theme.palette.background.default,
+        background: theme.palette.background?.paper,
+        borderBottom: `solid 1px ${theme.palette.primary.main}`,
       }}
     >
       <Toolbar
@@ -130,13 +123,12 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
           onClick={() => setIsActive(!isActive)}
           sx={{
             position: 'absolute',
-            left: -16,
-            top: 15,
-            border: `dashed 1px ${theme.palette.divider}`,
+            left: -15,
+            top: 20,
+            border: `solid 1px ${theme.palette.primary?.light}`,
             borderRadius: 10,
             background: theme.palette.background.default,
-            // background: "#f9fafb",
-            // zIndex: 999999
+            '&:hover': { background: theme.palette.background.default },
           }}
         >
           {isActive ? (

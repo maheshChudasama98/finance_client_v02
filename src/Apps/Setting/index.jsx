@@ -66,157 +66,155 @@ export default function Index() {
   }, [apiFlag]);
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Card>
-        <CardHeader title="Setting" sx={{ marginBottom: 2 }} />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
-        <Formik
-          enableReinitialize
-          initialValues={{
-            DefaultTimeFrame: editObject?.DefaultTimeFrame || 'MONTH',
-            DefaultDuration: editObject?.DefaultDuration || 'Last_Thirty_Days',
-            DefaultDateFormat: editObject?.DefaultDateFormat || 'DD/MM/YYYY',
-            DefaultCurrency: editObject?.DefaultCurrency || 'INR',
-            AmountHide: editObject?.AmountHide === 0 ? false : true || true,
-          }}
-          validationSchema={Yup.object().shape({
-            DefaultTimeFrame: Yup.string().required('Default Time Frame required.'),
-            DefaultDuration: Yup.string().required('Default Duration is required.'),
-            DefaultDateFormat: Yup.string().required('Default Date Format is required.'),
-            DefaultCurrency: Yup.string().required('Default Currency is required.'),
-            AmountHide: Yup.bool().required('Amount Hide is required.'),
-          })}
-          onSubmit={ActionSubmit}
-        >
-          {(props) => {
-            const { handleSubmit, dirty, resetForm, values } = props;
-            return (
-              <Form>
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{
-                    paddingY: 2,
-                    paddingX: 2,
-                  }}
-                >
-                  <Grid xs={12}>
-                    <Box sx={{ float: 'right', display: 'flex' }}>
-                      {(values.AmountHide !== true ||
-                        values.DefaultCurrency !== 'INR' ||
-                        values.DefaultTimeFrame !== 'MONTH' ||
-                        values.DefaultDuration !== 'Last_Thirty_Days' ||
-                        values.DefaultDateFormat !== 'DD/MM/YYYY') && (
-                        <Button
-                          variant="contained"
-                          sx={{ marginX: 1 }}
-                          onClick={handleDefaultSubmit}
-                          color="info"
-                        >
-                          Reset to Default
-                        </Button>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid xs={12} md={4}>
-                    <AutoCompleteSelectMenu
-                      formik={props}
-                      label="Time Frame"
-                      field="DefaultTimeFrame"
-                      menuList={TimeDurationList}
-                      valueKey="Key"
-                      labelKey="Value"
-                    />
-                  </Grid>
-                  <Grid xs={12} md={4}>
-                    <AutoCompleteSelectMenu
-                      formik={props}
-                      label="Duration"
-                      field="DefaultDuration"
-                      menuList={SettingDurationList}
-                      valueKey="Value"
-                      labelKey="Key"
-                    />
-                  </Grid>
-                  <Grid xs={12} md={4}>
-                    <AutoCompleteSelectMenu
-                      formik={props}
-                      label="Date Format"
-                      field="DefaultDateFormat"
-                      menuList={DateFormatList}
-                      valueKey="Key"
-                      labelKey="Value"
-                    />
-                  </Grid>
-                  <Grid xs={12} md={4}>
-                    <AutoCompleteSelectMenu
-                      formik={props}
-                      label="Currency"
-                      field="DefaultCurrency"
-                      menuList={CurrencyList}
-                      valueKey="Value"
-                      labelKey="Key"
-                    />
-                  </Grid>
-                  <Grid xs={12} md={4} sx={{ alignContent: 'end' }}>
-                    <CheckboxForm
-                      formik={props}
-                      color="primary"
-                      label="Amount Hide"
-                      field="AmountHide"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={12}>
-                    <TextFieldForm
-                      required={false}
-                      formik={props}
-                      label="Description"
-                      field="Description"
-                      multiline
-                      rows={3}
-                      maxRows={3}
-                    />
-                  </Grid>
-
-                  <Grid xs={12}>
-                    <Box sx={{ float: 'right', display: 'flex' }}>
-                      {dirty && (
-                        <Button
-                          variant="outlined"
-                          sx={{ marginX: 1 }}
-                          onClick={() => {
-                            resetForm();
-                          }}
-                          color="darker"
-                        >
-                          Cancel
-                        </Button>
-                      )}
-
-                      {!formSubmitLoader ? (
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          disabled={!dirty}
-                          onClick={handleSubmit}
-                          color="primary"
-                        >
-                          Save
-                        </Button>
-                      ) : (
-                        <ButtonLoader />
-                      )}
-                    </Box>
-                  </Grid>
+    <Card>
+      <CardHeader title="Setting" sx={{ marginBottom: 2 }} />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+      <Formik
+        enableReinitialize
+        initialValues={{
+          DefaultTimeFrame: editObject?.DefaultTimeFrame || 'MONTH',
+          DefaultDuration: editObject?.DefaultDuration || 'Last_Thirty_Days',
+          DefaultDateFormat: editObject?.DefaultDateFormat || 'DD/MM/YYYY',
+          DefaultCurrency: editObject?.DefaultCurrency || 'INR',
+          AmountHide: editObject?.AmountHide === 0 ? false : true || true,
+        }}
+        validationSchema={Yup.object().shape({
+          DefaultTimeFrame: Yup.string().required('Default Time Frame required.'),
+          DefaultDuration: Yup.string().required('Default Duration is required.'),
+          DefaultDateFormat: Yup.string().required('Default Date Format is required.'),
+          DefaultCurrency: Yup.string().required('Default Currency is required.'),
+          AmountHide: Yup.bool().required('Amount Hide is required.'),
+        })}
+        onSubmit={ActionSubmit}
+      >
+        {(props) => {
+          const { handleSubmit, dirty, resetForm, values } = props;
+          return (
+            <Form>
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  paddingY: 2,
+                  paddingX: 2,
+                }}
+              >
+                <Grid xs={12}>
+                  <Box sx={{ float: 'right', display: 'flex' }}>
+                    {(values.AmountHide !== true ||
+                      values.DefaultCurrency !== 'INR' ||
+                      values.DefaultTimeFrame !== 'MONTH' ||
+                      values.DefaultDuration !== 'Last_Thirty_Days' ||
+                      values.DefaultDateFormat !== 'DD/MM/YYYY') && (
+                      <Button
+                        variant="contained"
+                        sx={{ marginX: 1 }}
+                        onClick={handleDefaultSubmit}
+                        color="info"
+                      >
+                        Reset to Default
+                      </Button>
+                    )}
+                  </Box>
                 </Grid>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Card>
-    </Box>
+
+                <Grid xs={12} md={4}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="Time Frame"
+                    field="DefaultTimeFrame"
+                    menuList={TimeDurationList}
+                    valueKey="Key"
+                    labelKey="Value"
+                  />
+                </Grid>
+                <Grid xs={12} md={4}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="Duration"
+                    field="DefaultDuration"
+                    menuList={SettingDurationList}
+                    valueKey="Value"
+                    labelKey="Key"
+                  />
+                </Grid>
+                <Grid xs={12} md={4}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="Date Format"
+                    field="DefaultDateFormat"
+                    menuList={DateFormatList}
+                    valueKey="Key"
+                    labelKey="Value"
+                  />
+                </Grid>
+                <Grid xs={12} md={4}>
+                  <AutoCompleteSelectMenu
+                    formik={props}
+                    label="Currency"
+                    field="DefaultCurrency"
+                    menuList={CurrencyList}
+                    valueKey="Value"
+                    labelKey="Key"
+                  />
+                </Grid>
+                <Grid xs={12} md={4} sx={{ alignContent: 'end' }}>
+                  <CheckboxForm
+                    formik={props}
+                    color="primary"
+                    label="Amount Hide"
+                    field="AmountHide"
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={12}>
+                  <TextFieldForm
+                    required={false}
+                    formik={props}
+                    label="Description"
+                    field="Description"
+                    multiline
+                    rows={3}
+                    maxRows={3}
+                  />
+                </Grid>
+
+                <Grid xs={12}>
+                  <Box sx={{ float: 'right', display: 'flex' }}>
+                    {dirty && (
+                      <Button
+                        variant="outlined"
+                        sx={{ marginX: 1 }}
+                        onClick={() => {
+                          resetForm();
+                        }}
+                        color="darker"
+                      >
+                        Cancel
+                      </Button>
+                    )}
+
+                    {!formSubmitLoader ? (
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={!dirty}
+                        onClick={handleSubmit}
+                        color="primary"
+                      >
+                        Save
+                      </Button>
+                    ) : (
+                      <ButtonLoader />
+                    )}
+                  </Box>
+                </Grid>
+              </Grid>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Card>
   );
 }
 

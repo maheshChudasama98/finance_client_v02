@@ -92,8 +92,8 @@ export default function FinanceCalculator() {
           value={currentTab}
           onChange={handleChangeTab}
           sx={{
-            px: 2,
-            bgcolor: 'background.neutral',
+            // px: 2,
+            // bgcolor: 'background.neutral',
             borderRadius: 1,
             mb: 3,
           }}

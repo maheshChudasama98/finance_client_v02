@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -19,7 +19,7 @@ import {
   BalanceOverviewService,
 } from 'src/Services/AnalystData.Services';
 
-import { DateRangePicker } from 'src/components/inputs';
+// import { DateRangePicker } from 'src/components/inputs';
 import { CustomSelect, CustomButtonGroup } from 'src/components/CustomComponents';
 
 import OverView from './OverView';
@@ -29,7 +29,7 @@ import GrowthRateChart from './GrowthRateChart';
 import LoadingSkeleton from './LoadingSkeleton';
 import DashboardSummary from './DashboardSummary';
 import AppCurrentVisits from './app-current-visits';
-import YearlyOverviewPDF from '../../DocumentToPDF/YearlyOverviewPDF';
+// import YearlyOverviewPDF from '../../DocumentToPDF/YearlyOverviewPDF';
 
 export default function Index() {
   const dispatch = useDispatch();
@@ -43,7 +43,8 @@ export default function Index() {
   const [topTen, setTopTen] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(new Date());
+  const selectedYear = new Date();
+  // const [selectedYear, setSelectedYear] = useState(new Date());
   const [lastYearBaseData, setLastYearBaseData] = useState({});
   const [currentYearBaseData, setCurrentYearBaseData] = useState({});
   const [currentYearBaseLoader, setCurrentYearBaseLoader] = useState(true);
@@ -54,7 +55,7 @@ export default function Index() {
   const [dataFlowTimeDuration, setDataFlowTimeDuration] = useState(DefaultTimeFrame || 'WEEK');
 
   const [cashFlowData, setCashFlowData] = useState([]);
-  const [downloadFlag, setDownloadFlag] = useState(false);
+  // const [downloadFlag, setDownloadFlag] = useState(false);
   const [cashFlowDurationLoader, setCashFlowDurationLoader] = useState(true);
   const [cashFlowDuration, setCashFlowDuration] = useState(DefaultDuration || 'Last_Thirty_Days');
 
@@ -139,7 +140,7 @@ export default function Index() {
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: { xs: 3, md: 0 } }}>
+          {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: { xs: 3, md: 0 } }}>
             {!downloadFlag && (
               <Button
                 variant="contained"
@@ -177,9 +178,8 @@ export default function Index() {
               value={selectedYear}
               views={['year']}
             />
-          </Box>
+          </Box> */}
         </Box>
-        <AccountList setCurrentBalance={setCurrentBalance} />
       </Box>
 
       {/* Account List Section */}
@@ -193,6 +193,10 @@ export default function Index() {
         />
       </Box>
 
+      <Box sx={{ mb: 2 }}>
+        <AccountList setCurrentBalance={setCurrentBalance} />
+      </Box>
+      
       {/* Quick Insights */}
       <Box sx={{ mb: 2 }}>
         <QuickInsights
@@ -203,7 +207,6 @@ export default function Index() {
           topCategories={topTen}
         />
       </Box>
-
       {/* Charts Section */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={3}>
@@ -267,7 +270,6 @@ export default function Index() {
           </Grid>
         </Grid>
       </Box>
-
       {/* Data Flow and Cash Flow Section */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={3}>
@@ -426,7 +428,6 @@ export default function Index() {
           </Grid>
         </Grid>
       </Box>
-
       {/* Investment Chart */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={3}>
@@ -473,7 +474,6 @@ export default function Index() {
           </Grid>
         </Grid>
       </Box>
-
       {/* PDF Download Component */}
     </Container>
   );

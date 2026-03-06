@@ -6,7 +6,7 @@ import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
+// import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
@@ -26,7 +26,7 @@ export default function Index() {
   };
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
+    <Box>
       <Card>
         <CardHeader
           title={
@@ -38,7 +38,7 @@ export default function Index() {
           sx={{ mb: 2 }}
         />
 
-        <Divider sx={{ mx: 2 }} />
+        {/* <Divider sx={{ mx: 2 }} /> */}
 
         <Box
           sx={{

@@ -236,47 +236,51 @@ export function overrides(theme) {
     //     },
     //   },
     // },
-    MuiTabs: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'transparent',
-          borderBottom: 'none !important',
-          boxShadow: 'none !important',
-          position: 'relative',
-          '& .MuiTabs-flexContainer': {
-            borderBottom: 'none !important',
-          },
-          border: 'none',
-          '& .MuiTabs-indicator': {
-            backgroundColor: theme.palette.primary.main,
-          },
-        },
-      },
-    },
-    MuiTab: {
-      defaultProps: {
-        disableRipple: true,
-      },
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          minWidth: 0,
-          padding: '6px 12px',
-          '&:hover': {
-            color: theme.palette.primary.main,
-            backgroundColor: 'transparent',
-          },
-          '&.Mui-selected': {
-            color: theme.palette.primary.main,
-            fontWeight: 'bold',
-            backgroundColor: 'transparent',
-          },
-          '&.Mui-focusVisible': {
-            backgroundColor: 'transparent',
-          },
-        },
-      },
-    },
+
+
+
+    
+    // MuiTabs: {
+    //   styleOverrides: {
+    //     root: {
+    //       backgroundColor: 'transparent',
+    //       borderBottom: 'none !important',
+    //       boxShadow: 'none !important',
+    //       position: 'relative',
+    //       '& .MuiTabs-flexContainer': {
+    //         borderBottom: 'none !important',
+    //       },
+    //       border: 'none',
+    //       '& .MuiTabs-indicator': {
+    //         backgroundColor: theme.palette.primary.main,
+    //       },
+    //     },
+    //   },
+    // },
+    // MuiTab: {
+    //   defaultProps: {
+    //     disableRipple: true,
+    //   },
+    //   styleOverrides: {
+    //     root: {
+    //       textTransform: 'none',
+    //       minWidth: 0,
+    //       padding: '6px 12px',
+    //       '&:hover': {
+    //         color: theme.palette.primary.main,
+    //         backgroundColor: 'transparent',
+    //       },
+    //       '&.Mui-selected': {
+    //         color: theme.palette.primary.main,
+    //         fontWeight: 'bold',
+    //         backgroundColor: 'transparent',
+    //       },
+    //       '&.Mui-focusVisible': {
+    //         backgroundColor: 'transparent',
+    //       },
+    //     },
+    //   },
+    // },
 
     MuiCssBaseline: {
       styleOverrides: {
@@ -476,6 +480,66 @@ export function overrides(theme) {
         },
         select: {
           padding: '8px 10px',
+        },
+      },
+    },
+
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          overflow: 'visible',
+          '& .MuiTabs-indicator': {
+            display: 'none', // ✅ hide underline
+          },
+        },
+      },
+    },
+    MuiTab: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          position: 'relative',
+          border: `1px solid ${theme.palette.primary.light}`,
+          borderRadius: Number(theme.shape.borderRadius) * 0.6,
+          minWidth: 0,
+          marginRight: 6,
+          padding: '6px 12px',
+          fontWeight: 100,
+          fontSize: 14,
+          minHeight: 35,
+          overflow: 'visible',
+          color: theme.palette.primary.light,
+
+          '&:hover': {
+            color: theme.palette.primary.main,
+            backgroundColor: 'transparent',
+          },
+
+          '&.Mui-selected': {
+            color: theme.palette.grey[100],
+            fontWeight: 700,
+            backgroundColor: theme.palette.primary.light,
+            border: 'none',
+
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -5,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+              borderTop: `6px solid ${theme.palette.primary.light}`, // arrow color
+            },
+          },
+
+          '&.Mui-focusVisible': {
+            backgroundColor: 'transparent',
+          },
         },
       },
     },

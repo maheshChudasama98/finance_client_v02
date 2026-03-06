@@ -152,7 +152,7 @@ export default function Index() {
         <Button
           size="small"
           variant="outlined"
-          color='success'
+          color="success"
           onClick={(e) => {
             e.stopPropagation();
             setDisplayFlag(true);
@@ -382,7 +382,7 @@ export default function Index() {
                   <Button
                     size="small"
                     variant="outlined"
-                    color='success'
+                    color="success"
                     onClick={(e) => {
                       e.stopPropagation();
                       setDisplayFlag(true);
@@ -432,105 +432,103 @@ export default function Index() {
   );
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Card>
-        <CardHeader
-          title={titleAction(!displayFlag)}
-          sx={{
-            marginBottom: 2,
-            // paddingX: { xs: 2, sm: 3 },
-            // paddingY: 2,
-          }}
-          action={
-            <Button
-              onClick={showDisplayAction}
-              variant="contained"
-              color="primary"
-              size={isMobile ? 'small' : 'medium'}
-              startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
-            >
-              {!displayFlag ? 'Add New' : 'Back'}
-            </Button>
-          }
-        />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+    <Card>
+      <CardHeader
+        title={titleAction(!displayFlag)}
+        sx={{
+          marginBottom: 2,
+          // paddingX: { xs: 2, sm: 3 },
+          // paddingY: 2,
+        }}
+        action={
+          <Button
+            onClick={showDisplayAction}
+            variant="contained"
+            color="primary"
+            size={isMobile ? 'small' : 'medium'}
+            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+          >
+            {!displayFlag ? 'Add New' : 'Back'}
+          </Button>
+        }
+      />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
 
-        {displayFlag ? (
-          <Form
-            backAction={showDisplayAction}
-            editObject={editObject}
-            deletedAction={DeletedAction}
-          />
-        ) : (
+      {displayFlag ? (
+        <Form
+          backAction={showDisplayAction}
+          editObject={editObject}
+          deletedAction={DeletedAction}
+        />
+      ) : (
+        <Box
+          sx={{
+            borderRadius: 1.3,
+          }}
+        >
           <Box
             sx={{
-              borderRadius: 1.3,
+              marginX: 2,
+              marginY: 2,
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'stretch', sm: 'center' },
+              gap: { xs: 2, sm: 0 },
             }}
           >
+            <CustomSearchInput
+              loading={loadingSearchLoader}
+              searchValue={searchValue}
+              callBack={setSearchValue}
+              sx={{
+                width: { xs: '100%', sm: 'auto' },
+                minWidth: { xs: '100%', sm: 300 },
+              }}
+            />
+          </Box>
+
+          {loadingLoader ? (
+            <Box sx={{ display: 'flex', height: '50vh' }}>
+              <Loader />
+            </Box>
+          ) : (
             <Box
               sx={{
-                marginX: 2,
-                marginY: 2,
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                justifyContent: 'space-between',
-                alignItems: { xs: 'stretch', sm: 'center' },
-                gap: { xs: 2, sm: 0 },
+                overflow: 'auto',
               }}
             >
-              <CustomSearchInput
-                loading={loadingSearchLoader}
-                searchValue={searchValue}
-                callBack={setSearchValue}
-                sx={{
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: '100%', sm: 300 },
-                }}
-              />
+              {accountsList && accountsList?.length > 0 ? (
+                <>
+                  {isMobile && <MobileGrid />}
+                  {!isMobile && (
+                    <Box
+                      sx={{
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <Table
+                        className="custom-ant-table"
+                        columns={columns}
+                        dataSource={tableSetData}
+                        onRow={(record) => ({
+                          onClick: () => {
+                            handleRowClick(record);
+                          },
+                        })}
+                        pagination={false}
+                      />
+                    </Box>
+                  )}
+                </>
+              ) : (
+                <DataNotFound />
+              )}
             </Box>
-
-            {loadingLoader ? (
-              <Box sx={{ display: 'flex', height: '50vh' }}>
-                <Loader />
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  overflow: 'auto',
-                }}
-              >
-                {accountsList && accountsList?.length > 0 ? (
-                  <>
-                    {isMobile && <MobileGrid />}
-                    {!isMobile && (
-                      <Box
-                        sx={{
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        <Table
-                          className="custom-ant-table"
-                          columns={columns}
-                          dataSource={tableSetData}
-                          onRow={(record) => ({
-                            onClick: () => {
-                              handleRowClick(record);
-                            },
-                          })}
-                          pagination={false}
-                        />
-                      </Box>
-                    )}
-                  </>
-                ) : (
-                  <DataNotFound />
-                )}
-              </Box>
-            )}
-          </Box>
-        )}
-      </Card>
-    </Box>
+          )}
+        </Box>
+      )}
+    </Card>
   );
 }
 

@@ -860,234 +860,241 @@ export default function Index() {
   };
 
   return (
-    <Box sx={{ paddingX: { xs: 0, sm: 2 } }}>
-      <Card>
-        <CardHeader
-          title={titleAction(!displayFlag)}
-          sx={{
-            // marginBottom: 2,
-            paddingX: { xs: 2, sm: 3 },
-            paddingY: 2,
-          }}
-          action={
-            <Button
-              onClick={showDisplayAction}
-              variant="contained"
-              color="primary"
-              size={isMobile ? 'small' : 'medium'}
-              startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
-            >
-              {!displayFlag ? 'Add New' : 'Back'}
-            </Button>
-          }
-        />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+    <Card>
+      {/* <CardHeader
+        title={titleAction(!displayFlag)}
+        sx={{
+          // marginBottom: 2,
+          paddingX: { xs: 2, sm: 3 },
+          paddingY: 2,
+        }}
+        action={
+          <Button
+            onClick={showDisplayAction}
+            variant="contained"
+            color="primary"
+            size={isMobile ? 'small' : 'medium'}
+            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+          >
+            {!displayFlag ? 'Add New' : 'Back'}
+          </Button>
+        }
+      /> */}
 
-        {displayFlag ? (
-          <>
-            {editObject.CategoryId && (
+      <CardHeader
+        title={titleAction(!displayFlag)}
+        sx={{ marginBottom: 2 }}
+        action={
+          <Button
+            onClick={showDisplayAction}
+            variant="contained"
+            color="primary"
+            size={isMobile ? 'small' : 'medium'}
+            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
+          >
+            {!displayFlag ? 'Add New' : 'Back'}
+          </Button>
+        }
+      />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginX: 2 }} />
+
+      {displayFlag ? (
+        <>
+          {editObject.CategoryId && (
+            <Box
+              sx={{
+                mx: 2,
+                mt: 1,
+                display: { md: 'flex', xs: 'block' },
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Box
                 sx={{
-                  mx: 2,
-                  mt: 1,
-                  display: { md: 'flex', xs: 'block' },
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: 'flex',
+                  width: { xs: '100%', sm: 'auto' },
                 }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    width: { xs: '100%', sm: 'auto' },
-                  }}
-                >
-                  <CustomSelect
-                    size="small"
-                    valueKey="CategoryId"
-                    labelKey="CategoryName"
-                    menuList={recodeList}
-                    customMenuList={ListCustomList}
-                    defaultValue={editObject?.CategoryId}
-                    callBackAction={selectItemAction}
-                    sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
-                  />
-                </Box>
-
-                <Box
-                  sx={{
-                    display: 'flex',
-                    overflow: 'auto',
-                  }}
-                >
-                  <Tabs
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    disableRipple
-                    value={tabValue}
-                    onChange={handleChange}
-                    sx={{
-                      minHeight: { xs: 48, sm: 56 },
-                      '& .MuiTab-root': {
-                        minHeight: { xs: 48, sm: 56 },
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      },
-                    }}
-                  >
-                    <Tab value="1" label="Details" />
-                    <Tab value="4" label="Sub Categories" />
-                    <Tab value="2" label="Activity" />
-                    <Tab value="3" label="Performance" />
-                  </Tabs>
-                </Box>
-              </Box>
-            )}
-
-            {tabValue === '0' &&
-              editObject.CategoryId &&
-              (isMobile ? (
-                <MobileGrid />
-              ) : (
-                <Table
-                  className="custom-ant-table"
-                  columns={columns}
-                  dataSource={tableSetData}
-                  pagination={false}
-                  onRow={(record) => ({
-                    onClick: () => {
-                      selectItemAction(record?.item);
-                    },
-                  })}
+                <CustomSelect
+                  size="small"
+                  valueKey="CategoryId"
+                  labelKey="CategoryName"
+                  menuList={recodeList}
+                  customMenuList={ListCustomList}
+                  defaultValue={editObject?.CategoryId}
+                  callBackAction={selectItemAction}
+                  sx={{ width: { xs: '100%', md: 230, lg: 230 } }}
                 />
-              ))}
-            {(tabValue === '1' || !editObject.CategoryId) && (
-              <Form
-                backAction={showDisplayAction}
-                editObject={editObject}
-                deleteAction={deleteAction}
-              />
-            )}
-
-            {tabValue === '2' && editObject.CategoryId && (
-              <AnalystComponent CategoryId={editObject.CategoryId} />
-            )}
-
-            {tabValue === '3' && editObject.CategoryId && (
-              <PerformanceComponent CategoryId={editObject.CategoryId} />
-            )}
-
-            {tabValue === '4' && editObject.CategoryId && (
-              <>
-                <Box
-                  sx={{
-                    margin: 2,
-                    display: 'flex',
-                    justifyContent: 'end',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      setSubDisplayFlag(true);
-                      setSubEditObject({});
-                    }}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Add
-                  </Button>
-                </Box>
-                {subDisplayFlag && (
-                  <SubCategoriesForm
-                    editObject={subEditObject}
-                    Category={editObject}
-                    CategoryId={editObject.CategoryId}
-                    Color={editObject.Color}
-                    backAction={subCategoryAction}
-                    deleteAction={deleteSubAction}
-                  />
-                )}
-
-                <Table
-                  className="custom-ant-table"
-                  columns={subColumns}
-                  dataSource={customSubCategory}
-                  pagination={false}
-                  rowKey={(record) => record.key}
-                  expandable={{
-                    expandedRowRender: (record) =>
-                      record?.item?.isPrimitive === 1 ? (
-                        <Box
-                          sx={{
-                            m: 2,
-                            borderRadius: 1,
-                            border: 'solid 1px #EEE',
-                          }}
-                        >
-                          <SubCategoriesForm
-                            editObject={record?.item}
-                            Category={editObject}
-                            CategoryId={editObject.CategoryId}
-                            Color={editObject.Color}
-                            backAction={subCategoryAction}
-                            deleteAction={deleteSubAction}
-                          />
-                        </Box>
-                      ) : (
-                        <Box> Your are not owner this Category</Box>
-                      ),
-                    expandRowByClick: true,
-                    showExpandColumn: false,
-                  }}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <Box sx={{ borderRadius: 1.3 }}>
-            {loadingLoader ? (
-              <Box sx={{ display: 'flex', height: '50vh' }}>
-                <Loader />
               </Box>
-            ) : (
+
               <Box
                 sx={{
+                  display: 'flex',
                   overflow: 'auto',
                 }}
               >
-                <Box sx={{ m: 2 }}>
-                  <CustomSearchInput
-                    loading={loadingSearchLoader}
-                    searchValue={searchValue}
-                    callBack={setSearchValue}
-                  />
-                </Box>
-
-                {recodeList && recodeList?.length > 0 ? (
-                  <>
-                    {isMobile && <MobileGrid />}
-                    {!isMobile && (
-                      <Table
-                        className="custom-ant-table"
-                        columns={columns}
-                        dataSource={tableSetData}
-                        pagination={false}
-                        onRow={(record) => ({
-                          onClick: () => {
-                            selectItemAction(record?.item);
-                          },
-                        })}
-                      />
-                    )}
-                  </>
-                ) : (
-                  <DataNotFound />
-                )}
+                <Tabs
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  disableRipple
+                  value={tabValue}
+                  onChange={handleChange}
+                >
+                  <Tab value="1" label="Details" />
+                  <Tab value="4" label="Sub Categories" />
+                  <Tab value="2" label="Activity" />
+                  <Tab value="3" label="Performance" />
+                </Tabs>
               </Box>
-            )}
-          </Box>
-        )}
-      </Card>
-    </Box>
+            </Box>
+          )}
+
+          {tabValue === '0' &&
+            editObject.CategoryId &&
+            (isMobile ? (
+              <MobileGrid />
+            ) : (
+              <Table
+                className="custom-ant-table"
+                columns={columns}
+                dataSource={tableSetData}
+                pagination={false}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectItemAction(record?.item);
+                  },
+                })}
+              />
+            ))}
+          {(tabValue === '1' || !editObject.CategoryId) && (
+            <Form
+              backAction={showDisplayAction}
+              editObject={editObject}
+              deleteAction={deleteAction}
+            />
+          )}
+
+          {tabValue === '2' && editObject.CategoryId && (
+            <AnalystComponent CategoryId={editObject.CategoryId} />
+          )}
+
+          {tabValue === '3' && editObject.CategoryId && (
+            <PerformanceComponent CategoryId={editObject.CategoryId} />
+          )}
+
+          {tabValue === '4' && editObject.CategoryId && (
+            <>
+              <Box
+                sx={{
+                  margin: 2,
+                  display: 'flex',
+                  justifyContent: 'end',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  onClick={() => {
+                    setSubDisplayFlag(true);
+                    setSubEditObject({});
+                  }}
+                  variant="contained"
+                  color="primary"
+                >
+                  Add
+                </Button>
+              </Box>
+              {subDisplayFlag && (
+                <SubCategoriesForm
+                  editObject={subEditObject}
+                  Category={editObject}
+                  CategoryId={editObject.CategoryId}
+                  Color={editObject.Color}
+                  backAction={subCategoryAction}
+                  deleteAction={deleteSubAction}
+                />
+              )}
+
+              <Table
+                className="custom-ant-table"
+                columns={subColumns}
+                dataSource={customSubCategory}
+                pagination={false}
+                rowKey={(record) => record.key}
+                expandable={{
+                  expandedRowRender: (record) =>
+                    record?.item?.isPrimitive === 1 ? (
+                      <Box
+                        sx={{
+                          m: 2,
+                          borderRadius: 1,
+                          border: 'solid 1px #EEE',
+                        }}
+                      >
+                        <SubCategoriesForm
+                          editObject={record?.item}
+                          Category={editObject}
+                          CategoryId={editObject.CategoryId}
+                          Color={editObject.Color}
+                          backAction={subCategoryAction}
+                          deleteAction={deleteSubAction}
+                        />
+                      </Box>
+                    ) : (
+                      <Box> Your are not owner this Category</Box>
+                    ),
+                  expandRowByClick: true,
+                  showExpandColumn: false,
+                }}
+              />
+            </>
+          )}
+        </>
+      ) : (
+        <Box sx={{ borderRadius: 1.3 }}>
+          {loadingLoader ? (
+            <Box sx={{ display: 'flex', height: '50vh' }}>
+              <Loader />
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                overflow: 'auto',
+              }}
+            >
+              <Box sx={{ m: 2 }}>
+                <CustomSearchInput
+                  loading={loadingSearchLoader}
+                  searchValue={searchValue}
+                  callBack={setSearchValue}
+                />
+              </Box>
+
+              {recodeList && recodeList?.length > 0 ? (
+                <>
+                  {isMobile && <MobileGrid />}
+                  {!isMobile && (
+                    <Table
+                      className="custom-ant-table"
+                      columns={columns}
+                      dataSource={tableSetData}
+                      pagination={false}
+                      onRow={(record) => ({
+                        onClick: () => {
+                          selectItemAction(record?.item);
+                        },
+                      })}
+                    />
+                  )}
+                </>
+              ) : (
+                <DataNotFound />
+              )}
+            </Box>
+          )}
+        </Box>
+      )}
+    </Card>
   );
 }
 

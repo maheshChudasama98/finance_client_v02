@@ -42,7 +42,6 @@ import Loader from 'src/components/Loaders/Loader';
 import { AnimatedChart, AnimatedCounter } from 'src/components/Animated';
 import { CustomAvatar, CustomSelect } from 'src/components/CustomComponents';
 
-
 const calculateHealthScore = (account) => {
   const balance = Number(account?.CurrentAmount) || 0;
   const startAmount = Number(account?.StartAmount) || 0;
@@ -1490,7 +1489,7 @@ export default function AccountAnalytics() {
               </Typography>
             }
           />
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mx: 2 }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mx: 2, mt: 1 }}>
             <Tabs
               value={activeTab}
               onChange={handleTabChange}

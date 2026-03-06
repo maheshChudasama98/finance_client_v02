@@ -15,7 +15,6 @@ import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
 import { getThemeColor } from 'src/utils/utils';
 import { formatToINR } from 'src/utils/format-number';
 
-import { AccountTypes } from 'src/constance';
 import { AccountsFetchListService } from 'src/Services/Meter.Services';
 
 import Iconify from 'src/components/iconify';
@@ -121,9 +120,12 @@ export default function AccountList({ setCurrentBalance }) {
             // }}
           >
             {accounts.map((account) => (
-              <SwiperSlide key={account.AccountId} style={{
-        width: 'auto', // 👈 important — lets min/max width apply
-      }}>
+              <SwiperSlide
+                key={account.AccountId}
+                style={{
+                  width: 'auto', // 👈 important — lets min/max width apply
+                }}
+              >
                 <Card
                   onClick={() => {
                     navigate('/accounts', { state: { accountId: account.AccountId } });
