@@ -20,7 +20,7 @@ export default function Main({ children, sx, ...other }) {
         flexGrow: 1,
         minHeight: 1,
         display: 'flex',
-        flexDirection: 'column',  
+        flexDirection: 'column',
         py: `${HEADER.H_MOBILE + SPACING}px`,
         ...(lgUp && {
           px: 2,
@@ -31,9 +31,7 @@ export default function Main({ children, sx, ...other }) {
       }}
       {...other}
     >
-      <Box  sx={{ py: 1 }}>
-        {children}
-      </Box>
+      <Box sx={{ p: 1 }}>{children}</Box>
     </Box>
   );
 }

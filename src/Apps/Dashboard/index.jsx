@@ -43,7 +43,7 @@ export default function Index() {
   const [topTen, setTopTen] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
   const [currentMonth, setCurrentMonth] = useState([]);
-  const selectedYear = new Date();
+  // const selectedYear = new Date();
   // const [selectedYear, setSelectedYear] = useState(new Date());
   const [lastYearBaseData, setLastYearBaseData] = useState({});
   const [currentYearBaseData, setCurrentYearBaseData] = useState({});
@@ -63,7 +63,7 @@ export default function Index() {
     setCurrentYearBaseLoader(true);
 
     dispatch(
-      DashboardService({ SelectedYear: new Date(selectedYear).getFullYear() }, (res) => {
+      DashboardService({ SelectedYear: new Date().getFullYear() }, (res) => {
         setCurrentYearBaseLoader(false);
         if (res.status) {
           setCurrentYearBaseData(res?.data?.currentYear || {});
@@ -75,7 +75,7 @@ export default function Index() {
         setCurrentYearBaseLoader(false);
       })
     );
-  }, [selectedYear]);
+  }, []);
 
   useEffect(() => {
     dispatch(
@@ -196,7 +196,7 @@ export default function Index() {
       <Box sx={{ mb: 2 }}>
         <AccountList setCurrentBalance={setCurrentBalance} />
       </Box>
-      
+
       {/* Quick Insights */}
       <Box sx={{ mb: 2 }}>
         <QuickInsights
