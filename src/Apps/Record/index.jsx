@@ -240,26 +240,28 @@ export default function Index() {
               borderColor: 'divider',
             }}
           >
-            <Card
+            <Box
               sx={{
                 p: 2,
                 textAlign: 'center',
-                border: `1px solid ${theme.palette.border.success}`,
-                background: theme.palette.gradients.success,
+                borderRadius: 1.8,
+                border: `1px solid ${theme.palette.border.warning}`,
+                background: theme.palette.gradients.warning,
               }}
             >
               <Typography variant="body2" color="text.secondary">
                 Total In
               </Typography>
-              <Typography variant="body1" color="success.main" sx={{ fontWeight: 700 }}>
+              <Typography variant="body1" color="warning.main" sx={{ fontWeight: 700 }}>
                 {formatToINR(summaryTotals.totalIn, isAmountVisible)}
               </Typography>
-            </Card>
+            </Box>
 
-            <Card
+            <Box
               sx={{
                 p: 2,
                 textAlign: 'center',
+                borderRadius: 1.8,
                 border: `1px solid ${theme.palette.border.error}`,
                 background: theme.palette.gradients.error,
               }}
@@ -270,7 +272,7 @@ export default function Index() {
               <Typography variant="body1" color="error.main" sx={{ fontWeight: 700 }}>
                 {formatToINR(summaryTotals.totalOut, isAmountVisible)}
               </Typography>
-            </Card>
+            </Box>
           </Box>
 
           {/* Search and Filter Section */}

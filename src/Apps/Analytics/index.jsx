@@ -14,6 +14,7 @@ import LabelsAnalytics from './LabelsAnalytics';
 import MonthlyAnalytics from './MonthlyAnalytics';
 import PartiesAnalytics from './PartiesAnalytics';
 import AccountAnalytics from './AccountAnalytics';
+import OverallAnalytics from './OverallAnalytics';
 import EnhancedAnalytics from './EnhancedAnalytics';
 import CategoriesAnalytics from './CategoriesAnalytics';
 import SubCategoriesAnalytics from './SubCategoriesAnalytics';
@@ -53,6 +54,7 @@ export default function Index() {
             value={tabValue}
             onChange={handleChange}
           >
+            <Tab value={8} label="Overall Analytics" />
             <Tab value={0} label="Enhanced Analytics" />
             <Tab value={6} label="Monthly Analytics" />
             <Tab value={1} label="Accounts" />
@@ -65,6 +67,7 @@ export default function Index() {
       </Card>
 
       <Box sx={{ mt: 2 }}>
+        {tabValue === 8 && <OverallAnalytics />}
         {tabValue === 0 && <EnhancedAnalytics />}
         {tabValue === 6 && <MonthlyAnalytics />}
         {tabValue === 1 && <AccountAnalytics />}

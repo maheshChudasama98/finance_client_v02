@@ -6,11 +6,11 @@ import { grey, info, error, common, primary, success, warning, secondary } from 
 
 export function customShadows(mode = 'light', primaryColor) {
   const isLight = mode === 'light';
-  
+
   // Use different shadow colors for light and dark modes
   const shadowColor = isLight ? grey[500] : grey[900];
   const transparent = alpha(shadowColor, isLight ? 0.16 : 0.25);
-  
+
   // Use dynamic primary color if provided
   const computedPrimary = primaryColor || primary.main;
   const computedSuccess = primaryColor || success.main;
@@ -28,8 +28,12 @@ export function customShadows(mode = 'light', primaryColor) {
     z20: `0 20px 40px -4px ${transparent}`,
     z24: `0 24px 48px 0 ${transparent}`,
     //
-    card: `0 0 2px 0 ${alpha(shadowColor, isLight ? 0.08 : 0.15)}, 0 12px 24px -4px ${alpha(shadowColor, isLight ? 0.08 : 0.15)}`,
-    dropdown: `0 0 2px 0 ${alpha(shadowColor, isLight ? 0.24 : 0.35)}, -20px 20px 40px -4px ${alpha(shadowColor, isLight ? 0.24 : 0.35)}`,
+    // card: `0 0 2px 0 ${alpha(shadowColor, isLight ? 0.08 : 0.15)}, 0 12px 24px -4px ${alpha(shadowColor, isLight ? 0.08 : 0.15)}`,
+    card: `0px 3px 5px -1px ${transparent},0px 5px 8px 0px ${transparent},0px 1px 14px 0px ${transparent}`,
+    dropdown: `0 0 2px 0 ${alpha(shadowColor, isLight ? 0.24 : 0.35)}, -20px 20px 40px -4px ${alpha(
+      shadowColor,
+      isLight ? 0.24 : 0.35
+    )}`,
     dialog: `-40px 40px 80px -8px ${alpha(common.black, isLight ? 0.24 : 0.45)}`,
     //
     primary: `0 8px 16px 0 ${alpha(computedPrimary, isLight ? 0.24 : 0.35)}`,

@@ -105,7 +105,7 @@ export default function Header({ onOpenNav, isActive, setIsActive }) {
           height: HEADER.H_DESKTOP,
         }),
         background: theme.palette.background?.paper,
-        borderBottom: `solid 1px ${theme.palette.primary.main}`,
+        // borderBottom: `solid 1px ${theme.palette.primary.main}`,
       }}
     >
       <Toolbar
