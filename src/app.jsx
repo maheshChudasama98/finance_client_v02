@@ -15,6 +15,7 @@ import Router from 'src/routes/sections';
 import ThemeProvider from 'src/theme';
 import { useNavigate } from 'react-router-dom';
 import { InfoApiActionService } from './Services/Auth.Services';
+import { DevelopMood } from './constance';
 
 // ----------------------------------------------------------------------
 
@@ -27,19 +28,42 @@ export default function App() {
 
   useEffect(() => {
     if (!tokenLocalStorage) {
-      navigate('/login'); 
+      navigate('/login');
     } else {
       dispatch(
         InfoApiActionService((res) => {
           if (res.status) {
             navigate('/dashboard');
-            
           } else {
             navigate('/login');
           }
         })
       );
     }
+  }, []);
+
+  useEffect(() => {
+    if (DevelopMood) return;
+
+    const handleContextMenu = (e) => e.preventDefault();
+
+    const handleKeyDown = (e) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === 'U')
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   useScrollToTop();

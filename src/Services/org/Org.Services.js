@@ -3,7 +3,6 @@ import jwtAuthAxios, { errorHandler } from "../auth/jwtAuth";
 export function OrgModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/org/modify', payload , {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -25,7 +24,6 @@ export function OrgModifyService(payload, cb) {
 export function OrgListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/org/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -42,7 +40,6 @@ export function OrgListService(payload, cb) {
 export function OrgRemoveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.delete(`/org/remove?OrgId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -60,7 +57,6 @@ export function OrgRemoveService(payload, cb) {
 export function OrgActiveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/org/active?OrgId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -78,7 +74,6 @@ export function OrgActiveService(payload, cb) {
 export function BranchModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/branch/modify', payload,{
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -100,7 +95,6 @@ export function BranchModifyService(payload, cb) {
 export function BranchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/branch/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -117,7 +111,6 @@ export function BranchListService(payload, cb) {
 export function BranchRemoveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.delete(`/branch/remove?BranchId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -135,7 +128,6 @@ export function BranchRemoveService(payload, cb) {
 export function BranchActiveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/branch/active?BranchId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -153,7 +145,6 @@ export function BranchActiveService(payload, cb) {
 export function ModuleModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/module/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -171,7 +162,6 @@ export function ModuleModifyService(payload, cb) {
 export function ModuleListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/module/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -188,7 +178,6 @@ export function ModuleListService(payload, cb) {
 export function ModuleRemoveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.delete(`/module/remove?ModulesId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -206,7 +195,6 @@ export function ModuleRemoveService(payload, cb) {
 export function ModuleActiveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/module/active?ModulesId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -224,7 +212,6 @@ export function ModuleActiveService(payload, cb) {
 export function RoleModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/role/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -242,7 +229,6 @@ export function RoleModifyService(payload, cb) {
 export function RoleListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('/role/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -259,7 +245,6 @@ export function RoleListService(payload, cb) {
 export function RoleRemoveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.delete(`/role/remove?RoleId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -277,7 +262,6 @@ export function RoleRemoveService(payload, cb) {
 export function RoleActiveService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/role/active?RoleId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -296,7 +280,6 @@ export function RoleActiveService(payload, cb) {
 export function PermissionController(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/permission/list?RoleId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -314,7 +297,6 @@ export function PermissionController(payload, cb) {
 export function PermissionModifyController(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post(`/permission/modify`,payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -332,7 +314,6 @@ export function PermissionModifyController(payload, cb) {
 export function UserInfoAccessService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/role/active?RoleId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });

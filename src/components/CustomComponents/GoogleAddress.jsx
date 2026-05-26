@@ -164,7 +164,7 @@ export function GoogleAddress({ callBackAction }) {
                 }
                 // autocompleteService.current = new window.google.maps.places.AutocompleteService();
             } catch (err) {
-                console.log(err, "err");
+                console.error(err, "err");
             }
         }
         if (!autocompleteService.current) {

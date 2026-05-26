@@ -3,7 +3,6 @@ import jwtAuthAxios, { errorHandler } from "./auth/jwtAuth";
 export function TransactionModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('transaction/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -20,7 +19,6 @@ export function TransactionModifyService(payload, cb) {
 export function TransactionFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('transaction/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -38,7 +36,6 @@ export function TransactionFetchListService(payload, cb) {
 export function TransactionFetchDataService(cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get('transaction/data',).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -55,7 +52,6 @@ export function TransactionFetchDataService(cb) {
 export function TransactionRemoveController(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.delete(`transaction/remove?TransactionId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });

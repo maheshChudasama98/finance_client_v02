@@ -36,7 +36,6 @@ const numberformat = (number) => {
 const MonthlyFinancialAnalyticsPDF = ({ theme, setFlag, monthlyData, monthString }) => {
   const titleString = `${monthString} Financial Overview`;
 
-  console.log('monthlyData', theme, monthlyData?.overView, monthlyData?.totalIn, monthString);
   const [loader, setLoader] = useState(false);
 
   const styles = StyleSheet.create({
@@ -139,7 +138,6 @@ const MonthlyFinancialAnalyticsPDF = ({ theme, setFlag, monthlyData, monthString
     },
   });
 
-  console.log('first', styles?.summaryItem);
   return (
     <div>
       {loader && <ButtonLoader />}

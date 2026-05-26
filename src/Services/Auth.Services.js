@@ -1,3 +1,5 @@
+import { encrypt } from 'src/utils/crypto.utils';
+
 import jwtAuthAxios, { errorHandler } from './auth/jwtAuth';
 
 export function LoginApiAction(data, cb) {
@@ -11,11 +13,11 @@ export function LoginApiAction(data, cb) {
           dispatch({ type: 'FETCH_SUCCESS' });
           // dispatch({ type: 'SHOW_MESSAGE', payload: res?.data?.message });
 
-          localStorage.setItem('token', res?.data?.data);
+          localStorage.setItem('token', encrypt(res?.data?.data));
 
           dispatch({
             type: 'USER_LOGIN',
-            token: res?.data?.data,
+            token: encrypt(res?.data?.data),
           });
 
           if (cb) cb(res.data);
@@ -40,11 +42,11 @@ export function SignupApiAction(data, cb) {
           dispatch({ type: 'FETCH_SUCCESS' });
           // dispatch({ type: 'SHOW_MESSAGE', payload: res?.data?.message });
 
-          localStorage.setItem('token', res?.data?.data);
+          localStorage.setItem('token', encrypt(res?.data?.data));
 
           dispatch({
             type: 'USER_LOGIN',
-            token: res?.data?.data,
+            token: encrypt(res?.data?.data),
           });
           if (cb) cb(res.data);
         } else {
@@ -147,40 +149,64 @@ export function InfoApiActionService(cb) {
   return (dispatch) => {
     dispatch({ type: 'FETCH_START' });
 
-    jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-
     jwtAuthAxios
       .get('/user/info')
       .then((res) => {
         if (res.data.status) {
-          
           dispatch({ type: 'FETCH_SUCCESS' });
 
-          dispatch({ type: 'ORGS_LIST', OrgsList: res?.data?.data?.Org || {}});
+          dispatch({ type: 'ORGS_LIST', OrgsList: res?.data?.data?.Org || {} });
 
-          dispatch({ type: 'BRANCHES_LIST', BranchesList: res?.data?.data?.Branch || {}});
+          dispatch({ type: 'BRANCHES_LIST', BranchesList: res?.data?.data?.Branch || {} });
 
-          dispatch({ type: 'USER_DETAILS', UserDetails: res?.data?.data?.UserInfo || {}});
+          dispatch({ type: 'USER_DETAILS', UserDetails: res?.data?.data?.UserInfo || {} });
 
-          dispatch({ type: 'USER_PERMISSION', PermissionList: res?.data?.data?.PermissionList || []});
+          dispatch({
+            type: 'USER_PERMISSION',
+            PermissionList: res?.data?.data?.PermissionList || [],
+          });
 
-          dispatch({ type: 'THEME_MODE_SET', payload: res?.data?.data?.UserInfo?.ThemeMode || 'light'});
+          dispatch({
+            type: 'THEME_MODE_SET',
+            payload: res?.data?.data?.UserInfo?.ThemeMode || 'light',
+          });
 
-          dispatch({ type: 'THEME_PRIMARY_SET', payload: res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A'});
+          dispatch({
+            type: 'THEME_PRIMARY_SET',
+            payload: res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A',
+          });
 
-          dispatch({ type: 'AMOUNT_VISIBILITY_CHANGE', payload: !!res?.data?.data?.UserInfo?.AmountHide});
+          dispatch({
+            type: 'AMOUNT_VISIBILITY_CHANGE',
+            payload: !!res?.data?.data?.UserInfo?.AmountHide,
+          });
 
-          localStorage.setItem('DefaultTimeFrame', res?.data?.data?.UserInfo?.DefaultTimeFrame || 'MONTH');
+          localStorage.setItem(
+            'DefaultTimeFrame',
+            res?.data?.data?.UserInfo?.DefaultTimeFrame || 'MONTH'
+          );
 
-          localStorage.setItem('DefaultDuration', res?.data?.data?.UserInfo?.DefaultDuration || 'Last_Thirty_Days');
-          
-          localStorage.setItem('DefaultDateFormat', res?.data?.data?.UserInfo?.DefaultDateFormat || 'DD/MM/YYYY');
-          
-          localStorage.setItem('DefaultCurrency', res?.data?.data?.UserInfo?.DefaultCurrency || 'INR');
+          localStorage.setItem(
+            'DefaultDuration',
+            res?.data?.data?.UserInfo?.DefaultDuration || 'Last_Thirty_Days'
+          );
+
+          localStorage.setItem(
+            'DefaultDateFormat',
+            res?.data?.data?.UserInfo?.DefaultDateFormat || 'DD/MM/YYYY'
+          );
+
+          localStorage.setItem(
+            'DefaultCurrency',
+            res?.data?.data?.UserInfo?.DefaultCurrency || 'INR'
+          );
 
           localStorage.setItem('themeMode', res?.data?.data?.UserInfo?.ThemeMode || 'light');
-          
-          localStorage.setItem('themePrimary', res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A');
+
+          localStorage.setItem(
+            'themePrimary',
+            res?.data?.data?.UserInfo?.ThemePrimary || '#5BC43A'
+          );
 
           localStorage.setItem('AmountHide', res?.data?.data?.UserInfo?.AmountHide);
 

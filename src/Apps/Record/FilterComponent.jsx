@@ -116,8 +116,6 @@ export default function FilterComponent({ backAction, defaultValue, dataList }) 
       }}
       validationSchema={Yup.object().shape({})}
       onSubmit={(values) => {
-        // console.log(values.StartDate?.format('YYYY-MM-DD') , "values.StartDatevalues.StartDatevalues.StartDate");
-
         // values.StartDate = values.StartDate ? dayjs(values.StartDate)?.format('YYYY-MM-DD') : null;
         // values.EndDate = values.EndDate ? dayjs(values.EndDate)?.format('YYYY-MM-DD') : null;
 

@@ -134,13 +134,8 @@ export default function AccountList({ setCurrentBalance }) {
                     backgroundColor: getThemeColor(account?.Color, 0.2),
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    // '&:hover': {
-                    //   transform: 'translateY(-2px)',
-                    //   boxShadow: (theme) => theme.customShadows.z24,
-                    // },
                     px: { xs: 1, md: 2 },
                     py: { xs: 0.5, md: 1 },
-                    borderRadius: 0.8,
                     width: '100%',
                     minWidth: { xs: 150, md: 250 },
                     maxWidth: { xs: 180, md: 250 },

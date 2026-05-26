@@ -459,8 +459,6 @@ export default function AccountAnalytics() {
       TransactionFetchListService(payload, (res) => {
         if (res?.status) {
           const analytics = analyzeTransactions(res?.data?.list || []);
-          console.log(analytics, 'analytics analytics');
-
           setTransactionAnalytics(analytics);
         }
         setLoading(false);

@@ -29,8 +29,6 @@ const RecordList = ({ item, isHeader, deleteAction, editAction, filterHeader }) 
     fontWeight: 700,
   };
 
-  console.log('item', item)
-
   const ChipFun = (status) => {
     const Action = TransactionActions?.find((i) => status === i.key);
 

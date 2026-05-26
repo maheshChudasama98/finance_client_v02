@@ -6,7 +6,6 @@ import jwtAuthAxios, { errorHandler } from "./auth/jwtAuth";
 export function AccountsFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('accounts/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -24,7 +23,6 @@ export function AccountsFetchListService(payload, cb) {
 export function AccountModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('account/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -42,7 +40,6 @@ export function AccountModifyService(payload, cb) {
 export function AccountActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('account/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -60,7 +57,6 @@ export function AccountActionService(payload, cb) {
 export function SelectedAccountService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post(`account/selected`,payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -77,7 +73,6 @@ export function SelectedAccountService(payload, cb) {
 export function LabelsFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('labels/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -95,7 +90,6 @@ export function LabelsFetchListService(payload, cb) {
 export function LabelModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('label/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -113,7 +107,6 @@ export function LabelModifyService(payload, cb) {
 export function LabelActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('label/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -131,7 +124,6 @@ export function LabelActionService(payload, cb) {
 export function PartiesFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('parties/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -149,7 +141,6 @@ export function PartiesFetchListService(payload, cb) {
 export function PartyModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('party/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -167,7 +158,6 @@ export function PartyModifyService(payload, cb) {
 export function PartyActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('party/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -185,7 +175,6 @@ export function PartyActionService(payload, cb) {
 export function CategoriesFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('categories/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -203,7 +192,6 @@ export function CategoriesFetchListService(payload, cb) {
 export function CategoryModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('category/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -221,7 +209,6 @@ export function CategoryModifyService(payload, cb) {
 export function CategoryActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('category/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -239,7 +226,6 @@ export function CategoryActionService(payload, cb) {
 export function SubCategoriesFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('sub/categories/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -257,7 +243,6 @@ export function SubCategoriesFetchListService(payload, cb) {
 export function LongsModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('loan/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -275,7 +260,6 @@ export function LongsModifyService(payload, cb) {
 export function LongsActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('loan/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -294,7 +278,6 @@ export function LongsActionService(payload, cb) {
 export function LongsFetchListService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('loans/list', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -312,7 +295,6 @@ export function LongsFetchListService(payload, cb) {
 export function SubCategoryModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('sub/category/modify', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -330,7 +312,6 @@ export function SubCategoryModifyService(payload, cb) {
 export function SubCategoryActionService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post('sub/category/action', payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });

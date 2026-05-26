@@ -1,4 +1,6 @@
 export const apiURL = __API_URL__;
+export const cryptoSecureKey = __CRYPTO_SECURE_KEY__;
+
 export const ImgUrl = `${apiURL}/public/`;
 
 export const DevelopMood = true;

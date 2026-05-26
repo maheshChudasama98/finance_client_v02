@@ -43,6 +43,7 @@
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.7.5",
     "bootstrap-icons": "^1.11.3",
+    "crypto-js": "^4.2.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",

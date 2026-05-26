@@ -9,7 +9,8 @@
     "__ADMIN_GMAIL__": "readonly",
     "__WEATHER_API_KEY__": "readonly",
     "__OPEN_WEATHER_API__": "readonly",
-    "__GOOGLE_MAPS_API_KEY__": "readonly"
+    "__GOOGLE_MAPS_API_KEY__": "readonly",
+    "__CRYPTO_SECURE_KEY__": "readonly"
   },
   "env": {
     "browser": true,
@@ -190,11 +191,8 @@
           "custom-highcharts-react-official",
           "custom-swiper/react",
           "custom-recharts",
-          [
-            "parent",
-            "sibling",
-            "index"
-          ],
+          "custom-crypto-js",
+          ["parent", "sibling", "index"],
           "object",
           "unknown"
         ],
@@ -233,12 +231,11 @@
             "custom-highcharts": "highcharts",
             "custom-highcharts-react-official": "highcharts-react-official",
             "custom-swiper/react": "swiper/react",
-            "custom-recharts": "recharts"
+            "custom-recharts": "recharts",
+            "custom-crypto-js": "crypto-js"
           }
         },
-        "internal-pattern": [
-          "src/**"
-        ]
+        "internal-pattern": ["src/**"]
       }
     ]
   }

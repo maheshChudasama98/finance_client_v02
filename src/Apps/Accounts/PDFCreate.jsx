@@ -120,8 +120,6 @@ const styles = StyleSheet.create({
 });
 
 // const ApplicationReport = ({ details }) => {
-//   console.log();
-
 //   return (
 //     <Document>
 //       <Page size="A4" style={styles.page}>

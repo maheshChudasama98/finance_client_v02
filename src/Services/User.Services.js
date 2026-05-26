@@ -3,7 +3,6 @@ import jwtAuthAxios, { errorHandler } from "./auth/jwtAuth";
 export function FetchUserListController(cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post(`/user/list`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -21,7 +20,6 @@ export function FetchUserListController(cb) {
 export function UserModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post(`/user/modify`, payload, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -44,7 +42,6 @@ export function UserModifyService(payload, cb) {
 export function DefaultBrachService(payload,cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`user/default?BranchId=${payload}`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -63,7 +60,6 @@ export function DefaultBrachService(payload,cb) {
 export function SettingGetService(cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.get(`/setting`).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -82,7 +78,6 @@ export function SettingGetService(cb) {
 export function SettingModifyService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
         jwtAuthAxios.post(`/setting/modify`, payload).then((res) => {
             if (res.data.status) {
                 dispatch({ type: "FETCH_SUCCESS" });
@@ -102,8 +97,6 @@ export function SettingModifyService(payload, cb) {
 export function ThemeModifyService(themeMode, themePrimary, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        
         const payload = {
             ThemeMode: themeMode,
             ThemePrimary: themePrimary,
@@ -129,8 +122,6 @@ export function ThemeModifyService(themeMode, themePrimary, cb) {
 export function AmountVisibilityModifyService(isAmountVisible, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        
         const payload = {
             ThemeMode: localStorage.getItem('themeMode') || 'light',
             ThemePrimary: localStorage.getItem('themePrimary') || '#5BC43A',
@@ -156,8 +147,6 @@ export function AmountVisibilityModifyService(isAmountVisible, cb) {
 export function UserProfileUpdateService(payload, cb) {
     return (dispatch) => {
         dispatch({ type: "FETCH_START" });
-        jwtAuthAxios.defaults.headers.common.Authorization = localStorage.getItem('token');
-        
         jwtAuthAxios.post(`/user/profile/update`, payload, {
             headers: {
                 'Content-Type': 'multipart/form-data'

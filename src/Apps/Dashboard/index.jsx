@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 // import Button from '@mui/material/Button';
 import Grid from '@mui/material/Unstable_Grid2';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { useAmountVisibility } from 'src/hooks/use-amount-visibility';
@@ -113,7 +112,7 @@ export default function Index() {
   }, [cashFlowDuration]);
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <Box>
       {/* Header Section */}
       <Box sx={{ mb: 3 }}>
         <Box
@@ -475,7 +474,7 @@ export default function Index() {
         </Grid>
       </Box>
       {/* PDF Download Component */}
-    </Container>
+    </Box>
   );
 }
 

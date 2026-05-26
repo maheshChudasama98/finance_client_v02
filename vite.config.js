@@ -46,6 +46,7 @@ export default defineConfig(({ mode }) => {
       __WEATHER_API_KEY__: JSON.stringify(env.VITE_WEATHER_API_KEY),
       __OPEN_WEATHER_API__: JSON.stringify(env.VITE_OPEN_WEATHER_API),
       __GOOGLE_MAPS_API_KEY__: JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY),
+      __CRYPTO_SECURE_KEY__: JSON.stringify(env.VITE_CRYPTO_SECURE_KEY),
       __ENV_MODE__: JSON.stringify(mode),
     },
   };
