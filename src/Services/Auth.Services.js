@@ -1,5 +1,7 @@
 import { encrypt } from 'src/utils/crypto.utils';
 
+import { DevelopMood } from 'src/constance';
+
 import jwtAuthAxios, { errorHandler } from './auth/jwtAuth';
 
 export function LoginApiAction(data, cb) {
@@ -13,11 +15,11 @@ export function LoginApiAction(data, cb) {
           dispatch({ type: 'FETCH_SUCCESS' });
           // dispatch({ type: 'SHOW_MESSAGE', payload: res?.data?.message });
 
-          localStorage.setItem('token', encrypt(res?.data?.data));
+          localStorage.setItem('token', DevelopMood ? res?.data?.data : encrypt(res?.data?.data));
 
           dispatch({
             type: 'USER_LOGIN',
-            token: encrypt(res?.data?.data),
+            token: DevelopMood ? res?.data?.data : encrypt(res?.data?.data),
           });
 
           if (cb) cb(res.data);
@@ -42,11 +44,11 @@ export function SignupApiAction(data, cb) {
           dispatch({ type: 'FETCH_SUCCESS' });
           // dispatch({ type: 'SHOW_MESSAGE', payload: res?.data?.message });
 
-          localStorage.setItem('token', encrypt(res?.data?.data));
+          localStorage.setItem('token', DevelopMood ? res?.data?.data : encrypt(res?.data?.data));
 
           dispatch({
             type: 'USER_LOGIN',
-            token: encrypt(res?.data?.data),
+            token: DevelopMood ? res?.data?.data : encrypt(res?.data?.data),
           });
           if (cb) cb(res.data);
         } else {

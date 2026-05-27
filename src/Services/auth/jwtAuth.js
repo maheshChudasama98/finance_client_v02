@@ -41,8 +41,8 @@ jwtAuthAxios.interceptors.request.use(
       }
 
       if (token) {
-        const decryptToken = decrypt(token);
-        config.headers.Authorization = encrypt(decryptToken);
+        const decryptToken = DevelopMood ? token : decrypt(token);
+        config.headers.Authorization = DevelopMood ? decryptToken : encrypt(decryptToken);
       }
     } else if (token) {
       config.headers.Authorization = token;
