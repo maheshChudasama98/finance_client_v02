@@ -69,6 +69,7 @@ export const CustomAvatar = ({
           border: (theme) => `solid 2px ${theme.palette.background.default}`,
           background: (theme) =>
             borderDashed !== true ? alpha(bgColor || theme.palette.primary.main, 0.8) : '',
+          fontWeight: 600,
         }}
         {...props}
       >

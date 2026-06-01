@@ -149,9 +149,9 @@ export default function Index() {
   const tableSetData = accountsList.map((item, index) => ({
     key: item?.AccountId,
     value: item,
-    Index: <Typography variant="light">{index + 1 || ''}</Typography>,
+    Index: <Typography variant="subtitle2">{index + 1 || ''}</Typography>,
     AccountName: (
-      <Stack direction="row" alignItems="center" spacing={2}>
+      <Stack direction="row" alignItems="center" spacing={1.5}>
         <CustomAvatar
           width={45}
           height={45}
@@ -159,27 +159,27 @@ export default function Index() {
           icon={item?.Icon || ''}
           bgColor={item?.Color || ''}
         />
-        <Typography variant="light">
-          {item?.AccountName}
-          <Typography variant="registerTest" color="text.secondary">
+        <Stack spacing={0}>
+          <Typography variant="subtitle2">{item?.AccountName}</Typography>
+          <Typography variant="caption" color="text.secondary">
             {fDate(item?.createdAt)}
           </Typography>
-        </Typography>
+        </Stack>
       </Stack>
     ),
     AccountType: (
-      <Typography variant="light" className="custom-truncateRight">
+      <Typography variant="body2" className="custom-truncateRight">
         {item?.TypeId ? AccountTypes?.find((e) => e?.key === item?.TypeId)?.value : ''}
       </Typography>
     ),
     StartAmount: (
-      <Typography variant="light">
+      <Typography variant="body2">
         {formatToINR(item?.StartAmount, isAmountVisible) || '-'}
       </Typography>
     ),
     CurrentAmount: (
       <Typography
-        variant="light"
+        variant="body2"
         sx={{
           color: item?.CurrentAmount < item?.MinAmount ? 'red' : '',
         }}
@@ -187,8 +187,8 @@ export default function Index() {
         {formatToINR(item?.CurrentAmount, isAmountVisible) || '-'}
       </Typography>
     ),
-    MinAmount: <Typography variant="light">{formatToINR(item?.MinAmount) || '-'}</Typography>,
-    MaxAmount: <Typography variant="light">{formatToINR(item?.MaxAmount) || '-'}</Typography>,
+    MinAmount: <Typography variant="body2">{formatToINR(item?.MinAmount) || '-'}</Typography>,
+    MaxAmount: <Typography variant="body2">{formatToINR(item?.MaxAmount) || '-'}</Typography>,
     Used: (
       <Box>
         <CustomCheckbox

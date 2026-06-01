@@ -60,26 +60,34 @@ export const CustomTransactions = ({ list, flag }) => {
   const tableSetData = list?.map((item, index) => ({
     key: item?.AccountId,
     value: item,
-    Date: <Typography variant="light">{fDate(item?.Date)}</Typography>,
+    Date: <Typography variant="caption">{fDate(item?.Date)}</Typography>,
     Details: (
-      <CustomTooltip label={item?.Description}>
-        <Typography variant="light" className="">
-          {item?.Details}
-        </Typography>
-      </CustomTooltip>
+      <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center' }}>
+        {item?.Details}
+        <CustomTooltip label={item?.Description}>
+          {item?.Description && (
+            <i
+              className="fa-solid fa-info custom-info-icon-css"
+              style={{ fontSize: 6, margin: '0px 8px', padding: '3px 5px' }}
+            />
+          )}
+        </CustomTooltip>
+      </Typography>
     ),
     Debits: item?.AccountAmount < 0 && (
-      <Typography variant="light" sx={{ color: 'red' }}>
+      <Typography variant="caption" sx={{ color: 'red' }}>
         {formatToINR(item?.AccountAmount, isAmountVisible) || '-'}
       </Typography>
     ),
     Credits: item?.AccountAmount > 0 && (
-      <Typography sx={{ color: 'green' }} variant="light">
+      <Typography sx={{ color: 'green' }} variant="caption">
         {formatToINR(item?.AccountAmount, isAmountVisible) || '-'}
       </Typography>
     ),
     Balance: (
-      <Typography variant="light">{formatToINR(item?.Balance, isAmountVisible) || '-'}</Typography>
+      <Typography variant="caption">
+        {formatToINR(item?.Balance, isAmountVisible) || '-'}
+      </Typography>
     ),
   }));
 

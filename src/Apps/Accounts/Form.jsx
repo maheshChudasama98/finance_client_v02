@@ -96,10 +96,11 @@ export default function Index({ backAction, editObject, deleteAction }) {
               <Grid item xs={12} md={6}>
                 <TextFieldForm
                   required={false}
-                  type="number"
                   formik={props}
+                  type="number"
                   label="Start Amount"
                   field="StartAmount"
+                  isAmount
                   disabled={editObject?.AccountId}
                 />
               </Grid>
@@ -111,6 +112,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   formik={props}
                   label="Min Amount"
                   field="MinAmount"
+                  isAmount
                 />
               </Grid>
 
@@ -121,10 +123,11 @@ export default function Index({ backAction, editObject, deleteAction }) {
                   formik={props}
                   label="Max Amount"
                   field="MaxAmount"
+                  isAmount
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <TextFieldForm
                   required={false}
                   formik={props}

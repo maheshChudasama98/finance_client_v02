@@ -55,7 +55,7 @@ const CalculatorModal = ({ onClose, onCalculate }) => {
     setPreviousValue(null);
     setOperation(null);
     setWaitingForOperand(false);
-    setHistory([])
+    setHistory([]);
   };
 
   const clearDisplay = () => {
@@ -582,7 +582,15 @@ export default function Index({ backAction, editObject, deleteAction }) {
           ) || []
         );
 
-        setLabelsList(res?.labelsList || []);
+        // setLabelsList(res?.labelsList || []);
+
+        const selectedLabelIds = editObject?.TagList?.map((item) => item?.LabelId) || [];
+
+        setLabelsList(
+          res?.labelsList?.filter(
+            (item) => item?.isActive === 1 || selectedLabelIds.includes(item?.LabelId)
+          ) || []
+        );
 
         setPartyList(
           res?.partyList?.filter(
@@ -715,12 +723,13 @@ export default function Index({ backAction, editObject, deleteAction }) {
 
                 <Grid item xs={12} md={6}>
                   <TextFieldForm
-                    type="number"
+                    isAmount
                     formik={props}
+                    type="number"
                     field="Amount"
                     label="Amount"
                     InputProps={{
-                      endAdornment: (
+                      startAdornment: (
                         <IconButton
                           onClick={() => setCalculatorOpen(true)}
                           sx={{
@@ -831,7 +840,7 @@ export default function Index({ backAction, editObject, deleteAction }) {
                     formik={props}
                     label="Labels"
                     field="Tags"
-                    menuList={labelsList}
+                    menuList={labelsList || []}
                     valueKey="LabelId"
                     labelKey="LabelName"
                   />

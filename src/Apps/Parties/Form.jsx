@@ -102,9 +102,10 @@ export default function Index({ backAction, editObject }) {
 
               <Grid item xs={12} md={6}>
                 <TextFieldForm
+                  isAmount
                   required={false}
-                  type="number"
                   formik={props}
+                  type="number"
                   label="Start Amount"
                   field="StartAmount"
                   disabled={editObject?.PartyId}
@@ -113,9 +114,10 @@ export default function Index({ backAction, editObject }) {
 
               <Grid item xs={12} md={3}>
                 <TextFieldForm
-                  required={false}
+                  isAmount
                   type="number"
                   formik={props}
+                  required={false}
                   label="Min Amount"
                   field="MinAmount"
                 />
@@ -123,9 +125,10 @@ export default function Index({ backAction, editObject }) {
 
               <Grid item xs={12} md={3}>
                 <TextFieldForm
-                  required={false}
+                  isAmount
                   type="number"
                   formik={props}
+                  required={false}
                   label="Max Amount"
                   field="MaxAmount"
                 />

@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Tabs from '@mui/material/Tabs';
+import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -107,25 +108,21 @@ export default function Index() {
                       bgColor={details?.Color || ''}
                     />
                   </CustomTooltip>
-                  <Typography variant="light">
-                    {subItem?.SubCategoriesName}
-                    <Typography
-                      variant="light"
-                      color="text.secondary"
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
+                  <Stack>
+                    <Typography variant="subtitle2">{subItem?.SubCategoriesName}</Typography>
+                    <Typography variant="caption" color="text.secondary">
                       {fDate(subItem?.createdAt)}
                     </Typography>
-                  </Typography>
+                  </Stack>
                 </Stack>
               ),
               Income: (
-                <Typography variant="light">
+                <Typography variant="body2">
                   {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
                 </Typography>
               ),
               Expense: (
-                <Typography variant="light">
+                <Typography variant="body2">
                   {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
                 </Typography>
               ),
@@ -247,26 +244,23 @@ export default function Index() {
             bgColor={item?.Color || ''}
           />
         </CustomTooltip>
-        <Typography variant="body2" fontWeight={600}>
-          {item?.CategoryName}
-          <Typography
-            color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center', fontSize: 12 }}
-          >
+        <Stack>
+          <Typography variant="subtitle2">{item?.CategoryName}</Typography>
+          <Typography color="text.secondary" variant="caption">
             {fDate(item?.createdAt)}
           </Typography>
-        </Typography>
+        </Stack>
       </Stack>
     ),
     Income: (
-      <Typography variant="light">
+      <Typography variant="body2">
         {item?.TransactionSummary?.TotalInCome
           ? formatToINR(item?.TransactionSummary?.TotalInCome)
           : '' || ''}
       </Typography>
     ),
     Expense: (
-      <Typography variant="light">
+      <Typography variant="body2">
         {item?.TransactionSummary?.TotalExpense
           ? formatToINR(item?.TransactionSummary?.TotalExpense)
           : '' || ''}
@@ -359,25 +353,26 @@ export default function Index() {
                     bgColor={item?.Color || ''}
                   />
                 </CustomTooltip>
-                <Typography variant="light">
-                  {subItem?.SubCategoriesName}
+
+                <Stack>
+                  <Typography variant="subtitle2">{subItem?.SubCategoriesName}</Typography>
                   <Typography
-                    variant="light"
+                    variant="caption"
                     color="text.secondary"
                     sx={{ display: 'flex', alignItems: 'center' }}
                   >
                     {fDate(subItem?.createdAt)}
                   </Typography>
-                </Typography>
+                </Stack>
               </Stack>
             ),
             Income: (
-              <Typography variant="light">
+              <Typography variant="body2">
                 {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
               </Typography>
             ),
             Expense: (
-              <Typography variant="light">
+              <Typography variant="body2">
                 {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
               </Typography>
             ),
@@ -414,7 +409,7 @@ export default function Index() {
                     {
                       label: (
                         <Typography
-                          variant="light"
+                          variant="body2"
                           onClick={() => {
                             // setSubEditObject(subItem);
                             // setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
@@ -433,7 +428,7 @@ export default function Index() {
                     {
                       label: (
                         <Typography
-                          variant="light"
+                          variant="body2"
                           color="error"
                           onClick={() => {
                             sweetAlertQuestion()
@@ -540,25 +535,26 @@ export default function Index() {
                     bgColor={details?.Color || ''}
                   />
                 </CustomTooltip>
-                <Typography variant="light">
-                  {subItem?.SubCategoriesName}
+
+                <Stack>
+                  <Typography variant="subtitle2">{subItem?.SubCategoriesName}</Typography>
                   <Typography
-                    variant="light"
+                    variant="caption"
                     color="text.secondary"
                     sx={{ display: 'flex', alignItems: 'center' }}
                   >
                     {fDate(subItem?.createdAt)}
                   </Typography>
-                </Typography>
+                </Stack>
               </Stack>
             ),
             Income: (
-              <Typography variant="light">
+              <Typography variant="body2">
                 {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
               </Typography>
             ),
             Expense: (
-              <Typography variant="light">
+              <Typography variant="body2">
                 {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
               </Typography>
             ),
@@ -583,7 +579,7 @@ export default function Index() {
             //         {
             //           label: (
             //             <Typography
-            //               variant="light"
+            //               variant="body2"
             //               onClick={() => {
             //                 setSubEditObject(subItem);
             //                 // setFormaModal((prev) => ({ ...prev, [item?.CategoryId]: true }));
@@ -602,7 +598,7 @@ export default function Index() {
             //         {
             //           label: (
             //             <Typography
-            //               variant="light"
+            //               variant="body2"
             //               color="error"
             //               onClick={() => {
             //                 sweetAlertQuestion()
@@ -675,25 +671,25 @@ export default function Index() {
                           bgColor={details?.Color || ''}
                         />
                       </CustomTooltip>
-                      <Typography variant="light">
-                        {subItem?.SubCategoriesName}
+                      <Stack>
+                        <Typography variant="subtitle2">{subItem?.SubCategoriesName}</Typography>
                         <Typography
-                          variant="light"
+                          variant="caption"
                           color="text.secondary"
                           sx={{ display: 'flex', alignItems: 'center' }}
                         >
                           {fDate(subItem?.createdAt)}
                         </Typography>
-                      </Typography>
+                      </Stack>
                     </Stack>
                   ),
                   Income: (
-                    <Typography variant="light">
+                    <Typography variant="body2">
                       {subItem?.TotalInCome ? formatToINR(subItem?.TotalInCome) : '' || ''}
                     </Typography>
                   ),
                   Expense: (
-                    <Typography variant="light">
+                    <Typography variant="body2">
                       {subItem?.TotalExpense ? formatToINR(subItem?.TotalExpense) : '' || ''}
                     </Typography>
                   ),
@@ -861,26 +857,6 @@ export default function Index() {
 
   return (
     <Card>
-      {/* <CardHeader
-        title={titleAction(!displayFlag)}
-        sx={{
-          // marginBottom: 2,
-          paddingX: { xs: 2, sm: 3 },
-          paddingY: 2,
-        }}
-        action={
-          <Button
-            onClick={showDisplayAction}
-            variant="contained"
-            color="primary"
-            size={isMobile ? 'small' : 'medium'}
-            startIcon={!displayFlag ? <AddIcon /> : <ArrowBackIcon />}
-          >
-            {!displayFlag ? 'Add New' : 'Back'}
-          </Button>
-        }
-      /> */}
-
       <CardHeader
         title={titleAction(!displayFlag)}
         sx={{ marginBottom: 2 }}
@@ -1041,7 +1017,7 @@ export default function Index() {
                         />
                       </Box>
                     ) : (
-                      <Box> Your are not owner this Category</Box>
+                      <Alert severity="error">You are not the owner of this Category</Alert>
                     ),
                   expandRowByClick: true,
                   showExpandColumn: false,

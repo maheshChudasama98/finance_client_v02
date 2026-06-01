@@ -14,9 +14,9 @@ export const CustomTooltip = ({ label, Placement, children, ...props }) => {
   return (
     <Tooltip
       placement={Placement}
-      title={renderLabel} 
+      title={renderLabel}
       color={theme.palette.primary.main}
-      overlayInnerStyle={{ fontSize: '16px' }}
+      overlayInnerStyle={{ fontSize: '12px', color: theme?.palette?.common?.white || "#FFF" }}
       {...props}
     >
       {children}

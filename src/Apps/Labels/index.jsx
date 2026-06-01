@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -97,6 +98,13 @@ export default function Index() {
       key: 'Label',
     },
     {
+      title: 'Active',
+      dataIndex: 'Active',
+      key: 'Active',
+      align: 'right',
+      width: '15%',
+    },
+    {
       title: 'Action',
       dataIndex: 'Action',
       key: 'Action',
@@ -110,22 +118,12 @@ export default function Index() {
     key: item?.LabelId,
     Index: index + 1 || '',
     Label: (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        }}
-      >
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: '1rem' }}>
-            {item?.LabelName || '-'}
-          </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-            {fDate(item?.createdAt)}
-          </Typography>
-        </Box>
-      </Box>
+      <Stack>
+        <Typography variant="subtitle2">{item?.LabelName || '-'}</Typography>
+        <Typography variant="caption" color="text.secondary">
+          {fDate(item?.createdAt)}
+        </Typography>
+      </Stack>
     ),
     Used: (
       <CustomCheckbox

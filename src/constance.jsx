@@ -110,19 +110,20 @@ export const SettingDurationList = [
   { Key: 'Last 7 Days', Value: 'Last_Seven_Days' },
   { Key: 'Last 30 Days', Value: 'Last_Thirty_Days' },
   { Key: 'This Month', Value: 'This_Month' },
-  { Key: 'Last 6 Months', Value: 'Six_Month' },
-  { Key: 'This Year', Value: 'This_Year' },
-  { Key: 'Last 5 Years', Value: 'Last_Five_Year' },
-  { Key: 'All', Value: 'All' },
+  // { Key: 'All', Value: 'All' },
 ];
 
 export const ButtonGroupDurationList = [
   { Key: '7D', Value: 'Last_Seven_Days' },
   { Key: '30D', Value: 'Last_Thirty_Days' },
+  { Key: 'TW', Value: 'This_Week' },
+  { Key: 'LW', Value: 'Last_Week' },
   { Key: 'TM', Value: 'This_Month' },
-  { Key: '6M', Value: 'Six_Month' },
+  { Key: 'LM', Value: 'Last_Month' },
+  { Key: 'L6M', Value: 'Six_Month' },
   { Key: 'TY', Value: 'This_Year' },
-  { Key: '5Y', Value: 'Last_Five_Year' },
+  { Key: 'LY', Value: 'Last_Year' },
+  { Key: 'L5Y', Value: 'Last_Five_Year' },
   { Key: 'All', Value: 'All' },
 ];
 
