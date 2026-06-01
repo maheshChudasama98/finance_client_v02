@@ -3,7 +3,7 @@ export const cryptoSecureKey = __CRYPTO_SECURE_KEY__;
 
 export const ImgUrl = `${apiURL}/public/`;
 
-export const DevelopMood = true;
+export const DevelopMood = false;
 export const LogoDefaultPath = 'Logos/logo2.png';
 export const AdminEmail = 'mahesh.chudasama098@gmail.ocm';
 
